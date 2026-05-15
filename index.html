@@ -2155,5 +2155,137 @@ function checkPointsExpiry() {
 }
 setTimeout(checkPointsExpiry,1000);
 </script>
+
+<!-- COOKIE CONSENT BANNER -->
+<div id="cookie-banner" style="display:none;">
+  <div id="cookie-inner">
+    <div id="cookie-icon">🍪</div>
+    <div id="cookie-text">
+      <strong>We use cookies</strong>
+      <p>We and our partners (including Google AdSense) use cookies to personalise ads and analyse traffic. You can choose to accept or decline non-essential cookies.</p>
+      <a href="privacy.html" target="_blank">Privacy Policy</a>
+    </div>
+    <div id="cookie-btns">
+      <button id="cookie-decline" onclick="cookieChoice(false)">Decline</button>
+      <button id="cookie-accept" onclick="cookieChoice(true)">Accept All</button>
+    </div>
+  </div>
+</div>
+
+<style>
+#cookie-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  width: min(680px, calc(100vw - 32px));
+  background: #12121a;
+  border: 1px solid #2a2a3a;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(108,99,255,0.15);
+  z-index: 99999;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+  opacity: 0;
+}
+#cookie-banner.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+#cookie-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+}
+#cookie-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+#cookie-text {
+  flex: 1;
+  min-width: 0;
+}
+#cookie-text strong {
+  display: block;
+  color: #f0f0ff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+#cookie-text p {
+  color: #9090b0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+#cookie-text a {
+  color: #6c63ff;
+  font-size: 12px;
+  text-decoration: none;
+  margin-top: 4px;
+  display: inline-block;
+}
+#cookie-text a:hover { text-decoration: underline; }
+#cookie-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#cookie-decline, #cookie-accept {
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+#cookie-decline {
+  background: #1a1a26;
+  color: #9090b0;
+  border: 1px solid #2a2a3a;
+}
+#cookie-decline:hover { opacity: 0.8; }
+#cookie-accept {
+  background: #6c63ff;
+  color: #fff;
+}
+#cookie-accept:hover { opacity: 0.85; }
+@media (max-width: 520px) {
+  #cookie-inner { flex-direction: column; align-items: flex-start; }
+  #cookie-btns { flex-direction: row; width: 100%; }
+  #cookie-decline, #cookie-accept { flex: 1; text-align: center; }
+}
+</style>
+
+<script>
+(function() {
+  var consent = localStorage.getItem('cookieConsent');
+  if (consent === null) {
+    var banner = document.getElementById('cookie-banner');
+    banner.style.display = 'block';
+    setTimeout(function() { banner.classList.add('show'); }, 100);
+  } else if (consent === 'false') {
+    window['ga-disable-ca-pub-2319808028748744'] = true;
+  }
+})();
+
+function cookieChoice(accepted) {
+  localStorage.setItem('cookieConsent', accepted ? 'true' : 'false');
+  var banner = document.getElementById('cookie-banner');
+  banner.classList.remove('show');
+  setTimeout(function() { banner.style.display = 'none'; }, 400);
+  if (!accepted) {
+    window['ga-disable-ca-pub-2319808028748744'] = true;
+  }
+}
+</script>
+<!-- END COOKIE CONSENT BANNER -->
+
 </body>
 </html>
