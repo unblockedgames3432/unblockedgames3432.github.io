@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexusHub</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2319808028748744" crossorigin="anonymous"></script>
 <style>
 :root {
   --bg: #0a0a0f;
@@ -992,10 +993,13 @@ body{
     <div class="fs-ad-title">📺 QUICK AD</div>
     <div class="fs-ad-sub">Watch a short ad to unlock fullscreen</div>
     <div class="fs-ad-placeholder" id="fs-ad-content">
-      <!-- Real AdSense ad goes here once approved -->
-      <span style="font-size:32px;">📢</span>
-      <span>Advertisement</span>
-      <span style="font-size:11px;opacity:0.6;">Your ad will appear here</span>
+      <ins class="adsbygoogle"
+        style="display:block;width:100%;min-height:120px;"
+        data-ad-client="ca-pub-2319808028748744"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
     </div>
     <div class="fs-countdown" id="fs-countdown">5</div>
     <div style="color:var(--text2);font-size:13px;margin-bottom:16px;">seconds remaining</div>
@@ -1021,7 +1025,7 @@ const CAT_META = {
   'Comic':   { icon:'📖', label:'Comics' },
   'Music':   { icon:'🎵', label:'Music' },
 };
-const ADSENSE_CLIENT = 'ca-pub-XXXXXXXXXX'; // Replace with your AdSense publisher ID
+const ADSENSE_CLIENT = 'ca-pub-2319808028748744';
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyLDdvKQXJqJzf6PYMGpeJkbi-Pd4GCjJNe4msTkzwD1ypcaYO97nti-WuhJ21k7Kel/exec';
 
 let state = loadState();
@@ -1564,12 +1568,14 @@ function completeFsAd() {
 function showFsUpsell() { /* no longer used */ }
 
 function buildAdBanner(id) {
-  return `<div class="ad-banner" style="min-height:90px;background:linear-gradient(135deg,var(--surface),var(--surface2));display:flex;align-items:center;justify-content:center;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"><\/script>
-    <ins class="adsbygoogle" style="display:block;width:100%;height:90px;" data-ad-client="${ADSENSE_CLIENT}" data-ad-slot="AUTO" data-ad-format="horizontal"></ins>
+  return `<div class="ad-banner" style="min-height:100px;padding:8px;">
+    <ins class="adsbygoogle"
+      style="display:block;width:100%;min-height:90px;"
+      data-ad-client="ca-pub-2319808028748744"
+      data-ad-slot="auto"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
-    <span style="color:var(--text2);font-size:13px;">📢 Advertisement — Watch ads to earn points!</span>
-    <span class="ad-client">AdSense ID: ${ADSENSE_CLIENT} — Replace with your publisher ID</span>
   </div>`;
 }
 
