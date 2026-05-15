@@ -18,7 +18,7 @@
   --accent3: #43e97b;
   --text: #f0f0ff;
   --text2: #9090b0;
-  --text3: #5050708;
+  --text3: #505070;
   --premium: #f5a623;
   --danger: #ff4757;
   --warning: #ffa502;
@@ -997,10 +997,10 @@ body{
       <ins class="adsbygoogle"
         style="display:block;width:100%;min-height:120px;"
         data-ad-client="ca-pub-2319808028748744"
-        data-ad-slot="auto"
+        data-ad-slot="5752549382"
         data-ad-format="auto"
         data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div class="fs-countdown" id="fs-countdown">5</div>
     <div style="color:var(--text2);font-size:13px;margin-bottom:16px;">seconds remaining</div>
@@ -1017,6 +1017,18 @@ body{
 // STATE
 // ═══════════════════════════════════════════════
 const DEFAULT_PIN = '123456';
+const THEME_COLORS = [
+  { label:'Background', var:'--bg', default:'#0a0a0f' },
+  { label:'Surface', var:'--surface', default:'#12121a' },
+  { label:'Surface 2', var:'--surface2', default:'#1a1a26' },
+  { label:'Primary Accent', var:'--accent', default:'#6c63ff' },
+  { label:'Secondary Accent', var:'--accent2', default:'#ff6584' },
+  { label:'Success / Points', var:'--accent3', default:'#43e97b' },
+  { label:'Main Text', var:'--text', default:'#f0f0ff' },
+  { label:'Muted Text', var:'--text2', default:'#9090b0' },
+  { label:'Border', var:'--border', default:'#2a2a3a' },
+  { label:'Premium Gold', var:'--premium', default:'#f5a623' },
+];
 const CAT_META = {
   'Movie':   { icon:'🎬', label:'Movies' },
   'Game':    { icon:'🎮', label:'Games' },
@@ -1573,7 +1585,7 @@ function buildAdBanner(id) {
     <ins class="adsbygoogle"
       style="display:block;width:100%;min-height:90px;"
       data-ad-client="ca-pub-2319808028748744"
-      data-ad-slot="auto"
+      data-ad-slot="5752549382"
       data-ad-format="auto"
       data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
@@ -1591,12 +1603,8 @@ function unlockWithCode() {
   // Update badge
   document.getElementById('user-badge-btn').querySelector('span:last-child').outerHTML = '<span class="premium-badge">PREMIUM</span>';
   document.getElementById('points-bar').style.display = 'none';
-  toast('Premium unlocked!', 'success');
+  toast('Premium unlocked! 👑 Please reopen the content to watch.', 'success');
   closeMediaModal();
-  // Reopen
-  setTimeout(() => {
-    const id = document.querySelector('.modal-overlay.open');
-  }, 100);
 }
 
 function closeMediaModal() {
@@ -2004,19 +2012,6 @@ function renderPrizesTable() {
 }
 
 // ─── THEME PANEL ───
-const THEME_COLORS = [
-  { label:'Background', var:'--bg', default:'#0a0a0f' },
-  { label:'Surface', var:'--surface', default:'#12121a' },
-  { label:'Surface 2', var:'--surface2', default:'#1a1a26' },
-  { label:'Primary Accent', var:'--accent', default:'#6c63ff' },
-  { label:'Secondary Accent', var:'--accent2', default:'#ff6584' },
-  { label:'Success / Points', var:'--accent3', default:'#43e97b' },
-  { label:'Main Text', var:'--text', default:'#f0f0ff' },
-  { label:'Muted Text', var:'--text2', default:'#9090b0' },
-  { label:'Border', var:'--border', default:'#2a2a3a' },
-  { label:'Premium Gold', var:'--premium', default:'#f5a623' },
-];
-
 function renderThemePanel() {
   const name = getSiteName();
   const txt = getSiteText();
