@@ -1636,14 +1636,19 @@ async function loadLeaderboard() {
     return;
   }
   const medals = ['gold','silver','bronze'];
-  el.innerHTML = data.map((row, i) => `
-    <div class="lb-row">
+  const validRows = data.filter(row => row.username && String(row.username).trim());
+  if (!validRows.length) { el.innerHTML = '<div class="comm-loading">No entries yet. Be first!</div>'; return; }
+  el.innerHTML = validRows.map((row, i) => {
+    const name = String(row.username || '?');
+    const pts = Number(row.points) || 0;
+    const isPrem = row.is_premium === 'true' || row.is_premium === true;
+    return `<div class="lb-row">
       <div class="lb-rank ${medals[i]||''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
-      <div class="lb-avatar" style="background:hsl(${(row.username.charCodeAt(0)*37)%360},60%,45%)">${row.username[0].toUpperCase()}</div>
-      <div class="lb-name">${escHtml(row.username)}${row.is_premium==='true'||row.is_premium===true?' 👑':''}</div>
-      <div class="lb-pts">⭐ ${Number(row.points).toLocaleString()}</div>
-    </div>
-  `).join('');
+      <div class="lb-avatar" style="background:hsl(${(name.charCodeAt(0)*37)%360},60%,45%)">${name[0].toUpperCase()}</div>
+      <div class="lb-name">${escHtml(name)}${isPrem?' 👑':''}</div>
+      <div class="lb-pts">⭐ ${pts.toLocaleString()}</div>
+    </div>`;
+  }).join('');
 }
 
 async function upsertLeaderboard() {
@@ -1663,15 +1668,21 @@ async function loadRatings() {
   if (!data || !data.length) {
     el.innerHTML = '<div class="comm-loading">No ratings yet!</div>';
   } else {
-    el.innerHTML = data.map(row => {
-      const avg = Number(row.avg_rating) || 0;
-      const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
-      return `<div class="rating-row" onclick="openRateGame('${escHtml(row.game_title)}')">
-        <div class="rating-game">${escHtml(row.game_title)}</div>
-        <div class="rating-stars">${stars}</div>
-        <div class="rating-count">${row.vote_count} vote${row.vote_count!=1?'s':''}</div>
-      </div>`;
-    }).join('');
+    const validRatings = data.filter(row => row.game_title && String(row.game_title).trim());
+    if (!validRatings.length) { el.innerHTML = '<div class="comm-loading">No ratings yet!</div>'; }
+    else {
+      el.innerHTML = validRatings.map(row => {
+        const avg = Number(row.avg_rating) || 0;
+        const count = Number(row.vote_count) || 0;
+        const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+        const title = String(row.game_title || '');
+        return `<div class="rating-row" onclick="openRateGame('${escHtml(title)}')">
+          <div class="rating-game">${escHtml(title)}</div>
+          <div class="rating-stars">${stars}</div>
+          <div class="rating-count">${count} vote${count!=1?'s':''}</div>
+        </div>`;
+      }).join('');
+    }
   }
   buildRateWidget();
 }
@@ -1725,7 +1736,7 @@ async function loadChat() {
   const data = await sheetsRequest('getChat');
   if (data && data.length) {
     el.innerHTML = '';
-    data.forEach(m => appendChatMsg(m, false));
+    data.filter(m => m && m.username && m.message).forEach(m => appendChatMsg(m, false));
     el.scrollTop = el.scrollHeight;
   }
   chatLoaded = true;
@@ -1743,16 +1754,18 @@ async function loadChat() {
 }
 
 function appendChatMsg(m, scroll=true) {
+  if (!m || !m.username || !m.message) return;
   const el = document.getElementById('chat-messages');
   const time = m.created_at ? new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+  const isPrem = m.is_premium === 'true' || m.is_premium === true;
   const div = document.createElement('div');
   div.className = 'chat-msg';
   div.innerHTML = `
     <div class="chat-msg-meta">
-      <span class="chat-msg-name ${m.is_premium==='true'||m.is_premium===true?'premium-name':''}">${escHtml(m.username)}${m.is_premium==='true'||m.is_premium===true?' 👑':''}</span>
+      <span class="chat-msg-name ${isPrem?'premium-name':''}">${escHtml(String(m.username))}${isPrem?' 👑':''}</span>
       <span class="chat-msg-time">${time}</span>
     </div>
-    <div class="chat-msg-text">${escHtml(m.message)}</div>
+    <div class="chat-msg-text">${escHtml(String(m.message))}</div>
   `;
   el.appendChild(div);
   if (scroll) el.scrollTop = el.scrollHeight;
