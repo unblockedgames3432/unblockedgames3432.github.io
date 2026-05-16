@@ -537,7 +537,6 @@ function weightedRandom(prizes) {
 }
 
 function loadState() {
-  
   try {
     return JSON.parse(localStorage.getItem('nexushub_state_cache') || '{}');
   } catch { return {}; }
@@ -545,10 +544,13 @@ function loadState() {
 
 async function loadGlobalState() {
   try {
-    const data = await sbFetchEarly('global_state?key=eq.main', { method: 'GET' });
-    if (data && data.length && data[0].value) {
-      const remote = typeof data[0].value === 'string' ? JSON.parse(data[0].value) : data[0].value;
-      state = { ...state, ...remote };
+    const timeout = new Promise(r => setTimeout(r, 4000));
+    const fetchPromise = fetch(SHEETS_URL + '?action=getSettings')
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null);
+    const data = await Promise.race([fetchPromise, timeout]);
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      state = { ...state, ...data };
       localStorage.setItem('nexushub_state_cache', JSON.stringify(state));
     }
   } catch(e) {
@@ -557,38 +559,13 @@ async function loadGlobalState() {
 }
 
 async function saveState() {
-  
   localStorage.setItem('nexushub_state_cache', JSON.stringify(state));
-  
   try {
-    await sbFetchEarly('global_state', {
+    fetch(SHEETS_URL, {
       method: 'POST',
-      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({ key: 'main', value: JSON.stringify(state) })
-    });
-  } catch(e) { console.warn('Could not sync state to cloud:', e); }
-}
-async function sbFetchEarly(path, opts={}) {
-  const SB_URL_E = 'https://cpevchiaeegjgoshgywg.supabase.co';
-  const SB_KEY_E = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwZXZjaGlhZWVnamdvc2hneXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzMwNzQsImV4cCI6MjA5NDQ0OTA3NH0.aeSICq6BmIQAPzvFkdfYZ2jDRvvfMEG53ae6FMx-B1c';
-  try {
-    const res = await fetch(SB_URL_E + '/rest/v1/' + path, {
-      headers: {
-        'apikey': SB_KEY_E,
-        'Authorization': 'Bearer ' + SB_KEY_E,
-        'Content-Type': 'application/json',
-        'Prefer': opts.prefer || 'return=representation',
-        ...opts.headers
-      },
-      ...opts
-    });
-    if (!res.ok) return null;
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
-  } catch(e) {
-    console.warn('sbFetchEarly failed:', e);
-    return null;
-  }
+      body: JSON.stringify({ action: 'saveSettings', settings: state })
+    }).catch(() => {});
+  } catch(e) {}
 }
 function getTheme() { return state.theme || {}; }
 function getCodes() { return state.codes || []; }
@@ -669,9 +646,10 @@ async function deleteContentFromCloud(item) {
 window.addEventListener('load', async () => {
   applyStoredTheme();
   updateSiteNames();
+  const timeout = new Promise(r => setTimeout(r, 3000)); // max 3s wait
   const statePromise = loadGlobalState();
   const minDelay = new Promise(r => setTimeout(r, 800));
-  await Promise.all([statePromise, minDelay]);
+  await Promise.all([Promise.race([statePromise, timeout]), minDelay]);
   applyStoredTheme();
   updateSiteNames();
   document.getElementById('loading-screen').style.opacity = '0';
@@ -793,27 +771,19 @@ function getUserPoints() {
   const k = 'pts_' + (currentUser?.name||'');
   return parseInt(localStorage.getItem(k)||'0',10);
 }
-// Alias used by leaderboard upsert
-function getPoints() { return getUserPoints(); }
-
 function addPoints(n) {
   const k = 'pts_' + (currentUser?.name||'');
   const cur = getUserPoints();
-  const newTotal = cur + n;
-  localStorage.setItem(k, newTotal);
+  localStorage.setItem(k, cur+n);
   updatePointsDisplay();
-  toast(`+${n} points! You now have ${newTotal} pts`, 'success');
-  // Sync to Supabase leaderboard so it's globally visible
-  upsertLeaderboard();
+  toast(`+${n} points! You now have ${cur+n} pts`, 'success');
 }
 function spendPoints(n) {
   const k = 'pts_' + (currentUser?.name||'');
   const cur = getUserPoints();
   if(cur < n) return false;
-  localStorage.setItem(k, cur - n);
+  localStorage.setItem(k, cur-n);
   updatePointsDisplay();
-  // Sync updated points to Supabase
-  upsertLeaderboard();
   return true;
 }
 function updatePointsDisplay() {
@@ -1620,29 +1590,47 @@ setTimeout(checkPointsExpiry,1000);
 </script>
 
 <script>
-const SB_URL = 'https://cpevchiaeegjgoshgywg.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwZXZjaGlhZWVnamdvc2hneXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzMwNzQsImV4cCI6MjA5NDQ0OTA3NH0.aeSICq6BmIQAPzvFkdfYZ2jDRvvfMEG53ae6FMx-B1c';
+// ── GOOGLE SHEETS COMMUNITY (Chat, Leaderboard, Ratings) ──
+let chatLoaded = false;
+let chatPollInterval = null;
 
-async function sbFetch(path, opts={}) {
-  const res = await fetch(SB_URL + '/rest/v1/' + path, {
-    headers: {
-      'apikey': SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || 'return=representation',
-      ...opts.headers
-    },
-    ...opts
-  });
-  if (!res.ok) return null;
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
+async function sheetsRequest(action, data={}) {
+  try {
+    // All requests use GET to avoid CORS issues with Google Apps Script
+    const flat = {};
+    for (const [k,v] of Object.entries(data)) {
+      flat[k] = typeof v === 'object' ? JSON.stringify(v) : v;
+    }
+    const params = new URLSearchParams({ action, ...flat });
+    const res = await fetch(SHEETS_URL + '?' + params.toString());
+    if (!res.ok) return null;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch(e) {
+    console.warn('Sheets request failed:', e);
+    return null;
+  }
 }
 
-// ── Supabase setup: create tables if needed via RPC isn't available on anon,
+async function sheetsPost(action, data={}) {
+  // Google Apps Script CORS doesn't support POST from browsers
+  // Encode all data as a single base64 param in GET request
+  try {
+    const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ action, ...data }))));
+    const res = await fetch(SHEETS_URL + '?action=' + action + '&payload=' + encodeURIComponent(payload));
+    if (!res.ok) return null;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch(e) {
+    console.warn('sheetsPost failed:', e);
+    return null;
+  }
+}
+
+// ── LEADERBOARD ──
 async function loadLeaderboard() {
   const el = document.getElementById('leaderboard-list');
-  const data = await sbFetch('leaderboard?order=points.desc&limit=10', { method: 'GET' });
+  const data = await sheetsRequest('getLeaderboard');
   if (!data || !data.length) {
     el.innerHTML = '<div class="comm-loading">No entries yet. Be first!</div>';
     return;
@@ -1652,8 +1640,8 @@ async function loadLeaderboard() {
     <div class="lb-row">
       <div class="lb-rank ${medals[i]||''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
       <div class="lb-avatar" style="background:hsl(${(row.username.charCodeAt(0)*37)%360},60%,45%)">${row.username[0].toUpperCase()}</div>
-      <div class="lb-name">${escHtml(row.username)}${row.is_premium?' 👑':''}</div>
-      <div class="lb-pts">⭐ ${row.points.toLocaleString()}</div>
+      <div class="lb-name">${escHtml(row.username)}${row.is_premium==='true'||row.is_premium===true?' 👑':''}</div>
+      <div class="lb-pts">⭐ ${Number(row.points).toLocaleString()}</div>
     </div>
   `).join('');
 }
@@ -1661,34 +1649,30 @@ async function loadLeaderboard() {
 async function upsertLeaderboard() {
   if (!currentUser) return;
   const pts = getUserPoints();
-  await sbFetch('leaderboard', {
-    method: 'POST',
-    prefer: 'resolution=merge-duplicates',
-    headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({
-      username: currentUser.name,
-      points: pts,
-      is_premium: currentUser.premium || false,
-      updated_at: new Date().toISOString()
-    })
+  await sheetsPost('upsertLeaderboard', {
+    username: currentUser.name,
+    points: pts,
+    is_premium: currentUser.premium || false
   });
 }
+
+// ── GAME RATINGS ──
 async function loadRatings() {
   const el = document.getElementById('ratings-list');
-  const data = await sbFetch('game_ratings?order=avg_rating.desc&limit=15', { method: 'GET' });
+  const data = await sheetsRequest('getRatings');
   if (!data || !data.length) {
     el.innerHTML = '<div class="comm-loading">No ratings yet!</div>';
   } else {
     el.innerHTML = data.map(row => {
-      const stars = '★'.repeat(Math.round(row.avg_rating)) + '☆'.repeat(5 - Math.round(row.avg_rating));
+      const avg = Number(row.avg_rating) || 0;
+      const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
       return `<div class="rating-row" onclick="openRateGame('${escHtml(row.game_title)}')">
         <div class="rating-game">${escHtml(row.game_title)}</div>
         <div class="rating-stars">${stars}</div>
-        <div class="rating-count">${row.vote_count} vote${row.vote_count!==1?'s':''}</div>
+        <div class="rating-count">${row.vote_count} vote${row.vote_count!=1?'s':''}</div>
       </div>`;
     }).join('');
   }
-  
   buildRateWidget();
 }
 
@@ -1698,7 +1682,6 @@ function buildRateWidget() {
   const area = document.getElementById('rate-game-area');
   const titleEl = document.getElementById('rate-game-title');
   if (!area) return;
-  // Show the first piece of content (any type) so users can always rate something
   const game = content[0];
   if (!game) return;
   area.style.display = 'block';
@@ -1731,48 +1714,42 @@ function hoverStars(containerId, n) {
 async function submitRating(gameTitle, rating) {
   if (!currentUser) { toast('Log in to rate games', 'error'); return; }
   renderStars('star-row', rating, gameTitle);
-  
-  await sbFetch('game_votes', {
-    method: 'POST',
-    headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({ username: currentUser.name, game_title: gameTitle, rating })
-  });
-  
-  const votes = await sbFetch('game_votes?game_title=eq.' + encodeURIComponent(gameTitle), { method: 'GET' });
-  if (votes && votes.length) {
-    const avg = votes.reduce((s,v) => s+v.rating, 0) / votes.length;
-    await sbFetch('game_ratings', {
-      method: 'POST',
-      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({ game_title: gameTitle, avg_rating: Math.round(avg*10)/10, vote_count: votes.length })
-    });
-  }
+  await sheetsPost('submitRating', { username: currentUser.name, game_title: gameTitle, rating });
   toast('Rating saved! ⭐', 'success');
   loadRatings();
 }
-let chatChannel = null;
-let chatLoaded = false;
 
+// ── CHAT ──
 async function loadChat() {
   const el = document.getElementById('chat-messages');
-  const data = await sbFetch('chat_messages?order=created_at.asc&limit=50', { method: 'GET' });
-  if (data) {
+  const data = await sheetsRequest('getChat');
+  if (data && data.length) {
     el.innerHTML = '';
     data.forEach(m => appendChatMsg(m, false));
     el.scrollTop = el.scrollHeight;
   }
   chatLoaded = true;
-  subscribeChat();
+  // Poll every 5s for new messages
+  if (chatPollInterval) clearInterval(chatPollInterval);
+  chatPollInterval = setInterval(async () => {
+    if (document.getElementById('section-community').style.display === 'none') return;
+    const fresh = await sheetsRequest('getChat');
+    if (!fresh) return;
+    const el = document.getElementById('chat-messages');
+    el.innerHTML = '';
+    fresh.forEach(m => appendChatMsg(m, false));
+    el.scrollTop = el.scrollHeight;
+  }, 5000);
 }
 
 function appendChatMsg(m, scroll=true) {
   const el = document.getElementById('chat-messages');
-  const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const time = m.created_at ? new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
   const div = document.createElement('div');
   div.className = 'chat-msg';
   div.innerHTML = `
     <div class="chat-msg-meta">
-      <span class="chat-msg-name ${m.is_premium?'premium-name':''}">${escHtml(m.username)}${m.is_premium?' 👑':''}</span>
+      <span class="chat-msg-name ${m.is_premium==='true'||m.is_premium===true?'premium-name':''}">${escHtml(m.username)}${m.is_premium==='true'||m.is_premium===true?' 👑':''}</span>
       <span class="chat-msg-time">${time}</span>
     </div>
     <div class="chat-msg-text">${escHtml(m.message)}</div>
@@ -1781,51 +1758,15 @@ function appendChatMsg(m, scroll=true) {
   if (scroll) el.scrollTop = el.scrollHeight;
 }
 
-function subscribeChat() {
-  setInterval(async () => {
-    if (document.getElementById('section-community').style.display === 'none') return;
-    const data = await sbFetch('chat_messages?order=created_at.asc&limit=50', { method: 'GET' });
-    if (!data) return;
-    const el = document.getElementById('chat-messages');
-    el.innerHTML = '';
-    data.forEach(m => appendChatMsg(m, false));
-    el.scrollTop = el.scrollHeight;
-    // Update online count: unique usernames active in last 5 mins
-    const fiveMinsAgo = new Date(Date.now() - 5*60*1000).toISOString();
-    const recent = data.filter(m => m.created_at > fiveMinsAgo);
-    const unique = new Set(recent.map(m => m.username)).size;
-    const countEl = document.getElementById('chat-online-count');
-    if (countEl) countEl.textContent = unique > 0 ? `${unique} online` : '';
-  }, 5000);
-}
-
 async function sendChat() {
   if (!currentUser) { toast('Log in to chat', 'error'); return; }
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
-  const result = await sbFetch('chat_messages', {
-    method: 'POST',
-    headers: { 'Prefer': 'return=minimal' },
-    body: JSON.stringify({
-      username: currentUser.name,
-      message: msg,
-      is_premium: currentUser.premium || false
-    })
-  });
-  if (result === null) {
-    toast('Could not send message — check connection or Supabase table setup', 'error');
-    input.value = msg;
-    return;
-  }
-  const data = await sbFetch('chat_messages?order=created_at.asc&limit=50', { method: 'GET' });
-  if (data) {
-    const el = document.getElementById('chat-messages');
-    el.innerHTML = '';
-    data.forEach(m => appendChatMsg(m, false));
-    el.scrollTop = el.scrollHeight;
-  }
+  // Optimistically show message immediately
+  appendChatMsg({ username: currentUser.name, message: msg, is_premium: currentUser.premium, created_at: new Date().toISOString() });
+  await sheetsPost('sendChat', { username: currentUser.name, message: msg, is_premium: currentUser.premium || false });
 }
 
 function escHtml(str) {
@@ -1834,14 +1775,11 @@ function escHtml(str) {
 
 async function showCommunity() {
   showSection('community');
+  if (currentUser) upsertLeaderboard();
   loadLeaderboard();
   loadRatings();
-  if (currentUser) upsertLeaderboard();
-  // Always reload chat when visiting the community tab
-  chatLoaded = false;
-  loadChat();
+  if (!chatLoaded) loadChat();
 }
-
 </script>
 
 <div id="cookie-banner" style="display:none;">
