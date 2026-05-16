@@ -669,10 +669,9 @@ async function deleteContentFromCloud(item) {
 window.addEventListener('load', async () => {
   applyStoredTheme();
   updateSiteNames();
-  const timeout = new Promise(r => setTimeout(r, 3000)); // max 3s wait
   const statePromise = loadGlobalState();
   const minDelay = new Promise(r => setTimeout(r, 800));
-  await Promise.all([Promise.race([statePromise, timeout]), minDelay]);
+  await Promise.all([statePromise, minDelay]);
   applyStoredTheme();
   updateSiteNames();
   document.getElementById('loading-screen').style.opacity = '0';
