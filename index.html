@@ -793,19 +793,27 @@ function getUserPoints() {
   const k = 'pts_' + (currentUser?.name||'');
   return parseInt(localStorage.getItem(k)||'0',10);
 }
+// Alias used by leaderboard upsert
+function getPoints() { return getUserPoints(); }
+
 function addPoints(n) {
   const k = 'pts_' + (currentUser?.name||'');
   const cur = getUserPoints();
-  localStorage.setItem(k, cur+n);
+  const newTotal = cur + n;
+  localStorage.setItem(k, newTotal);
   updatePointsDisplay();
-  toast(`+${n} points! You now have ${cur+n} pts`, 'success');
+  toast(`+${n} points! You now have ${newTotal} pts`, 'success');
+  // Sync to Supabase leaderboard so it's globally visible
+  upsertLeaderboard();
 }
 function spendPoints(n) {
   const k = 'pts_' + (currentUser?.name||'');
   const cur = getUserPoints();
   if(cur < n) return false;
-  localStorage.setItem(k, cur-n);
+  localStorage.setItem(k, cur - n);
   updatePointsDisplay();
+  // Sync updated points to Supabase
+  upsertLeaderboard();
   return true;
 }
 function updatePointsDisplay() {
@@ -1652,7 +1660,7 @@ async function loadLeaderboard() {
 
 async function upsertLeaderboard() {
   if (!currentUser) return;
-  const pts = getPoints();
+  const pts = getUserPoints();
   await sbFetch('leaderboard', {
     method: 'POST',
     prefer: 'resolution=merge-duplicates',
@@ -1685,12 +1693,12 @@ async function loadRatings() {
 }
 
 function buildRateWidget() {
-  const content = getContent().filter(c => c.type === 'game' || true);
+  const content = getContent();
   if (!content.length || !currentUser) return;
   const area = document.getElementById('rate-game-area');
   const titleEl = document.getElementById('rate-game-title');
   if (!area) return;
-  
+  // Show the first piece of content (any type) so users can always rate something
   const game = content[0];
   if (!game) return;
   area.style.display = 'block';
@@ -1774,16 +1782,20 @@ function appendChatMsg(m, scroll=true) {
 }
 
 function subscribeChat() {
-  
   setInterval(async () => {
     if (document.getElementById('section-community').style.display === 'none') return;
-    const last = document.getElementById('chat-messages').lastChild;
     const data = await sbFetch('chat_messages?order=created_at.asc&limit=50', { method: 'GET' });
     if (!data) return;
     const el = document.getElementById('chat-messages');
     el.innerHTML = '';
     data.forEach(m => appendChatMsg(m, false));
     el.scrollTop = el.scrollHeight;
+    // Update online count: unique usernames active in last 5 mins
+    const fiveMinsAgo = new Date(Date.now() - 5*60*1000).toISOString();
+    const recent = data.filter(m => m.created_at > fiveMinsAgo);
+    const unique = new Set(recent.map(m => m.username)).size;
+    const countEl = document.getElementById('chat-online-count');
+    if (countEl) countEl.textContent = unique > 0 ? `${unique} online` : '';
   }, 5000);
 }
 
@@ -1793,7 +1805,7 @@ async function sendChat() {
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
-  await sbFetch('chat_messages', {
+  const result = await sbFetch('chat_messages', {
     method: 'POST',
     headers: { 'Prefer': 'return=minimal' },
     body: JSON.stringify({
@@ -1802,7 +1814,11 @@ async function sendChat() {
       is_premium: currentUser.premium || false
     })
   });
-  
+  if (result === null) {
+    toast('Could not send message — check connection or Supabase table setup', 'error');
+    input.value = msg;
+    return;
+  }
   const data = await sbFetch('chat_messages?order=created_at.asc&limit=50', { method: 'GET' });
   if (data) {
     const el = document.getElementById('chat-messages');
@@ -1818,10 +1834,12 @@ function escHtml(str) {
 
 async function showCommunity() {
   showSection('community');
-  if (currentUser) upsertLeaderboard();
   loadLeaderboard();
   loadRatings();
-  if (!chatLoaded) loadChat();
+  if (currentUser) upsertLeaderboard();
+  // Always reload chat when visiting the community tab
+  chatLoaded = false;
+  loadChat();
 }
 
 </script>
