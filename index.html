@@ -252,6 +252,15 @@
 
     
     <div class="admin-section active" id="admin-dashboard">
+      <div class="section-box" style="background:rgba(108,99,255,0.08);border-color:rgba(108,99,255,0.3);margin-bottom:20px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:16px;letter-spacing:1px;margin-bottom:4px;">🌐 GLOBAL SYNC ENGINE</div>
+            <div style="font-size:13px;color:var(--text2);">Every change you make (PIN, name, codes, content, theme) is instantly pushed to <strong style="color:var(--text);">all connected users worldwide</strong>. Poll interval: <span style="font-family:var(--font-mono);color:var(--accent);">5s</span>. Last sync: <span id="last-sync-time" style="font-family:var(--font-mono);color:var(--accent3);">–</span></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="adminForceSyncNow()" style="border-color:var(--accent);color:var(--accent);white-space:nowrap;">⚡ Force Sync Now</button>
+        </div>
+      </div>
       <div class="stat-grid" id="admin-stats"></div>
       <div class="section-box">
         <h3>⚠ Payment Alerts</h3>
@@ -629,7 +638,7 @@ function weightedRandom(prizes) {
 // A background poll keeps every connected client in sync automatically.
 
 let _statePollInterval = null;
-const STATE_POLL_MS = 15000; // re-fetch global state every 15 seconds
+const STATE_POLL_MS = 5000; // re-fetch global state every 5 seconds (near real-time)
 
 function loadState() {
   // Only used as a temporary fallback while the server loads.
@@ -688,7 +697,38 @@ async function saveState() {
   if(dot) dot.style.background = serverOk ? 'var(--success)' : 'var(--danger)';
   if(label) label.textContent = serverOk ? 'LIVE' : 'OFFLINE';
 
+  // Restart poll immediately so all other connected clients pick up the change within 5s
+  if(serverOk) forceSync();
+
   return serverOk;
+}
+
+async function adminForceSyncNow() {
+  toast('Force syncing from server…', 'info');
+  const ok = await loadGlobalState();
+  if(ok) {
+    applyStoredTheme();
+    updateSiteNames();
+    buildNavCats();
+    buildHomeGrid();
+    // Refresh admin panel if open
+    const activeTab = document.querySelector('.admin-tab.active');
+    if(activeTab) {
+      const tabMap = { 'dashboard':'dashboard','codes':'codes','users':'users',
+        'publish content':'content','prize log':'prizes','theme':'theme',
+        'change pin':'pin','easter egg':'easter' };
+      const tab = tabMap[activeTab.textContent.trim().toLowerCase()];
+      if(tab) adminTab(tab);
+    }
+    toast('Synced! All settings refreshed from server ✅', 'success');
+  } else {
+    toast('Could not reach server — showing cached data', 'warning');
+  }
+}
+
+function forceSync() {
+  // Immediately restart the poll so changes propagate to all clients ASAP
+  startGlobalStatePoll();
 }
 
 function startGlobalStatePoll() {
@@ -701,6 +741,9 @@ function startGlobalStatePoll() {
     if (wasLoaded) {
       if(dot) dot.style.background = 'var(--success)';
       if(label) label.textContent = 'LIVE';
+      // Update last sync timestamp in admin dashboard
+      const lst = document.getElementById('last-sync-time');
+      if(lst) lst.textContent = new Date().toLocaleTimeString();
       // Silently apply any changes that arrived from another session
       applyStoredTheme();
       updateSiteNames();
@@ -1364,7 +1407,9 @@ function pinPress(n) {
   pinBuffer += n;
   updatePinDots();
   if(pinBuffer.length === 6) {
-    setTimeout(checkPin, 200);
+    // Show checking indicator
+    document.getElementById('pin-error').textContent = 'Verifying…';
+    setTimeout(() => checkPin(), 200);
   }
 }
 function pinBack() { pinBuffer = pinBuffer.slice(0,-1); updatePinDots(); }
@@ -1375,7 +1420,9 @@ function updatePinDots() {
     if(dot) dot.classList.toggle('filled', i < pinBuffer.length);
   }
 }
-function checkPin() {
+async function checkPin() {
+  // Always fetch the latest PIN from server before validating
+  await loadGlobalState();
   if(pinBuffer === getAdminPin()) {
     closeAdminPin();
     openAdmin();
