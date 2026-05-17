@@ -737,6 +737,8 @@ async function loadGlobalState() {
     if (data && typeof data === 'object' && !Array.isArray(data)) {
       const savedContent = state.content || [];
       state = { ...data, content: savedContent };
+      // Sync community bin ID so community features work cross-user
+      if (state.commBinId && !_commBinId) _commBinId = state.commBinId;
       localStorage.setItem('nexushub_state_cache', JSON.stringify(state));
       return true;
     }
@@ -1269,11 +1271,50 @@ function goFullscreen(frameId) {
   }
 }
 
+function isIpadSafari() {
+  const ua = navigator.userAgent;
+  const isIpad = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua) && !/CriOS/.test(ua);
+  return isIpad || isSafari;
+}
+
+function cssFullscreen(frame) {
+  if (document.getElementById('css-fs-overlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'css-fs-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;';
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ Exit Fullscreen';
+  closeBtn.style.cssText = 'position:absolute;top:10px;right:12px;z-index:10;background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;backdrop-filter:blur(6px);font-family:var(--font-body);';
+  closeBtn.onclick = () => {
+    if (frame._fsOrigParent) {
+      frame._fsOrigParent.insertBefore(frame, frame._fsOrigPlaceholder || frame._fsOrigParent.firstChild);
+      frame.style.cssText = frame._fsOrigStyle || '';
+      delete frame._fsOrigParent; delete frame._fsOrigStyle;
+    }
+    overlay.remove();
+  };
+  overlay.appendChild(closeBtn);
+  frame._fsOrigParent = frame.parentElement;
+  frame._fsOrigStyle = frame.style.cssText;
+  frame.style.cssText = 'width:100%;height:100%;border:none;display:block;flex:1;';
+  overlay.appendChild(frame);
+  document.body.appendChild(overlay);
+}
+
 function triggerFullscreen(frameId) {
   const frame = document.getElementById(frameId);
   if(!frame) return;
-  const req = frame.requestFullscreen || frame.webkitRequestFullscreen || frame.mozRequestFullScreen || frame.msRequestFullscreen;
-  if(req) req.call(frame);
+  if (isIpadSafari()) { cssFullscreen(frame); return; }
+  const container = frame.closest('.media-embed') || frame;
+  const nativeReq = container.requestFullscreen || container.webkitRequestFullscreen
+                  || container.mozRequestFullScreen || container.msRequestFullscreen
+                  || frame.requestFullscreen || frame.webkitRequestFullscreen;
+  if (nativeReq) {
+    nativeReq.call(container).catch(() => cssFullscreen(frame));
+  } else {
+    cssFullscreen(frame);
+  }
 }
 
 function openFsAdGate() {
@@ -1313,16 +1354,14 @@ function completeFsAd() {
     const frame = document.getElementById(fsAdTarget);
     fsAdTarget = null;
     if(frame) {
-      // Try fullscreen on the iframe's parent container for best compatibility
+      if (isIpadSafari()) { cssFullscreen(frame); return; }
       const container = frame.closest('.media-embed') || frame;
       const req = container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen
                 || frame.requestFullscreen || frame.webkitRequestFullscreen;
       if(req) {
-        req.call(container).catch(() => {
-          
-          const req2 = frame.requestFullscreen || frame.webkitRequestFullscreen;
-          if(req2) req2.call(frame).catch(() => toast('Fullscreen blocked by browser — try clicking inside the game first', 'warning'));
-        });
+        req.call(container).catch(() => cssFullscreen(frame));
+      } else {
+        cssFullscreen(frame);
       }
     }
   }
@@ -1369,7 +1408,23 @@ function doSearch() {
   if(!q) return;
   const area = document.getElementById('search-frame-area');
   const url = `https://www.google.com/search?q=${encodeURIComponent(q)}&igu=1`;
-  area.innerHTML = `<iframe src="${url}" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" referrerpolicy="no-referrer"></iframe>`;
+  const frameId = 'browser-iframe';
+  area.innerHTML = `
+    <div style="position:relative;width:100%;height:100%;display:flex;flex-direction:column;">
+      <button onclick="browserFsBtn()" style="position:absolute;top:10px;right:12px;z-index:10;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;backdrop-filter:blur(6px);font-family:var(--font-body);">⛶ Fullscreen</button>
+      <iframe id="${frameId}" src="${url}"
+        style="width:100%;height:100%;border:none;display:block;flex:1;"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation allow-pointer-lock allow-modals allow-popups-to-escape-sandbox"
+        referrerpolicy="no-referrer-when-downgrade"
+        allow="geolocation; fullscreen"
+      ></iframe>
+    </div>`;
+}
+
+function browserFsBtn() {
+  const frame = document.getElementById('browser-iframe');
+  if (!frame) return;
+  cssFullscreen(frame);
 }
 function openSpinModal() {
   updatePointsDisplay();
@@ -1893,31 +1948,84 @@ setTimeout(checkPointsExpiry,1000);
 </script>
 
 <script>
-// ── COMMUNITY BACKEND (localStorage) ──
+// ── COMMUNITY BACKEND (JSONBin shared — works across all users/devices) ──
 let chatLoaded = false;
 let chatPollInterval = null;
 
-const COMM_KEYS = { chat: 'nexushub_chat', leaderboard: 'nexushub_leaderboard', ratings: 'nexushub_ratings' };
 const MAX_CHAT_MSGS = 200;
 
-function commGet(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { return []; }
-}
-function commSet(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+// The community bin ID lives in the main shared state so every user uses the same bin.
+let _commBinId = null;
+
+async function getCommBinId() {
+  // 1. Already resolved this session
+  if (_commBinId) return _commBinId;
+  // 2. Check shared state (populated after loadGlobalState)
+  if (state.commBinId) { _commBinId = state.commBinId; return _commBinId; }
+  // 3. Create a new bin and store its ID in shared state so everyone else finds it
+  try {
+    const res = await fetch('https://api.jsonbin.io/v3/b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_KEY,
+        'X-Bin-Name': 'nexushub-community',
+        'X-Bin-Private': 'false'
+      },
+      body: JSON.stringify({ chat: [], leaderboard: [], ratings: [] })
+    });
+    const d = await res.json();
+    _commBinId = d.metadata?.id || '';
+    if (_commBinId) {
+      state.commBinId = _commBinId;
+      await saveState(); // persist so all other users pick it up
+    }
+  } catch(e) { console.warn('Failed to create community bin:', e); }
+  return _commBinId;
 }
 
-async function sheetsRequest(action, data={}) {
-  if (action === 'getChat') return commGet(COMM_KEYS.chat);
+async function getCommData() {
+  const id = await getCommBinId();
+  if (!id) return { chat: [], leaderboard: [], ratings: [] };
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+    });
+    if (!res.ok) return { chat: [], leaderboard: [], ratings: [] };
+    const d = await res.json();
+    return { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [] };
+  } catch(e) { return { chat: [], leaderboard: [], ratings: [] }; }
+}
+
+async function setCommData(data) {
+  const id = await getCommBinId();
+  if (!id) return false;
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+      body: JSON.stringify(data)
+    });
+    return res.ok;
+  } catch(e) { return false; }
+}
+
+// Write queue so rapid sends don't clobber each other
+let _commWriteQueue = Promise.resolve();
+function queueCommWrite(fn) {
+  _commWriteQueue = _commWriteQueue.then(fn).catch(() => {});
+  return _commWriteQueue;
+}
+
+async function sheetsRequest(action) {
+  const d = await getCommData();
+  if (action === 'getChat') return d.chat;
   if (action === 'getLeaderboard') {
-    const lb = commGet(COMM_KEYS.leaderboard);
-    return lb.sort((a,b) => (Number(b.points)||0) - (Number(a.points)||0)).slice(0,20);
+    return [...d.leaderboard].sort((a,b) => (Number(b.points)||0) - (Number(a.points)||0)).slice(0, 20);
   }
   if (action === 'getRatings') {
-    const ratings = commGet(COMM_KEYS.ratings);
-    // Aggregate by game_title
     const map = {};
-    ratings.forEach(r => {
+    d.ratings.forEach(r => {
       if (!r.game_title) return;
       if (!map[r.game_title]) map[r.game_title] = { game_title: r.game_title, total: 0, count: 0 };
       map[r.game_title].total += Number(r.rating) || 0;
@@ -1933,30 +2041,27 @@ async function sheetsRequest(action, data={}) {
 }
 
 async function sheetsPost(action, data={}) {
-  try {
-    if (action === 'sendChat') {
-      const msgs = commGet(COMM_KEYS.chat);
-      msgs.push({ username: data.username, message: data.message, is_premium: data.is_premium, created_at: data.created_at || new Date().toISOString() });
-      if (msgs.length > MAX_CHAT_MSGS) msgs.splice(0, msgs.length - MAX_CHAT_MSGS);
-      commSet(COMM_KEYS.chat, msgs);
-    } else if (action === 'upsertLeaderboard') {
-      const lb = commGet(COMM_KEYS.leaderboard);
-      const idx = lb.findIndex(r => r.username === data.username);
-      if (idx >= 0) { lb[idx] = { ...lb[idx], ...data }; }
-      else { lb.push({ username: data.username, points: data.points, is_premium: data.is_premium }); }
-      commSet(COMM_KEYS.leaderboard, lb);
-    } else if (action === 'submitRating') {
-      const ratings = commGet(COMM_KEYS.ratings);
-      // Remove old rating from same user for same game
-      const filtered = ratings.filter(r => !(r.username === data.username && r.game_title === data.game_title));
-      filtered.push({ username: data.username, game_title: data.game_title, rating: data.rating, created_at: new Date().toISOString() });
-      commSet(COMM_KEYS.ratings, filtered);
+  return queueCommWrite(async () => {
+    try {
+      const comm = await getCommData();
+      if (action === 'sendChat') {
+        comm.chat.push({ username: data.username, message: data.message, is_premium: data.is_premium, created_at: data.created_at || new Date().toISOString() });
+        if (comm.chat.length > MAX_CHAT_MSGS) comm.chat = comm.chat.slice(-MAX_CHAT_MSGS);
+      } else if (action === 'upsertLeaderboard') {
+        const idx = comm.leaderboard.findIndex(r => r.username === data.username);
+        if (idx >= 0) comm.leaderboard[idx] = { ...comm.leaderboard[idx], ...data };
+        else comm.leaderboard.push({ username: data.username, points: data.points, is_premium: data.is_premium });
+      } else if (action === 'submitRating') {
+        comm.ratings = comm.ratings.filter(r => !(r.username === data.username && r.game_title === data.game_title));
+        comm.ratings.push({ username: data.username, game_title: data.game_title, rating: data.rating, created_at: new Date().toISOString() });
+      }
+      await setCommData(comm);
+      return { success: true };
+    } catch(e) {
+      console.warn('commPost failed:', e);
+      return null;
     }
-    return { success: true };
-  } catch(e) {
-    console.warn('commPost failed:', e);
-    return null;
-  }
+  });
 }
 
 // ── LEADERBOARD ──
