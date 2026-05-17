@@ -561,6 +561,76 @@
   </div>
 </div>
 
+
+<!-- EDIT CONTENT MODAL -->
+<div class="modal-overlay" id="edit-content-modal">
+  <div class="modal" style="position:relative;max-width:680px;">
+    <div class="modal-close" onclick="closeEditContent()">&#x2715;</div>
+    <div style="padding:28px 28px 0;">
+      <div style="font-family:var(--font-display);font-size:24px;letter-spacing:2px;margin-bottom:20px;">&#9998; EDIT CONTENT</div>
+      <input type="hidden" id="edit-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>TITLE</label>
+          <input type="text" id="edit-title" placeholder="Title">
+        </div>
+        <div class="form-group">
+          <label>TYPE</label>
+          <select id="edit-type">
+            <option value="Movie">&#127916; Movie</option>
+            <option value="Game">&#127918; Game</option>
+            <option value="Book">&#128218; Book</option>
+            <option value="TV Show">&#128250; TV Show</option>
+            <option value="Podcast">&#127897; Podcast</option>
+            <option value="Comic">&#128214; Comic</option>
+            <option value="Music">&#127925; Music</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>COVER IMAGE URL</label>
+          <input type="text" id="edit-cover" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>MEDIA URL / IFRAME</label>
+          <input type="text" id="edit-url" placeholder="Paste URL or iframe code">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>DESCRIPTION</label>
+          <textarea id="edit-desc" placeholder="Description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>EXTRA INFO</label>
+          <input type="text" id="edit-extra" placeholder="e.g. Action · 2024">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>ACCESS</label>
+          <select id="edit-access">
+            <option value="free">&#10003; Free</option>
+            <option value="premium">&#128274; Premium</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>EMBED TYPE</label>
+          <select id="edit-embed-type">
+            <option value="iframe">iFrame embed</option>
+            <option value="link">External Link</option>
+            <option value="none">No media</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="padding:20px 28px 28px;display:flex;gap:10px;">
+      <button class="btn btn-primary" onclick="saveEditContent()" style="flex:1;">&#10003; Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeEditContent()" style="width:auto;">Cancel</button>
+    </div>
+  </div>
+</div>
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
@@ -588,8 +658,8 @@ const CAT_META = {
   'Music':   { icon:'🎵', label:'Music' },
 };
 const ADSENSE_CLIENT = 'ca-pub-2319808028748744';
-const JSONBIN_BIN_ID      = '6a09af13250b1311c362933c'; // settings bin
-const JSONBIN_CONTENT_ID  = '6a09c1e8adc21f119ab2f183'; // games bin (never overwritten by poll)
+const JSONBIN_BIN_ID      = '6a09af13250b1311c362933c';
+const JSONBIN_CONTENT_ID  = '6a09c1e8adc21f119ab2f183';
 const JSONBIN_KEY         = '$2a$10$4ED/k3s4mF1IeFr0i9E1Re6B9cLwD5nEMMAB47XcseMdiKn00KudW';
 const JSONBIN_URL         = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
 const JSONBIN_CONTENT_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_CONTENT_ID;
@@ -723,7 +793,7 @@ async function adminForceSyncNow() {
     updateSiteNames();
     buildNavCats();
     buildHomeGrid();
-    // Only refresh dashboard on force sync - never reset theme/pin/content inputs
+    // Only refresh dashboard on force sync
     const activeTab = document.querySelector('.admin-tab.active');
     if (activeTab && activeTab.textContent.trim().toLowerCase() === 'dashboard') {
       renderAdminDashboard();
@@ -755,7 +825,7 @@ function startGlobalStatePoll() {
       // Silently apply any changes that arrived from another session
       applyStoredTheme();
       updateSiteNames();
-      // Only auto-refresh dashboard tab - never theme/pin/codes/content (resets inputs mid-edit)
+      // Only auto-refresh dashboard - never reset input fields in other tabs
       if (document.getElementById('admin-panel')?.classList.contains('open')) {
         const activeTab = document.querySelector('.admin-tab.active');
         if (activeTab && activeTab.textContent.trim().toLowerCase() === 'dashboard') {
@@ -832,7 +902,7 @@ async function pushContentToCloud(item) {
       body: JSON.stringify({ content: [...current, item] })
     });
   } catch(e) {
-    console.warn('Could not push to JSONBin content:', e);
+    console.warn('Could not push to JSONBin:', e);
   }
 }
 
@@ -849,7 +919,7 @@ async function deleteContentFromCloud(item) {
       body: JSON.stringify({ content: current.filter(r => r.id !== item.id) })
     });
   } catch(e) {
-    console.warn('Could not delete from JSONBin content:', e);
+    console.warn('Could not delete from JSONBin:', e);
   }
 }
 window.addEventListener('load', async () => {
@@ -1650,7 +1720,8 @@ function renderContentTable() {
       <td>${m.icon} ${c.type}</td>
       <td><span class="badge ${c.access==='free'?'badge-free':'badge-premium'}">${c.access==='free'?'FREE':'PREMIUM'}</span></td>
       <td style="font-size:12px;color:var(--text2);">${new Date(c.published).toLocaleDateString()}</td>
-      <td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-ghost btn-sm" onclick="openEditContent('${c.id}')">&#9998; Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteContent('${c.id}')">Delete</button>
       </td>
     </tr>`;
@@ -3059,6 +3130,58 @@ document.addEventListener('keydown', function(e) {
   if(e.key==='Escape') { closeMediaModal&&closeMediaModal(); closeSearch&&closeSearch(); closeKonamiSecret(); }
   if(e.key==='h'||e.key==='H') { showSection&&showSection('home'); }
 });
+
+function openEditContent(id) {
+  const item = getContent().find(c => c.id === id);
+  if (!item) return;
+  document.getElementById('edit-id').value = item.id;
+  document.getElementById('edit-title').value = item.title || '';
+  document.getElementById('edit-type').value = item.type || 'Game';
+  document.getElementById('edit-cover').value = item.cover || '';
+  document.getElementById('edit-url').value = item.url || '';
+  document.getElementById('edit-desc').value = item.desc || '';
+  document.getElementById('edit-extra').value = item.extra || '';
+  document.getElementById('edit-access').value = item.access || 'free';
+  document.getElementById('edit-embed-type').value = item.embedType || 'iframe';
+  document.getElementById('edit-content-modal').classList.add('open');
+}
+
+function closeEditContent() {
+  document.getElementById('edit-content-modal').classList.remove('open');
+}
+
+async function saveEditContent() {
+  const id = document.getElementById('edit-id').value;
+  const idx = state.content ? state.content.findIndex(c => c.id === id) : -1;
+  if (idx === -1) { toast('Content not found', 'error'); return; }
+  const updated = {
+    ...state.content[idx],
+    title:     document.getElementById('edit-title').value.trim(),
+    type:      document.getElementById('edit-type').value,
+    cover:     document.getElementById('edit-cover').value.trim(),
+    url:       extractEmbedUrl(document.getElementById('edit-url').value.trim()),
+    desc:      document.getElementById('edit-desc').value.trim(),
+    extra:     document.getElementById('edit-extra').value.trim(),
+    access:    document.getElementById('edit-access').value,
+    embedType: document.getElementById('edit-embed-type').value,
+  };
+  state.content[idx] = updated;
+  toast('Saving...', 'info');
+  try {
+    const res = await fetch(JSONBIN_CONTENT_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+      body: JSON.stringify({ content: state.content })
+    });
+    toast(res.ok ? `"${updated.title}" updated! \u2705` : 'Saved locally, cloud sync failed', res.ok ? 'success' : 'warning');
+  } catch(e) {
+    toast('Saved locally, cloud sync failed', 'warning');
+  }
+  closeEditContent();
+  renderContentTable();
+  buildNavCats();
+  buildHomeGrid();
+}
 </script>
 </body>
 </html>
