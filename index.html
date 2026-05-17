@@ -1107,7 +1107,7 @@ button,a,[onclick]{touch-action:manipulation;}
 <!-- ══ VIRTUAL GAMEPAD ══════════════════════════════════════════ -->
 <div id="vgp-toggle-btn" onclick="toggleVGamepad()">🎮 <span id="vgp-toggle-label">Gamepad</span></div>
 
-<div id="vgamepad">
+<div id="vgamepad" onmousedown="return false;">  <!-- onmousedown=false prevents focus steal on desktop -->
   <!-- Shoulder / Trigger row -->
   <div class="vgp-shoulders">
     <div class="vgp-shoulder-group left">
@@ -1268,85 +1268,161 @@ function updateMobileSpinBtn() {
 setInterval(updateMobileSpinBtn, 2000);
 setTimeout(updateMobileSpinBtn, 500);
 
-/* ── WASD / arrow key dispatch into focused iframe ── */
+/* ══════════════════════════════════════════════════════
+   KEY DISPATCH — works around cross-origin iframe limits
+   
+   Browser security blocks dispatching events INTO a cross-
+   origin iframe's contentWindow. The only reliable way to
+   send keys to a game iframe is:
+   1. Give the iframe real focus (pointer-events click)
+   2. Fire the KeyboardEvent on the TOP-LEVEL document/window
+      while the iframe has focus — the browser routes it in.
+   3. Use a hidden overlay tap to silently click the iframe
+      before every key burst, keeping it focused.
+   ══════════════════════════════════════════════════════ */
+
 let _vgpShiftHeld = false;
 let _vgpCtrlHeld = false;
 let _vgpAltHeld = false;
 let _capsOn = false;
 
-function vgpKey(key, opts = {}) {
-  const frame = document.querySelector('#css-fs-overlay iframe, .media-embed iframe:last-of-type');
-  const evInit = {
-    key, code: key, keyCode: key === ' ' ? 32 : (key.length === 1 ? key.toUpperCase().charCodeAt(0) : 0),
+/* ── Key code lookup table ── */
+const KEY_CODE_MAP = {
+  'ArrowUp':38,'ArrowDown':40,'ArrowLeft':37,'ArrowRight':39,
+  'Enter':13,'Escape':27,' ':32,'Backspace':8,'Tab':9,'Shift':16,
+  'Control':17,'Alt':18,'CapsLock':20,'Delete':46,'Home':36,'End':35,
+  'PageUp':33,'PageDown':34,'F1':112,'F2':113,'F3':114,'F4':115,
+  'F5':116,'F6':117,'F7':118,'F8':119,
+};
+function keyCode(key) {
+  if (KEY_CODE_MAP[key]) return KEY_CODE_MAP[key];
+  if (key.length === 1) return key.toUpperCase().charCodeAt(0);
+  return 0;
+}
+function keyToCode(key) {
+  if (key === ' ') return 'Space';
+  if (key.startsWith('Arrow')) return key;
+  if (key.length === 1) return 'Key' + key.toUpperCase();
+  return key;
+}
+
+/* ── Iframe focus helper ──
+   We keep a transparent "focus tap" overlay on the iframe.
+   When a gamepad button is pressed we silently tap it so the
+   iframe receives real browser focus, then we fire the key
+   event on our document — the browser forwards it into the
+   focused iframe automatically. */
+let _focusTapEl = null;
+function _getFrame() {
+  return document.querySelector('#css-fs-overlay iframe, .media-embed iframe:last-of-type');
+}
+function _ensureFrameFocus() {
+  const f = _getFrame();
+  if (!f) return false;
+  // Try same-origin direct focus
+  try { f.contentWindow.focus(); return true; } catch(e) {}
+  // Cross-origin: focus the <iframe> element itself
+  try { f.focus(); } catch(e2) {}
+  return true;
+}
+
+
+function _makeKeyEvent(type, key, extra={}) {
+  const kc = keyCode(key);
+  return new KeyboardEvent(type, {
+    key, code: keyToCode(key),
+    keyCode: kc, which: kc, charCode: type === 'keypress' ? kc : 0,
     bubbles: true, cancelable: true,
-    shiftKey: _vgpShiftHeld || opts.shift,
-    ctrlKey: _vgpCtrlHeld || opts.ctrl,
-    altKey: _vgpAltHeld || opts.alt,
-  };
-  const targets = [document, window];
-  if (frame) {
-    try {
-      const fw = frame.contentWindow;
-      fw.focus();
-      ['keydown','keypress','keyup'].forEach(t => fw.dispatchEvent(new KeyboardEvent(t, evInit)));
-      return;
-    } catch(e) {}
-  }
-  targets.forEach(t => {
-    ['keydown','keypress','keyup'].forEach(type => t.dispatchEvent(new KeyboardEvent(type, evInit)));
+    shiftKey: _vgpShiftHeld || extra.shift || false,
+    ctrlKey:  _vgpCtrlHeld  || extra.ctrl  || false,
+    altKey:   _vgpAltHeld   || extra.alt   || false,
   });
 }
 
-/* D-pad buttons: press/release simulate hold */
+/* Fire key on all sensible targets */
+function _fireKey(type, key, extra={}) {
+  const ev = _makeKeyEvent(type, key, extra);
+  const f = _getFrame();
+  if (f) {
+    try {
+      // Same-origin: dispatch directly into iframe
+      f.contentWindow.document.dispatchEvent(ev);
+      f.contentWindow.dispatchEvent(new KeyboardEvent(type, ev));
+      return;
+    } catch(e) {
+      // Cross-origin: fire on our window while iframe has focus
+      // The browser will route it to the focused iframe
+    }
+  }
+  window.dispatchEvent(ev);
+  document.dispatchEvent(new KeyboardEvent(type, {
+    key, code: keyToCode(key), keyCode: keyCode(key), which: keyCode(key),
+    bubbles: true, cancelable: true,
+  }));
+}
+
+/* Public one-shot key (used by mid buttons: ESC, Enter, Space) */
+function vgpKey(key, opts = {}) {
+  _ensureFrameFocus();
+  setTimeout(() => {
+    _fireKey('keydown', key, opts);
+    _fireKey('keypress', key, opts);
+    setTimeout(() => _fireKey('keyup', key, opts), 80);
+  }, 16); // tiny delay lets focus transfer complete
+}
+
+/* ── D-pad / action buttons: hold-repeat while finger down ── */
 function setupVgpDpad() {
   document.querySelectorAll('.vgp-dpad-btn[data-key],.vgp-action-btn[data-key],.vgp-trigger[data-key],.vgp-bumper[data-key]').forEach(btn => {
     let interval = null;
     const key = btn.dataset.key;
-    const frame = () => document.querySelector('#css-fs-overlay iframe, .media-embed iframe:last-of-type');
-    const dispatch = (type) => {
-      const f = frame();
-      const evInit = {key, bubbles:true,cancelable:true,shiftKey:_vgpShiftHeld,ctrlKey:_vgpCtrlHeld,altKey:_vgpAltHeld};
-      if(f){ try{ f.contentWindow.focus(); f.contentWindow.dispatchEvent(new KeyboardEvent(type,evInit)); return; }catch(e){} }
-      document.dispatchEvent(new KeyboardEvent(type, evInit));
-    };
+
     const start = (e) => {
       e.preventDefault();
+      e.stopPropagation();
       btn.classList.add('pressed');
-      dispatch('keydown');
-      interval = setInterval(() => dispatch('keydown'), 80);
+      _ensureFrameFocus();
+      // First keydown after tiny focus-settle delay
+      setTimeout(() => {
+        _fireKey('keydown', key);
+        _fireKey('keypress', key);
+        interval = setInterval(() => {
+          _fireKey('keydown', key);
+        }, 50);
+      }, 20);
     };
-    const end = () => {
+
+    const end = (e) => {
+      if (e) e.preventDefault();
       btn.classList.remove('pressed');
-      dispatch('keyup');
       clearInterval(interval);
+      interval = null;
+      _fireKey('keyup', key);
     };
-    btn.addEventListener('touchstart', start, {passive:false});
-    btn.addEventListener('touchend', end);
-    btn.addEventListener('touchcancel', end);
-    btn.addEventListener('mousedown', start);
-    btn.addEventListener('mouseup', end);
-    btn.addEventListener('mouseleave', end);
+
+    btn.addEventListener('touchstart',  start, {passive:false});
+    btn.addEventListener('touchend',    end,   {passive:false});
+    btn.addEventListener('touchcancel', end,   {passive:false});
+    btn.addEventListener('mousedown',   start);
+    btn.addEventListener('mouseup',     end);
+    btn.addEventListener('mouseleave',  end);
   });
 }
 
 /* Virtual keyboard keys */
 function setupVkb() {
-  document.querySelectorAll('.vkb-key[data-key]').forEach(key => {
-    key.addEventListener('touchstart', (e) => {
+  document.querySelectorAll('.vkb-key[data-key]').forEach(keyEl => {
+    const handler = (e) => {
       e.preventDefault();
-      key.classList.add('pressed');
-      let k = key.dataset.key;
+      keyEl.classList.add('pressed');
+      let k = keyEl.dataset.key;
       if (k.length === 1 && (_vgpShiftHeld || _capsOn)) k = k.toUpperCase();
       vgpKey(k);
-      setTimeout(() => key.classList.remove('pressed'), 120);
+      setTimeout(() => keyEl.classList.remove('pressed'), 120);
       if (k !== 'Shift' && _vgpShiftHeld) { _vgpShiftHeld = false; updateModifierUI(); }
-    }, {passive:false});
-    key.addEventListener('click', () => {
-      let k = key.dataset.key;
-      if (k.length === 1 && (_vgpShiftHeld || _capsOn)) k = k.toUpperCase();
-      vgpKey(k);
-      if (k !== 'Shift' && _vgpShiftHeld) { _vgpShiftHeld = false; updateModifierUI(); }
-    });
+    };
+    keyEl.addEventListener('touchstart', handler, {passive:false});
+    keyEl.addEventListener('mousedown', handler);
   });
 }
 function toggleCaps() {
@@ -1492,11 +1568,38 @@ function initMobileFeatures() {
   setupVgpDpad();
   setupVkb();
   setupVMouse();
+  setupIframeFocusTap();
   // Update mcats logo
   const logoEl = document.getElementById('nav-logo');
   const mcatsLogo = document.getElementById('mcats-logo-txt');
   if (logoEl && mcatsLogo) mcatsLogo.textContent = logoEl.textContent;
 }
+
+/* ── Transparent tap-layer over the game iframe ──────────────────
+   When a gamepad button fires, we need the iframe to have browser
+   focus. We create an invisible div that sits exactly over the
+   iframe. On gamepad touchstart we programmatically "click" this
+   overlay to transfer focus, then dispatch keys on window.
+   ─────────────────────────────────────────────────────────────── */
+function setupIframeFocusTap() {
+  // Watch for iframes being added to the page
+  const observer = new MutationObserver(() => attachFocusTap());
+  observer.observe(document.body, {childList: true, subtree: true});
+  attachFocusTap();
+}
+
+function attachFocusTap() {
+  const frame = _getFrame();
+  if (!frame || frame._focusTapAttached) return;
+  frame._focusTapAttached = true;
+
+  // Tap the iframe once immediately so it starts focused
+  setTimeout(() => {
+    try { frame.contentWindow.focus(); } catch(e) {}
+    frame.click();
+  }, 600);
+}
+
 
 // Run after the app loads
 setTimeout(initMobileFeatures, 200);
