@@ -1948,77 +1948,61 @@ setTimeout(checkPointsExpiry,1000);
 </script>
 
 <script>
-// ── COMMUNITY BACKEND (JSONBin shared — works across all users/devices) ──
+// ── COMMUNITY BACKEND (JSONBin shared — cached, low-latency) ──
 let chatLoaded = false;
 let chatPollInterval = null;
 
 const MAX_CHAT_MSGS = 200;
+const COMM_POLL_MS = 3000;
 
-// The community bin ID lives in the main shared state so every user uses the same bin.
+// In-memory cache — mutations apply instantly, server push is fire-and-forget
+let _commCache = null;
 let _commBinId = null;
 
 async function getCommBinId() {
-  // 1. Already resolved this session
   if (_commBinId) return _commBinId;
-  // 2. Check shared state (populated after loadGlobalState)
   if (state.commBinId) { _commBinId = state.commBinId; return _commBinId; }
-  // 3. Create a new bin and store its ID in shared state so everyone else finds it
   try {
     const res = await fetch('https://api.jsonbin.io/v3/b', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_KEY,
-        'X-Bin-Name': 'nexushub-community',
-        'X-Bin-Private': 'false'
-      },
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name': 'nexushub-community', 'X-Bin-Private': 'false' },
       body: JSON.stringify({ chat: [], leaderboard: [], ratings: [] })
     });
     const d = await res.json();
     _commBinId = d.metadata?.id || '';
-    if (_commBinId) {
-      state.commBinId = _commBinId;
-      await saveState(); // persist so all other users pick it up
-    }
+    if (_commBinId) { state.commBinId = _commBinId; saveState(); }
   } catch(e) { console.warn('Failed to create community bin:', e); }
   return _commBinId;
 }
 
-async function getCommData() {
+async function fetchCommData() {
   const id = await getCommBinId();
-  if (!id) return { chat: [], leaderboard: [], ratings: [] };
+  if (!id) return _commCache || { chat: [], leaderboard: [], ratings: [] };
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
-    if (!res.ok) return { chat: [], leaderboard: [], ratings: [] };
+    if (!res.ok) return _commCache || { chat: [], leaderboard: [], ratings: [] };
     const d = await res.json();
-    return { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [] };
-  } catch(e) { return { chat: [], leaderboard: [], ratings: [] }; }
+    _commCache = { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [] };
+    return _commCache;
+  } catch(e) { return _commCache || { chat: [], leaderboard: [], ratings: [] }; }
 }
 
-async function setCommData(data) {
+async function pushCommData() {
   const id = await getCommBinId();
-  if (!id) return false;
+  if (!id || !_commCache) return;
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+    await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
-      body: JSON.stringify(data)
+      body: JSON.stringify(_commCache)
     });
-    return res.ok;
-  } catch(e) { return false; }
-}
-
-// Write queue so rapid sends don't clobber each other
-let _commWriteQueue = Promise.resolve();
-function queueCommWrite(fn) {
-  _commWriteQueue = _commWriteQueue.then(fn).catch(() => {});
-  return _commWriteQueue;
+  } catch(e) {}
 }
 
 async function sheetsRequest(action) {
-  const d = await getCommData();
+  const d = _commCache ? _commCache : await fetchCommData();
   if (action === 'getChat') return d.chat;
   if (action === 'getLeaderboard') {
     return [...d.leaderboard].sort((a,b) => (Number(b.points)||0) - (Number(a.points)||0)).slice(0, 20);
@@ -2041,27 +2025,21 @@ async function sheetsRequest(action) {
 }
 
 async function sheetsPost(action, data={}) {
-  return queueCommWrite(async () => {
-    try {
-      const comm = await getCommData();
-      if (action === 'sendChat') {
-        comm.chat.push({ username: data.username, message: data.message, is_premium: data.is_premium, created_at: data.created_at || new Date().toISOString() });
-        if (comm.chat.length > MAX_CHAT_MSGS) comm.chat = comm.chat.slice(-MAX_CHAT_MSGS);
-      } else if (action === 'upsertLeaderboard') {
-        const idx = comm.leaderboard.findIndex(r => r.username === data.username);
-        if (idx >= 0) comm.leaderboard[idx] = { ...comm.leaderboard[idx], ...data };
-        else comm.leaderboard.push({ username: data.username, points: data.points, is_premium: data.is_premium });
-      } else if (action === 'submitRating') {
-        comm.ratings = comm.ratings.filter(r => !(r.username === data.username && r.game_title === data.game_title));
-        comm.ratings.push({ username: data.username, game_title: data.game_title, rating: data.rating, created_at: new Date().toISOString() });
-      }
-      await setCommData(comm);
-      return { success: true };
-    } catch(e) {
-      console.warn('commPost failed:', e);
-      return null;
-    }
-  });
+  if (!_commCache) await fetchCommData();
+  const comm = _commCache;
+  if (action === 'sendChat') {
+    comm.chat.push({ username: data.username, message: data.message, is_premium: data.is_premium, created_at: data.created_at || new Date().toISOString() });
+    if (comm.chat.length > MAX_CHAT_MSGS) comm.chat = comm.chat.slice(-MAX_CHAT_MSGS);
+  } else if (action === 'upsertLeaderboard') {
+    const idx = comm.leaderboard.findIndex(r => r.username === data.username);
+    if (idx >= 0) comm.leaderboard[idx] = { ...comm.leaderboard[idx], ...data };
+    else comm.leaderboard.push({ username: data.username, points: data.points, is_premium: data.is_premium });
+  } else if (action === 'submitRating') {
+    comm.ratings = comm.ratings.filter(r => !(r.username === data.username && r.game_title === data.game_title));
+    comm.ratings.push({ username: data.username, game_title: data.game_title, rating: data.rating, created_at: new Date().toISOString() });
+  }
+  pushCommData(); // fire-and-forget
+  return { success: true };
 }
 
 // ── LEADERBOARD ──
@@ -2180,35 +2158,33 @@ async function submitRating(gameTitle, rating) {
 // ── CHAT ──
 async function loadChat() {
   const el = document.getElementById('chat-messages');
-  const data = await sheetsRequest('getChat');
-  if (data && data.length) {
-    const valid = data.filter(m => m && m.username && m.message);
-    if (valid.length) {
-      el.innerHTML = '';
-      valid.forEach(m => appendChatMsg(m, false));
-      el.scrollTop = el.scrollHeight;
-    }
+  // Always fetch fresh from server on initial load to warm the cache
+  const data = await fetchCommData();
+  const msgs = data.chat || [];
+  const valid = msgs.filter(m => m && m.username && m.message);
+  if (valid.length) {
+    el.innerHTML = '';
+    valid.forEach(m => appendChatMsg(m, false));
+    el.scrollTop = el.scrollHeight;
   }
   chatLoaded = true;
-  // Show online count (number of unique chatters in last 10 min)
-  const allMsgs = commGet(COMM_KEYS.chat);
+  // Online count from recent chatters
   const tenMinAgo = Date.now() - 10 * 60 * 1000;
-  const recentUsers = new Set(allMsgs.filter(m => m.created_at && new Date(m.created_at).getTime() > tenMinAgo).map(m => m.username));
+  const recentUsers = new Set(valid.filter(m => m.created_at && new Date(m.created_at).getTime() > tenMinAgo).map(m => m.username));
   const onlineEl = document.getElementById('chat-online-count');
   if (onlineEl) onlineEl.textContent = recentUsers.size > 0 ? `● ${recentUsers.size} online` : '';
   if (chatPollInterval) clearInterval(chatPollInterval);
   chatPollInterval = setInterval(async () => {
     if (document.getElementById('section-community').style.display === 'none') return;
-    const fresh = await sheetsRequest('getChat');
-    if (!fresh || !fresh.length) return;
-    const valid = fresh.filter(m => m && m.username && m.message);
-    if (!valid.length) return;
+    const fresh = await fetchCommData();
+    if (!fresh) return;
+    const valid = fresh.chat.filter(m => m && m.username && m.message);
     const el = document.getElementById('chat-messages');
     const wasAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
     el.innerHTML = '';
     valid.forEach(m => appendChatMsg(m, false));
     if (wasAtBottom) el.scrollTop = el.scrollHeight;
-  }, 6000);
+  }, COMM_POLL_MS);
 }
 
 function appendChatMsg(m, scroll=true) {
@@ -2235,38 +2211,33 @@ async function sendChat() {
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
-  // Show message immediately (optimistic)
-  appendChatMsg({ username: currentUser.name, message: msg, is_premium: currentUser.premium, created_at: new Date().toISOString() });
-  // Send to Sheets
   const ts = new Date().toISOString();
+  // Show immediately (optimistic — cache is updated synchronously)
+  appendChatMsg({ username: currentUser.name, message: msg, is_premium: currentUser.premium, created_at: ts });
+  // Write to cache + push to server (non-blocking)
   await sheetsPost('sendChat', { username: currentUser.name, message: msg, is_premium: currentUser.premium || false, created_at: ts });
-  // Pause poll briefly so the optimistic msg isn't wiped, then refresh from server
-  if (chatPollInterval) clearInterval(chatPollInterval);
-  setTimeout(async () => {
-    const fresh = await sheetsRequest('getChat');
-    if (fresh && fresh.length) {
-      const valid = fresh.filter(m => m && m.username && m.message);
-      if (valid.length) {
-        const el = document.getElementById('chat-messages');
-        el.innerHTML = '';
-        valid.forEach(m => appendChatMsg(m, false));
-        el.scrollTop = el.scrollHeight;
-      }
+  // Poll continues normally — no need to pause/restart it
+  if (false) { // dead code kept for structure
+    const fresh = [];
+    const valid = fresh.filter(m => m && m.username && m.message);
+    if (valid.length) {
+      const el = document.getElementById('chat-messages');
+      el.innerHTML = '';
+      valid.forEach(m => appendChatMsg(m, false));
+      el.scrollTop = el.scrollHeight;
     }
-    // Restart poll
     chatPollInterval = setInterval(async () => {
       if (document.getElementById('section-community').style.display === 'none') return;
-      const fresh = await sheetsRequest('getChat');
-      if (!fresh || !fresh.length) return;
-      const valid = fresh.filter(m => m && m.username && m.message);
-      if (!valid.length) return;
+      const fresh = await fetchCommData();
+      if (!fresh) return;
+      const valid = fresh.chat.filter(m => m && m.username && m.message);
       const el = document.getElementById('chat-messages');
       const wasAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
       el.innerHTML = '';
       valid.forEach(m => appendChatMsg(m, false));
       if (wasAtBottom) el.scrollTop = el.scrollHeight;
-    }, 6000);
-  }, 3000);
+    }, COMM_POLL_MS);
+  }
 }
 
 function escHtml(str) {
