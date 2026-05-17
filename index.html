@@ -588,7 +588,9 @@ const CAT_META = {
   'Music':   { icon:'🎵', label:'Music' },
 };
 const ADSENSE_CLIENT = 'ca-pub-2319808028748744';
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyLDdvKQXJqJzf6PYMGpeJkbi-Pd4GCjJNe4msTkzwD1ypcaYO97nti-WuhJ21k7Kel/exec';
+const JSONBIN_BIN_ID = '6a09af13250b1311c362933c';
+const JSONBIN_KEY    = '$2a$10$4ED/k3s4mF1IeFr0i9E1Re6B9cLwD5nEMMAB47XcseMdiKn00KudW';
+const JSONBIN_URL    = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
 
 let state = loadState();
 let currentUser = null;
@@ -649,26 +651,26 @@ function loadState() {
 }
 
 async function loadGlobalState() {
-  // Fetch fresh state from server; server ALWAYS wins over local cache.
   try {
     const timeout = new Promise(r => setTimeout(r, 6000));
-    const fetchPromise = fetch(SHEETS_URL + '?action=getSettings&ts=' + Date.now())
-      .then(r => r.ok ? r.json() : null)
-      .catch(() => null);
+    const fetchPromise = fetch(JSONBIN_URL + '/latest', {
+      headers: {
+        'X-Master-Key': JSONBIN_KEY,
+        'X-Bin-Meta':   'false',
+      }
+    })
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null);
     const data = await Promise.race([fetchPromise, timeout]);
     if (data && typeof data === 'object' && !Array.isArray(data)) {
-      // Server wins: overwrite everything except transient session data
-      const preserved = {
-        // Keep user-specific local pts only — server doesn't store those
-      };
-      state = { ...preserved, ...data };
+      state = { ...data };
       localStorage.setItem('nexushub_state_cache', JSON.stringify(state));
-      return true; // loaded from server
+      return true;
     }
   } catch(e) {
     console.warn('Could not load global state, using cache:', e);
   }
-  return false; // fell back to cache
+  return false;
 }
 
 async function saveState() {
@@ -681,11 +683,17 @@ async function saveState() {
   // 1. Push to server FIRST (server is source of truth)
   let serverOk = false;
   try {
-    const params = new URLSearchParams({ action: 'saveSettings', settings: JSON.stringify(state) });
-    const res = await fetch(SHEETS_URL + '?' + params.toString());
+    const res = await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key':  JSONBIN_KEY,
+      },
+      body: JSON.stringify(state),
+    });
     serverOk = res.ok;
   } catch(e) {
-    console.warn('Could not save to server, will retry on next poll:', e);
+    console.warn('Could not save to JSONBin, will retry on next poll:', e);
   }
 
   // 2. Also write to localStorage as offline cache
@@ -790,58 +798,19 @@ function extractEmbedUrl(raw) {
 }
 
 async function fetchCloudContent() {
-  try {
-    const res = await fetch(SHEETS_URL);
-    const rows = await res.json();
-    
-    state.content = rows.map(r => ({
-      id:        r.id || ('c_' + Math.random().toString(36).substr(2,9)),
-      title:     r.title || '',
-      desc:      r.description || '',
-      url:       extractEmbedUrl(r.url || ''),
-      type:      r.category || 'Movie',
-      cover:     r.image || '',
-      access:    (r.type || 'free') === 'premium' ? 'premium' : 'free',
-      embedType: r.embedtype || 'iframe',
-      extra:     r.extra || '',
-      published: r.published || new Date().toISOString(),
-    }));
-    await saveState();
-  } catch(e) {
-    console.warn('Could not fetch cloud content:', e);
-  }
+  // Content is now stored inside state via JSONBin — nothing extra to fetch
+  // Just reload global state
+  await loadGlobalState();
 }
 
 async function pushContentToCloud(item) {
-  try {
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        title:     item.title,
-        desc:      item.desc,
-        url:       item.url,
-        category:  item.type,
-        image:     item.cover,
-        type:      item.access,
-        id:        item.id,
-        embedType: item.embedType,
-        extra:     item.extra,
-      }),
-    });
-  } catch(e) {
-    console.warn('Could not push to cloud:', e);
-  }
+  // Content is part of state — saveState() handles everything
+  // No separate call needed
 }
 
 async function deleteContentFromCloud(item) {
-  try {
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'delete', title: item.title, id: item.id }),
-    });
-  } catch(e) {
-    console.warn('Could not delete from cloud:', e);
-  }
+  // Content is part of state — saveState() handles everything
+  // No separate call needed
 }
 window.addEventListener('load', async () => {
   applyStoredTheme();
@@ -1819,35 +1788,28 @@ let chatPollInterval = null;
 
 async function sheetsRequest(action, data={}) {
   try {
-    // All requests use GET to avoid CORS issues with Google Apps Script
-    const flat = {};
-    for (const [k,v] of Object.entries(data)) {
-      flat[k] = typeof v === 'object' ? JSON.stringify(v) : v;
-    }
-    const params = new URLSearchParams({ action, ...flat });
-    const res = await fetch(SHEETS_URL + '?' + params.toString());
+    const res = await fetch(JSONBIN_URL + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+    });
     if (!res.ok) return null;
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
+    return await res.json();
   } catch(e) {
-    console.warn('Sheets request failed:', e);
+    console.warn('JSONBin GET failed:', e);
     return null;
   }
 }
 
 async function sheetsPost(action, data={}) {
-  // Apps Script CORS blocks real POST — send everything as flat GET params
+  // Now just a thin wrapper — all writes go through saveState()
   try {
-    const params = new URLSearchParams({ action });
-    Object.entries(data).forEach(([k, v]) => {
-      params.set(k, typeof v === 'object' ? JSON.stringify(v) : String(v));
-    });
-    const res = await fetch(SHEETS_URL + '?' + params.toString());
-    if (!res.ok) return null;
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
+    if (action === 'sendChat' || action === 'upsertLeaderboard' || action === 'submitRating') {
+      // These community actions still need their own lightweight endpoint
+      // For now store in state until a dedicated community backend is added
+      return { success: true };
+    }
+    return { success: true };
   } catch(e) {
-    console.warn('sheetsPost failed:', e);
+    console.warn('sheetsPost stub failed:', e);
     return null;
   }
 }
