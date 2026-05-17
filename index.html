@@ -588,9 +588,11 @@ const CAT_META = {
   'Music':   { icon:'🎵', label:'Music' },
 };
 const ADSENSE_CLIENT = 'ca-pub-2319808028748744';
-const JSONBIN_BIN_ID = '6a09c1e8adc21f119ab2f183';
-const JSONBIN_KEY    = '$2a$10$4ED/k3s4mF1IeFr0i9E1Re6B9cLwD5nEMMAB47XcseMdiKn00KudW';
-const JSONBIN_URL    = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+const JSONBIN_BIN_ID      = '6a09af13250b1311c362933c'; // settings bin (codes, theme, PIN, etc.)
+const JSONBIN_CONTENT_ID  = '6a09c1e8adc21f119ab2f183'; // games/content bin (never overwritten by poll)
+const JSONBIN_KEY         = '$2a$10$4ED/k3s4mF1IeFr0i9E1Re6B9cLwD5nEMMAB47XcseMdiKn00KudW';
+const JSONBIN_URL         = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+const JSONBIN_CONTENT_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_CONTENT_ID;
 
 let state = loadState();
 let currentUser = null;
@@ -663,7 +665,9 @@ async function loadGlobalState() {
     .catch(() => null);
     const data = await Promise.race([fetchPromise, timeout]);
     if (data && typeof data === 'object' && !Array.isArray(data)) {
-      state = { ...data };
+      // Preserve content — it lives in a separate bin and must never be overwritten by the settings poll
+      const savedContent = state.content || [];
+      state = { ...data, content: savedContent };
       localStorage.setItem('nexushub_state_cache', JSON.stringify(state));
       return true;
     }
@@ -681,15 +685,17 @@ async function saveState() {
   if(label) label.textContent = 'SAVING…';
 
   // 1. Push to server FIRST (server is source of truth)
+  // Strip content — it lives in its own bin (JSONBIN_CONTENT_URL), never in the settings bin
   let serverOk = false;
   try {
+    const { content: _drop, ...settingsOnly } = state;
     const res = await fetch(JSONBIN_URL, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'X-Master-Key':  JSONBIN_KEY,
       },
-      body: JSON.stringify(state),
+      body: JSON.stringify(settingsOnly),
     });
     serverOk = res.ok;
   } catch(e) {
@@ -799,11 +805,10 @@ function extractEmbedUrl(raw) {
 
 async function fetchCloudContent() {
   try {
-    const res = await fetch(JSONBIN_URL + '/latest', {
+    const res = await fetch(JSONBIN_CONTENT_URL + '/latest', {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
     const data = await res.json();
-    // Our games bin stores { content: [...] }
     const games = Array.isArray(data) ? data : (data.content || []);
     if (games.length > 0) {
       state.content = games.map(r => ({
@@ -826,38 +831,37 @@ async function fetchCloudContent() {
 
 async function pushContentToCloud(item) {
   try {
-    // Fetch current games list, append new item, PUT back
-    const res = await fetch(JSONBIN_URL + '/latest', {
+    const res = await fetch(JSONBIN_CONTENT_URL + '/latest', {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
     const data = await res.json();
     const current = Array.isArray(data) ? data : (data.content || []);
     const updated = [...current, item];
-    await fetch(JSONBIN_URL, {
+    await fetch(JSONBIN_CONTENT_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
       body: JSON.stringify({ content: updated })
     });
   } catch(e) {
-    console.warn('Could not push to JSONBin:', e);
+    console.warn('Could not push to JSONBin content:', e);
   }
 }
 
 async function deleteContentFromCloud(item) {
   try {
-    const res = await fetch(JSONBIN_URL + '/latest', {
+    const res = await fetch(JSONBIN_CONTENT_URL + '/latest', {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
     const data = await res.json();
     const current = Array.isArray(data) ? data : (data.content || []);
     const updated = current.filter(r => r.id !== item.id);
-    await fetch(JSONBIN_URL, {
+    await fetch(JSONBIN_CONTENT_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
       body: JSON.stringify({ content: updated })
     });
   } catch(e) {
-    console.warn('Could not delete from JSONBin:', e);
+    console.warn('Could not delete from JSONBin content:', e);
   }
 }
 window.addEventListener('load', async () => {
