@@ -1893,34 +1893,68 @@ setTimeout(checkPointsExpiry,1000);
 </script>
 
 <script>
-// ── GOOGLE SHEETS COMMUNITY (Chat, Leaderboard, Ratings) ──
+// ── COMMUNITY BACKEND (localStorage) ──
 let chatLoaded = false;
 let chatPollInterval = null;
 
+const COMM_KEYS = { chat: 'nexushub_chat', leaderboard: 'nexushub_leaderboard', ratings: 'nexushub_ratings' };
+const MAX_CHAT_MSGS = 200;
+
+function commGet(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { return []; }
+}
+function commSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
 async function sheetsRequest(action, data={}) {
-  try {
-    const res = await fetch(JSONBIN_URL + '/latest', {
-      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch(e) {
-    console.warn('JSONBin GET failed:', e);
-    return null;
+  if (action === 'getChat') return commGet(COMM_KEYS.chat);
+  if (action === 'getLeaderboard') {
+    const lb = commGet(COMM_KEYS.leaderboard);
+    return lb.sort((a,b) => (Number(b.points)||0) - (Number(a.points)||0)).slice(0,20);
   }
+  if (action === 'getRatings') {
+    const ratings = commGet(COMM_KEYS.ratings);
+    // Aggregate by game_title
+    const map = {};
+    ratings.forEach(r => {
+      if (!r.game_title) return;
+      if (!map[r.game_title]) map[r.game_title] = { game_title: r.game_title, total: 0, count: 0 };
+      map[r.game_title].total += Number(r.rating) || 0;
+      map[r.game_title].count++;
+    });
+    return Object.values(map).map(m => ({
+      game_title: m.game_title,
+      avg_rating: m.count ? (m.total / m.count).toFixed(1) : 0,
+      vote_count: m.count
+    })).sort((a,b) => b.avg_rating - a.avg_rating);
+  }
+  return null;
 }
 
 async function sheetsPost(action, data={}) {
-  // Now just a thin wrapper — all writes go through saveState()
   try {
-    if (action === 'sendChat' || action === 'upsertLeaderboard' || action === 'submitRating') {
-      // These community actions still need their own lightweight endpoint
-      // For now store in state until a dedicated community backend is added
-      return { success: true };
+    if (action === 'sendChat') {
+      const msgs = commGet(COMM_KEYS.chat);
+      msgs.push({ username: data.username, message: data.message, is_premium: data.is_premium, created_at: data.created_at || new Date().toISOString() });
+      if (msgs.length > MAX_CHAT_MSGS) msgs.splice(0, msgs.length - MAX_CHAT_MSGS);
+      commSet(COMM_KEYS.chat, msgs);
+    } else if (action === 'upsertLeaderboard') {
+      const lb = commGet(COMM_KEYS.leaderboard);
+      const idx = lb.findIndex(r => r.username === data.username);
+      if (idx >= 0) { lb[idx] = { ...lb[idx], ...data }; }
+      else { lb.push({ username: data.username, points: data.points, is_premium: data.is_premium }); }
+      commSet(COMM_KEYS.leaderboard, lb);
+    } else if (action === 'submitRating') {
+      const ratings = commGet(COMM_KEYS.ratings);
+      // Remove old rating from same user for same game
+      const filtered = ratings.filter(r => !(r.username === data.username && r.game_title === data.game_title));
+      filtered.push({ username: data.username, game_title: data.game_title, rating: data.rating, created_at: new Date().toISOString() });
+      commSet(COMM_KEYS.ratings, filtered);
     }
     return { success: true };
   } catch(e) {
-    console.warn('sheetsPost stub failed:', e);
+    console.warn('commPost failed:', e);
     return null;
   }
 }
@@ -2051,6 +2085,12 @@ async function loadChat() {
     }
   }
   chatLoaded = true;
+  // Show online count (number of unique chatters in last 10 min)
+  const allMsgs = commGet(COMM_KEYS.chat);
+  const tenMinAgo = Date.now() - 10 * 60 * 1000;
+  const recentUsers = new Set(allMsgs.filter(m => m.created_at && new Date(m.created_at).getTime() > tenMinAgo).map(m => m.username));
+  const onlineEl = document.getElementById('chat-online-count');
+  if (onlineEl) onlineEl.textContent = recentUsers.size > 0 ? `● ${recentUsers.size} online` : '';
   if (chatPollInterval) clearInterval(chatPollInterval);
   chatPollInterval = setInterval(async () => {
     if (document.getElementById('section-community').style.display === 'none') return;
@@ -2093,7 +2133,8 @@ async function sendChat() {
   // Show message immediately (optimistic)
   appendChatMsg({ username: currentUser.name, message: msg, is_premium: currentUser.premium, created_at: new Date().toISOString() });
   // Send to Sheets
-  await sheetsPost('sendChat', { username: currentUser.name, message: msg, is_premium: currentUser.premium || false });
+  const ts = new Date().toISOString();
+  await sheetsPost('sendChat', { username: currentUser.name, message: msg, is_premium: currentUser.premium || false, created_at: ts });
   // Pause poll briefly so the optimistic msg isn't wiped, then refresh from server
   if (chatPollInterval) clearInterval(chatPollInterval);
   setTimeout(async () => {
