@@ -588,7 +588,7 @@ const CAT_META = {
   'Music':   { icon:'🎵', label:'Music' },
 };
 const ADSENSE_CLIENT = 'ca-pub-2319808028748744';
-const JSONBIN_BIN_ID = '6a09af13250b1311c362933c';
+const JSONBIN_BIN_ID = '6a09c1e8adc21f119ab2f183';
 const JSONBIN_KEY    = '$2a$10$4ED/k3s4mF1IeFr0i9E1Re6B9cLwD5nEMMAB47XcseMdiKn00KudW';
 const JSONBIN_URL    = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
 
@@ -798,19 +798,67 @@ function extractEmbedUrl(raw) {
 }
 
 async function fetchCloudContent() {
-  // Content is now stored inside state via JSONBin — nothing extra to fetch
-  // Just reload global state
-  await loadGlobalState();
+  try {
+    const res = await fetch(JSONBIN_URL + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+    });
+    const data = await res.json();
+    // Our games bin stores { content: [...] }
+    const games = Array.isArray(data) ? data : (data.content || []);
+    if (games.length > 0) {
+      state.content = games.map(r => ({
+        id:        r.id || ('c_' + Math.random().toString(36).substr(2,9)),
+        title:     r.title || '',
+        desc:      r.desc || r.description || '',
+        url:       extractEmbedUrl(r.url || ''),
+        type:      r.type || 'Game',
+        cover:     r.cover || r.image || '',
+        access:    r.access || 'free',
+        embedType: r.embedType || 'iframe',
+        extra:     r.extra || '',
+        published: r.published || new Date().toISOString(),
+      }));
+    }
+  } catch(e) {
+    console.warn('Could not fetch JSONBin content:', e);
+  }
 }
 
 async function pushContentToCloud(item) {
-  // Content is part of state — saveState() handles everything
-  // No separate call needed
+  try {
+    // Fetch current games list, append new item, PUT back
+    const res = await fetch(JSONBIN_URL + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+    });
+    const data = await res.json();
+    const current = Array.isArray(data) ? data : (data.content || []);
+    const updated = [...current, item];
+    await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+      body: JSON.stringify({ content: updated })
+    });
+  } catch(e) {
+    console.warn('Could not push to JSONBin:', e);
+  }
 }
 
 async function deleteContentFromCloud(item) {
-  // Content is part of state — saveState() handles everything
-  // No separate call needed
+  try {
+    const res = await fetch(JSONBIN_URL + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+    });
+    const data = await res.json();
+    const current = Array.isArray(data) ? data : (data.content || []);
+    const updated = current.filter(r => r.id !== item.id);
+    await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+      body: JSON.stringify({ content: updated })
+    });
+  } catch(e) {
+    console.warn('Could not delete from JSONBin:', e);
+  }
 }
 window.addEventListener('load', async () => {
   applyStoredTheme();
