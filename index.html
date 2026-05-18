@@ -458,6 +458,110 @@ button,a,[onclick]{touch-action:manipulation;}
   .main{padding-bottom:16px!important;}
   #vgp-toggle-btn{bottom:12px;}
 }
+
+/* ── Sort bar ── */
+.sort-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.sort-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);white-space:nowrap;}
+.sort-btn:hover{border-color:var(--accent);color:var(--accent);}
+.sort-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.sort-label{font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-right:2px;flex-shrink:0;}
+
+/* ══ LIVESTREAM STYLES ══════════════════════════════════════════════ */
+#section-livestream{display:none;}
+.ls-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+@media(max-width:900px){.ls-layout{grid-template-columns:1fr;}}
+.ls-stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.ls-video-area{position:relative;background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;}
+.ls-video-area video{width:100%;height:100%;object-fit:cover;display:none;}
+.ls-video-area video.active{display:block;}
+.ls-offline-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 60%,rgba(108,99,255,0.12) 0%,#000 70%);}
+.ls-offline-screen .ls-off-icon{font-size:56px;opacity:0.5;}
+.ls-offline-screen .ls-off-title{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:var(--text2);}
+.ls-offline-screen .ls-off-sub{font-size:13px;color:var(--text3);text-align:center;max-width:300px;line-height:1.6;}
+.ls-live-badge{position:absolute;top:14px;left:14px;background:#ff4757;color:#fff;font-family:var(--font-display);font-size:13px;letter-spacing:2px;padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:7px;box-shadow:0 0 20px rgba(255,71,87,0.5);}
+.ls-live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:livePulse 1s infinite;}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
+.ls-viewer-count{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.7);color:#fff;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;}
+.ls-cam-strip{display:flex;gap:8px;padding:12px;overflow-x:auto;scrollbar-width:none;background:var(--surface2);border-top:1px solid var(--border);}
+.ls-cam-strip::-webkit-scrollbar{display:none;}
+.ls-cam-thumb{position:relative;flex-shrink:0;width:120px;height:68px;background:#000;border-radius:8px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:var(--transition);}
+.ls-cam-thumb.active-cam{border-color:var(--accent3);}
+.ls-cam-thumb video{width:100%;height:100%;object-fit:cover;}
+.ls-cam-thumb .cam-label{position:absolute;bottom:4px;left:6px;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.9);font-family:var(--font-mono);}
+.ls-cam-thumb .cam-premium-dot{position:absolute;top:5px;right:6px;font-size:10px;}
+.ls-cam-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text3);font-size:11px;font-weight:600;border-style:dashed!important;cursor:pointer;}
+.ls-cam-add:hover{border-color:var(--accent)!important;color:var(--accent);}
+.ls-stage-info{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.ls-stage-title{font-family:var(--font-display);font-size:20px;letter-spacing:1px;}
+.ls-stage-host{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2);}
+.ls-host-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.ls-host-avatar.premium-av{background:linear-gradient(135deg,var(--premium),#ff8c00);}
+.ls-stage-actions{display:flex;gap:8px;flex-wrap:wrap;}
+/* Gift animation */
+.ls-gift-float{position:fixed;pointer-events:none;z-index:9999;font-size:28px;animation:giftRise 2.2s ease-out forwards;}
+@keyframes giftRise{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-80px) scale(1.3);}100%{opacity:0;transform:translateY(-130px) scale(0.8);}}
+/* Right sidebar */
+.ls-sidebar{display:flex;flex-direction:column;gap:14px;}
+.ls-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.ls-panel-hdr{padding:12px 16px;font-family:var(--font-display);font-size:14px;letter-spacing:1px;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ls-chat-msgs{height:320px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;}
+.ls-chat-msgs::-webkit-scrollbar{width:3px;}
+.ls-chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.ls-chat-msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn 0.2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.ls-msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px;}
+.ls-msg-body{flex:1;min-width:0;}
+.ls-msg-name{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:2px;}
+.ls-msg-name.premium-name{color:var(--premium);}
+.ls-msg-text{font-size:13px;color:var(--text);line-height:1.5;word-break:break-word;}
+.ls-msg-gift{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--premium);font-weight:600;}
+.ls-chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);}
+.ls-chat-input-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:var(--transition);}
+.ls-chat-input-row input:focus{border-color:var(--accent);}
+.ls-chat-input-row button{background:var(--accent);border:none;color:#fff;border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);}
+.ls-chat-input-row button:hover{opacity:0.85;}
+/* Queue */
+.ls-queue-list{padding:10px 12px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.ls-queue-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;}
+.ls-queue-pos{font-family:var(--font-mono);font-size:11px;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
+.ls-queue-av{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.ls-queue-name{flex:1;font-weight:600;}
+.ls-queue-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.ls-queue-badge.prem{background:rgba(245,166,35,0.15);color:var(--premium);}
+.ls-queue-badge.free{background:rgba(144,144,176,0.12);color:var(--text3);}
+.ls-queue-join-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:var(--transition);font-family:var(--font-body);}
+.ls-queue-join-btn:hover{opacity:0.85;}
+.ls-queue-join-btn:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
+/* Gift bar */
+.ls-gift-bar{padding:12px 14px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.ls-gift-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;transition:var(--transition);font-size:11px;color:var(--text2);}
+.ls-gift-btn:hover{border-color:var(--premium);color:var(--premium);transform:translateY(-2px);}
+.ls-gift-btn .gicon{font-size:22px;}
+.ls-gift-btn .gcost{font-family:var(--font-mono);font-size:10px;color:var(--accent3);font-weight:700;}
+/* Go Live button */
+.btn-golive{background:linear-gradient(135deg,#ff4757,#c0392b);color:#fff;font-family:var(--font-display);letter-spacing:2px;font-size:15px;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:8px;}
+.btn-golive:hover{box-shadow:0 0 20px rgba(255,71,87,0.5);transform:translateY(-1px);}
+.btn-golive.live-active{background:linear-gradient(135deg,#2ed573,#1e9e52);}
+/* Go-live modal */
+.ls-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
+.ls-modal-overlay.open{display:flex;}
+.ls-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:480px;box-shadow:0 30px 80px rgba(0,0,0,0.6);}
+.ls-modal h2{font-family:var(--font-display);font-size:26px;letter-spacing:2px;margin-bottom:20px;}
+.ls-modal .form-group{margin-bottom:16px;}
+.ls-modal .form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:0.5px;}
+.ls-modal .form-group input,.ls-modal .form-group select{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:var(--transition);}
+.ls-modal .form-group input:focus,.ls-modal .form-group select:focus{border-color:var(--accent);}
+/* Stream preview */
+.ls-preview-wrap{background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9;position:relative;margin-bottom:16px;}
+.ls-preview-wrap video{width:100%;height:100%;object-fit:cover;}
+/* Top streamer banner for queue skip */
+.ls-priority-note{font-size:11px;padding:8px 12px;border-radius:8px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);color:var(--premium);margin-top:8px;line-height:1.5;}
+/* Notification toasts for gifts */
+.ls-notif{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,rgba(245,166,35,0.15),rgba(255,101,132,0.1));border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:10px 20px;font-size:14px;font-weight:600;color:#fff;z-index:9998;opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(12px);}
+.ls-notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Viewers dot */
+.ls-viewers-label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+.ls-viewers-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:livePulse 1s infinite;}
 </style>
 </head>
 <body>
@@ -483,6 +587,7 @@ button,a,[onclick]{touch-action:manipulation;}
     <div id="premium-code-field" style="display:none;" class="form-group">
       <label>PREMIUM CODE</label>
       <input type="text" id="login-code" placeholder="XXXXXX" maxlength="16" style="font-family:var(--font-mono);letter-spacing:4px;text-transform:uppercase;">
+      <p style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5;">⏳ Codes last <strong style="color:var(--text2);">7 days</strong> from first use &nbsp;·&nbsp; 🔒 Single-use codes lock to this device</p>
     </div>
     <button class="btn btn-primary" id="login-btn" onclick="doLogin()">ENTER NEXUSHUB</button>
     <p class="free-hint">Admin? <span onclick="openAdminPin()">Access Panel</span></p>
@@ -560,9 +665,18 @@ button,a,[onclick]{touch-action:manipulation;}
     </div>
     
     <div id="section-cat" style="display:none;">
-      <div class="section-header">
+      <div class="section-header" style="flex-wrap:wrap;gap:10px;">
         <div class="section-title"><span id="cat-icon"></span><span id="cat-name"></span></div>
         <span class="section-count" id="cat-count"></span>
+      </div>
+      <div class="sort-bar" id="cat-sort-bar" style="margin-bottom:16px;">
+        <span class="sort-label">SORT:</span>
+        <button class="sort-btn active" onclick="setCatSort('newest')">🕐 Newest</button>
+        <button class="sort-btn" onclick="setCatSort('oldest')">🕰 Oldest</button>
+        <button class="sort-btn" onclick="setCatSort('az')">A → Z</button>
+        <button class="sort-btn" onclick="setCatSort('za')">Z → A</button>
+        <button class="sort-btn" onclick="setCatSort('free')">✅ Free First</button>
+        <button class="sort-btn" onclick="setCatSort('premium')">👑 Premium First</button>
       </div>
       <div class="media-grid" id="cat-grid"></div>
     </div>
@@ -575,6 +689,89 @@ button,a,[onclick]{touch-action:manipulation;}
       </div>
       <div id="secret-blocks-area"></div>
     </div>
+
+    <!-- ════ LIVESTREAM SECTION ════ -->
+    <div id="section-livestream">
+      <div class="section-header" style="margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div class="section-title">📡 <span>Live</span></div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="ls-viewers-label" id="ls-total-viewers"><span class="ls-viewers-dot"></span><span id="ls-viewer-num">0</span> watching</div>
+          <button class="btn-golive" id="ls-go-live-btn" onclick="openGoLiveModal()">📡 GO LIVE</button>
+        </div>
+      </div>
+      <div class="ls-layout">
+        <!-- Main stage -->
+        <div>
+          <div class="ls-stage">
+            <div class="ls-video-area" id="ls-video-area">
+              <div class="ls-offline-screen" id="ls-offline-screen">
+                <div class="ls-off-icon">📡</div>
+                <div class="ls-off-title">NO ONE IS LIVE</div>
+                <div class="ls-off-sub">Be the first to go live! Hit the <strong style="color:var(--accent);">GO LIVE</strong> button above to start streaming.<br>Premium members get priority in the queue.</div>
+              </div>
+              <!-- Main stream video -->
+              <video id="ls-main-video" autoplay muted playsinline></video>
+              <div class="ls-live-badge" id="ls-live-badge" style="display:none;"><span class="ls-live-dot"></span>LIVE</div>
+              <div class="ls-viewer-count" id="ls-viewer-count" style="display:none;">👁 <span id="ls-vc-num">1</span></div>
+            </div>
+            <!-- Shared cameras strip -->
+            <div class="ls-cam-strip" id="ls-cam-strip" style="display:none;">
+              <!-- cameras added dynamically -->
+            </div>
+            <!-- Stage info bar -->
+            <div class="ls-stage-info" id="ls-stage-info">
+              <div>
+                <div class="ls-stage-title" id="ls-stage-title" style="color:var(--text3);">Waiting for someone to go live…</div>
+                <div class="ls-stage-host" id="ls-stage-host" style="display:none;">
+                  <div class="ls-host-avatar" id="ls-host-av"></div>
+                  <span id="ls-host-name"></span>
+                  <span id="ls-host-badge" style="font-size:11px;padding:2px 8px;border-radius:20px;display:none;"></span>
+                </div>
+              </div>
+              <div class="ls-stage-actions" id="ls-stage-actions" style="display:none;">
+                <button class="btn btn-ghost btn-sm" id="ls-share-cam-btn" onclick="shareCameraPrompt()" style="display:none;">📷 Share Camera</button>
+                <button class="btn btn-danger btn-sm" id="ls-end-stream-btn" onclick="endStream()" style="display:none;">⏹ End Stream</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div class="ls-sidebar">
+          <!-- Live chat -->
+          <div class="ls-panel">
+            <div class="ls-panel-hdr">
+              💬 Stream Chat
+              <div class="ls-viewers-label"><span class="ls-viewers-dot"></span><span class="ls-vc-num2">1</span></div>
+            </div>
+            <div class="ls-chat-msgs" id="ls-chat-msgs"></div>
+            <!-- Gift bar -->
+            <div class="ls-gift-bar" id="ls-gift-bar" style="display:none;">
+              <button class="ls-gift-btn" onclick="sendGift('rose',5,'🌹')"><span class="gicon">🌹</span><span>Rose</span><span class="gcost">5 pts</span></button>
+              <button class="ls-gift-btn" onclick="sendGift('star',15,'⭐')"><span class="gicon">⭐</span><span>Star</span><span class="gcost">15 pts</span></button>
+              <button class="ls-gift-btn" onclick="sendGift('fire',30,'🔥')"><span class="gicon">🔥</span><span>Fire</span><span class="gcost">30 pts</span></button>
+              <button class="ls-gift-btn" onclick="sendGift('crown',75,'👑')"><span class="gicon">👑</span><span>Crown</span><span class="gcost">75 pts</span></button>
+              <button class="ls-gift-btn" onclick="sendGift('diamond',150,'💎')"><span class="gicon">💎</span><span>Diamond</span><span class="gcost">150 pts</span></button>
+            </div>
+            <div class="ls-chat-input-row">
+              <input id="ls-chat-in" type="text" placeholder="Say something…" maxlength="180" onkeydown="if(event.key==='Enter')lsSendChat()">
+              <button onclick="lsSendChat()">Send</button>
+            </div>
+          </div>
+          <!-- Queue / waiting list -->
+          <div class="ls-panel">
+            <div class="ls-panel-hdr">
+              🎙 Stream Queue
+              <button class="btn btn-ghost btn-sm" id="ls-join-queue-btn" onclick="joinStreamQueue()" style="font-size:11px;padding:5px 10px;">+ Join Queue</button>
+            </div>
+            <div class="ls-queue-list" id="ls-queue-list">
+              <div style="padding:8px;color:var(--text3);font-size:13px;text-align:center;">Queue is empty</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ════ END LIVESTREAM ════ -->
 
     <div id="section-community" style="display:none;">
       <div class="community-layout">
@@ -753,19 +950,34 @@ button,a,[onclick]{touch-action:manipulation;}
         <div class="form-row">
           <div class="form-group">
             <label>CODE LABEL (for your reference)</label>
-            <input type="text" id="code-label" placeholder="e.g. John's code">
+            <input type="text" id="code-label" placeholder="e.g. John's code or Christmas 2024">
           </div>
           <div class="form-group">
             <label>CUSTOM CODE (or leave blank to auto-generate)</label>
             <input type="text" id="code-custom" placeholder="Leave blank for random" style="font-family:var(--font-mono);text-transform:uppercase;" maxlength="16">
           </div>
         </div>
-        <button class="btn btn-primary" onclick="generateCode()" style="width:auto;">Generate Code</button>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CODE TYPE</label>
+            <select id="code-type" onchange="updateCodeTypeHint()">
+              <option value="single">🔒 Single-Use — locks to one device only</option>
+              <option value="public">🎄 Public / Promo — unlimited devices, remove when done</option>
+            </select>
+          </div>
+        </div>
+        <div id="code-type-hint" style="background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;">
+          <strong style="color:var(--text);">🔒 Single-Use:</strong> The first person to enter this code locks it to their device. <strong>Expires 7 days after first use.</strong> Nobody else can use it — perfect for individual subscriptions.
+        </div>
+        <button class="btn btn-primary" onclick="generateCode()" style="width:auto;">✨ Generate Code</button>
       </div>
       <div class="section-box">
         <h3>📋 All Codes</h3>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);">
+          ⏳ <strong style="color:var(--text);">All codes expire 7 days after first use.</strong> Single-use codes lock to the first device that redeems them. Public/promo codes work on any device until you delete them.
+        </div>
         <table class="admin-table">
-          <thead><tr><th>Code</th><th>Label</th><th>Status</th><th>Uses</th><th>Created</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Code</th><th>Label</th><th>Type</th><th>Status</th><th>Uses</th><th>Expires</th><th>Device Locked</th><th>Actions</th></tr></thead>
           <tbody id="codes-table-body"></tbody>
         </table>
       </div>
@@ -1866,11 +2078,23 @@ function extractEmbedUrl(raw) {
   raw = raw.trim();
   // If it's a full <iframe> tag, pull out the src
   const srcMatch = raw.match(/src\s*=\s*["']([^"']+)["']/i);
-  if(srcMatch) return srcMatch[1].trim();
+  if(srcMatch) return proxyGameUrl(srcMatch[1].trim());
   
   const ytMatch = raw.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if(ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  return raw;
+  return proxyGameUrl(raw);
+}
+
+/* Route game URLs through an unblocking proxy so school filters can't block by domain */
+function proxyGameUrl(url) {
+  if (!url) return url;
+  // Don't proxy YouTube, already-proxied, or data URIs
+  if (url.startsWith('data:') || url.includes('youtube.com') || url.includes('youtu.be')) return url;
+  if (url.includes('corsproxy.io') || url.includes('allorigins.win')) return url;
+  // Only proxy http/https URLs
+  if (!url.startsWith('http://') && !url.startsWith('https://')) return url;
+  // Use corsproxy.io — generic utility, not flagged as a games site
+  return 'https://corsproxy.io/?' + encodeURIComponent(url);
 }
 
 async function fetchCloudContent() {
@@ -1980,6 +2204,78 @@ function setLoginMode(m) {
   document.getElementById('premium-code-field').style.display = m==='premium' ? 'block' : 'none';
 }
 
+/* ── Persistent storage: writes to BOTH cookie + localStorage so private/incognito tabs work ── */
+function pStore(key, value, days) {
+  // localStorage (normal tabs)
+  try { localStorage.setItem(key, value); } catch(e) {}
+  // Cookie (survives private/incognito across sessions on Chrome/Firefox/Edge)
+  const expires = new Date(Date.now() + (days||365) * 864e5).toUTCString();
+  document.cookie = key + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+}
+
+function pRead(key) {
+  // Try localStorage first
+  try {
+    const ls = localStorage.getItem(key);
+    if (ls) return ls;
+  } catch(e) {}
+  // Fall back to cookie
+  const match = document.cookie.match('(?:^|; )' + key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '=([^;]*)');
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function pRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+  document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
+}
+
+function getDeviceId() {
+  let id = pRead('nhub_device_id');
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).substr(2,12) + '_' + Date.now().toString(36);
+    pStore('nhub_device_id', id, 3650); // 10 years
+  }
+  return id;
+}
+
+
+function validateCodeForDevice(codeObj) {
+  // Returns { ok: true } or { ok: false, reason: '...' }
+  if (!codeObj.active) return { ok: false, reason: 'This code has been deactivated.' };
+
+  // Check 7-day expiry from first use
+  if (codeObj.expiresAt && new Date(codeObj.expiresAt) < new Date()) {
+    return { ok: false, reason: 'This code expired 7 days after its first use.' };
+  }
+
+  // Single-use: enforce device lock
+  if (codeObj.type !== 'public') {
+    const myDevice = getDeviceId();
+    if (codeObj.deviceId && codeObj.deviceId !== myDevice) {
+      return { ok: false, reason: 'This code is already locked to another device. Each single-use code only works on one device.' };
+    }
+  }
+
+  return { ok: true };
+}
+
+async function redeemCodeFirstUse(codeObj) {
+  // Called when a code is used for the first time (or first time on this device for public)
+  const myDevice = getDeviceId();
+  const now = new Date();
+  const expires = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 days
+
+  if (!codeObj.firstUsed) {
+    codeObj.firstUsed = now.toISOString();
+    codeObj.expiresAt = expires.toISOString();
+  }
+  if (codeObj.type !== 'public' && !codeObj.deviceId) {
+    codeObj.deviceId = myDevice;
+  }
+  codeObj.uses = (codeObj.uses || 0) + 1;
+  await saveState();
+}
+
 function doLogin() {
   const name = document.getElementById('login-name').value.trim();
   const err = document.getElementById('login-error');
@@ -1989,21 +2285,61 @@ function doLogin() {
     const code = document.getElementById('login-code').value.trim().toUpperCase();
     if(!code) { showErr(err,'Please enter your premium code.'); return; }
     const codes = getCodes();
-    const codeObj = codes.find(c => c.code === code && c.active);
-    if(!codeObj) { showErr(err,'Invalid or deactivated code. Please check and try again.'); return; }
-    currentUser = { name, code, premium: true, loginTime: new Date().toISOString() };
-    
+    const codeObj = codes.find(c => c.code === code);
+    if(!codeObj) { showErr(err,'Invalid code. Please check and try again.'); return; }
+
+    const check = validateCodeForDevice(codeObj);
+    if(!check.ok) { showErr(err, check.reason); return; }
+
+    // Redeem / record first use
+    redeemCodeFirstUse(codeObj);
+
+    // Show expiry info
+    const expiresAt = codeObj.expiresAt || new Date(Date.now() + 7*24*60*60*1000).toISOString();
+    const daysLeft = Math.ceil((new Date(expiresAt) - Date.now()) / (1000*60*60*24));
+    pStore('nhub_premium_code', code, 8);
+    pStore('nhub_premium_expires', expiresAt, 8);
+
+    currentUser = { name, code, premium: true, loginTime: new Date().toISOString(), premiumExpires: expiresAt, daysLeft };
     logLogin(name, code, 'Premium');
-    
     trackUser(name, code);
   } else {
+    // Check if this device has a stored valid premium code
+    const savedCode = pRead('nhub_premium_code');
+    const savedExpires = pRead('nhub_premium_expires');
+    if (savedCode && savedExpires && new Date(savedExpires) > new Date()) {
+      const codes = getCodes();
+      const codeObj = codes.find(c => c.code === savedCode && c.active);
+      if (codeObj) {
+        const check = validateCodeForDevice(codeObj);
+        if (check.ok) {
+          const daysLeft = Math.ceil((new Date(savedExpires) - Date.now()) / (1000*60*60*24));
+          currentUser = { name, code: savedCode, premium: true, loginTime: new Date().toISOString(), premiumExpires: savedExpires, daysLeft, autoRestored: true };
+          logLogin(name, savedCode, 'Premium');
+          trackUser(name, savedCode);
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('app').style.display = 'flex';
+          initApp();
+          setTimeout(() => toast(`👑 Premium restored! ${daysLeft} day${daysLeft!==1?'s':''} remaining.`, 'success'), 600);
+          return;
+        }
+      }
+      // Code no longer valid, clear it
+      pRemove('nhub_premium_code');
+      pRemove('nhub_premium_expires');
+    }
     currentUser = { name, code: null, premium: false, loginTime: new Date().toISOString() };
     logLogin(name, 'N/A', 'Free');
   }
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   initApp();
+  if (currentUser.premium && !currentUser.autoRestored) {
+    const daysLeft = currentUser.daysLeft || 7;
+    setTimeout(() => toast(`👑 Premium unlocked! Valid for ${daysLeft} day${daysLeft!==1?'s':''}.`, 'success'), 600);
+  }
 }
+
 
 function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
 
@@ -2109,6 +2445,49 @@ function getActiveCats() {
   return cats.filter(c => CAT_META[c]);
 }
 
+/* ── Sort state ── */
+let catSort = 'newest';
+let homeSort = 'newest';
+
+function sortItems(items, mode) {
+  const arr = [...items];
+  switch(mode) {
+    case 'newest':  return arr.sort((a,b) => new Date(b.published||0) - new Date(a.published||0));
+    case 'oldest':  return arr.sort((a,b) => new Date(a.published||0) - new Date(b.published||0));
+    case 'az':      return arr.sort((a,b) => a.title.localeCompare(b.title));
+    case 'za':      return arr.sort((a,b) => b.title.localeCompare(a.title));
+    case 'free':    return arr.sort((a,b) => (a.access==='free'?0:1) - (b.access==='free'?0:1));
+    case 'premium': return arr.sort((a,b) => (a.access!=='free'?0:1) - (b.access!=='free'?0:1));
+    default:        return arr;
+  }
+}
+
+function setSortBtns(barId, active) {
+  document.querySelectorAll('#' + barId + ' .sort-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes("'" + active + "'"));
+  });
+}
+
+function setCatSort(mode) {
+  catSort = mode;
+  setSortBtns('cat-sort-bar', mode);
+  refreshCatGrid();
+}
+
+function setHomeSort(mode) {
+  homeSort = mode;
+  setSortBtns('home-sort-bar', mode);
+  buildHomeGrid();
+}
+
+function refreshCatGrid() {
+  const cat = document.getElementById('cat-icon').__currentCat;
+  if (!cat) return;
+  const items = sortItems(getContent().filter(c => c.type === cat), catSort);
+  document.getElementById('cat-grid').innerHTML = items.map(renderCard).join('');
+  document.getElementById('cat-count').textContent = items.length + ' titles';
+}
+
 function buildHomeGrid() {
   const content = getContent();
   const area = document.getElementById('home-grid-area');
@@ -2118,10 +2497,23 @@ function buildHomeGrid() {
     area.innerHTML = `<div style="text-align:center;padding:60px 0;color:var(--text2);"><div style="font-size:48px;margin-bottom:16px;">📭</div><p style="font-size:16px;">${emptyMsg}</p></div>`;
     return;
   }
+
+  // Global sort bar above all sections
+  area.innerHTML = `<div class="sort-bar" id="home-sort-bar" style="margin-bottom:24px;">
+    <span class="sort-label">SORT:</span>
+    <button class="sort-btn ${homeSort==='newest'?'active':''}" onclick="setHomeSort('newest')">🕐 Newest</button>
+    <button class="sort-btn ${homeSort==='oldest'?'active':''}" onclick="setHomeSort('oldest')">🕰 Oldest</button>
+    <button class="sort-btn ${homeSort==='az'?'active':''}" onclick="setHomeSort('az')">A → Z</button>
+    <button class="sort-btn ${homeSort==='za'?'active':''}" onclick="setHomeSort('za')">Z → A</button>
+    <button class="sort-btn ${homeSort==='free'?'active':''}" onclick="setHomeSort('free')">✅ Free First</button>
+    <button class="sort-btn ${homeSort==='premium'?'active':''}" onclick="setHomeSort('premium')">👑 Premium First</button>
+  </div>`;
+
   const cats = getActiveCats();
   cats.forEach(cat => {
-    const items = content.filter(c => c.type === cat);
-    if(!items.length) return;
+    const rawItems = content.filter(c => c.type === cat);
+    if(!rawItems.length) return;
+    const items = sortItems(rawItems, homeSort);
     const m = CAT_META[cat];
     area.innerHTML += `
       <div class="section">
@@ -2133,6 +2525,7 @@ function buildHomeGrid() {
       </div>`;
   });
 }
+
 
 function renderCard(item) {
   const m = CAT_META[item.type]||{icon:'📄',label:'Media'};
@@ -2166,9 +2559,14 @@ function showSection(sec) {
 
 function showCat(cat) {
   const m = CAT_META[cat]||{icon:'📄',label:cat};
-  const items = getContent().filter(c => c.type === cat);
-  document.getElementById('cat-icon').textContent = m.icon;
+  const iconEl = document.getElementById('cat-icon');
+  iconEl.textContent = m.icon;
+  iconEl.__currentCat = cat; // store for refreshCatGrid
   document.getElementById('cat-name').textContent = m.label;
+  // reset sort to newest when switching category
+  catSort = 'newest';
+  setSortBtns('cat-sort-bar', 'newest');
+  const items = sortItems(getContent().filter(c => c.type === cat), catSort);
   document.getElementById('cat-count').textContent = items.length + ' titles';
   document.getElementById('cat-grid').innerHTML = items.map(renderCard).join('');
   showSection('cat');
@@ -2204,6 +2602,7 @@ function openMedia(id) {
         <div class="lock-icon">🔒</div>
         <h2>PREMIUM CONTENT</h2>
         <p>This content requires a premium subscription.<br>Enter your code below to unlock access.</p>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">⏳ Codes last <strong style=\"color:var(--text2)\">7 days</strong> from first use &middot; Single-use codes lock to your device</p>
         <div class="code-input-row">
           <input type="text" id="gate-code-input" placeholder="CODE" maxlength="16" style="font-family:var(--font-mono);letter-spacing:4px;text-transform:uppercase;">
           <button class="btn btn-warning" onclick="unlockWithCode()">UNLOCK</button>
@@ -2238,19 +2637,30 @@ function buildMediaPlayer(item, body, isFree) {
           transition:0.2s;" onmouseover="this.style.background='rgba(108,99,255,0.8)'"
           onmouseout="this.style.background='rgba(0,0,0,0.7)'">${isPremium ? '⛶ Fullscreen' : '📺 Fullscreen (Ad)'}</button>`;
     const mobileGameHint = (item.type === 'Game') ? `<div id="mobile-game-hint" style="display:none;padding:8px 12px;background:rgba(108,99,255,0.12);border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);text-align:center;">📱 Tap <b>🎮 Gamepad</b> for touch controls · Use <b>⛶ Fullscreen</b> for best experience</div>` : '';
+    // Skeleton loader shown immediately; iframe injected after a single rAF so the
+    // modal paints instantly and the browser starts the network fetch in the background.
     html += `
-      <div class="media-embed" style="position:relative;">
+      <div class="media-embed" id="media-embed-wrap-${item.id}" style="position:relative;min-height:550px;">
         ${mobileGameHint}
         ${fsBtn}
+        <div id="game-skeleton-${item.id}" style="
+          position:absolute;inset:0;display:flex;flex-direction:column;
+          align-items:center;justify-content:center;gap:16px;
+          background:var(--surface2);border-radius:var(--radius-sm);z-index:5;">
+          <div style="font-size:40px;animation:pulse 1.2s infinite;">🎮</div>
+          <div style="font-family:var(--font-display);font-size:18px;letter-spacing:2px;color:var(--text2);">LOADING GAME…</div>
+          <div style="width:180px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+            <div id="game-load-bar-${item.id}" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.4s ease;"></div>
+          </div>
+          <div id="game-load-status-${item.id}" style="font-size:12px;color:var(--text3);font-family:var(--font-mono);">Connecting…</div>
+        </div>
         <iframe
           id="embed-frame-${item.id}"
-          src="${cleanUrl}"
-          style="width:100%;height:550px;border:none;display:block;"
+          style="width:100%;height:550px;border:none;display:block;opacity:0;transition:opacity 0.3s;"
           allowfullscreen
           allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation-by-user-activation allow-modals"
           scrolling="no"
-          loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>`;
@@ -2261,6 +2671,10 @@ function buildMediaPlayer(item, body, isFree) {
         if (hint && isTouchDevice()) hint.style.display = 'block';
       }, 100);
     }
+    // Inject src after paint so the skeleton shows first, then start load tracking
+    requestAnimationFrame(() => { requestAnimationFrame(() => {
+      _startGameLoad(item.id, cleanUrl);
+    }); });
   } else if(cleanUrl && item.embedType === 'link') {
     html += `<div style="text-align:center;padding:32px;"><a href="${cleanUrl}" target="_blank" class="btn btn-primary" style="width:auto;display:inline-flex;">🔗 Open ${item.type}</a></div>`;
   } else {
@@ -2273,9 +2687,72 @@ function buildMediaPlayer(item, body, isFree) {
     if(adWatchCount % 5 === 0) {
       setTimeout(() => addPoints(5), 1500);
     }
-    
     setTimeout(() => { addPoints(5); }, 30*60*1000);
   }
+}
+
+/* ── Fast game loader: animated progress bar + timeout retry ── */
+function _startGameLoad(itemId, url) {
+  const frame    = document.getElementById('embed-frame-' + itemId);
+  const skeleton = document.getElementById('game-skeleton-' + itemId);
+  const bar      = document.getElementById('game-load-bar-' + itemId);
+  const status   = document.getElementById('game-load-status-' + itemId);
+  if (!frame) return;
+
+  // Animate the fake progress bar to build perceived speed
+  let pct = 0;
+  const STEPS = [
+    {to:15,  ms:200,  label:'Connecting…'},
+    {to:35,  ms:500,  label:'Fetching game…'},
+    {to:60,  ms:900,  label:'Loading assets…'},
+    {to:80,  ms:1400, label:'Almost there…'},
+    {to:92,  ms:2200, label:'Starting up…'},
+  ];
+  let stepIdx = 0;
+  function advanceBar() {
+    if (stepIdx >= STEPS.length) return;
+    const s = STEPS[stepIdx++];
+    pct = s.to;
+    if (bar)    bar.style.width = pct + '%';
+    if (status) status.textContent = s.label;
+    if (stepIdx < STEPS.length) setTimeout(advanceBar, s.ms);
+  }
+  advanceBar();
+
+  // Slow-connection timeout: after 12 s show a retry button
+  const TIMEOUT_MS = 12000;
+  const timeoutId = setTimeout(() => {
+    if (!skeleton || skeleton.style.display === 'none') return;
+    if (status) status.textContent = 'Slow connection…';
+    if (bar)    bar.style.width = '96%';
+    // Add retry button
+    const retryBtn = document.createElement('button');
+    retryBtn.textContent = '🔄 Retry';
+    retryBtn.style.cssText = 'margin-top:4px;padding:8px 22px;border-radius:8px;border:1px solid var(--accent);background:rgba(108,99,255,0.18);color:var(--accent);font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;';
+    retryBtn.onclick = () => {
+      retryBtn.remove();
+      if (bar) bar.style.width = '10%';
+      if (status) status.textContent = 'Retrying…';
+      frame.src = '';
+      setTimeout(() => { frame.src = url; }, 80);
+      stepIdx = 0; pct = 0; advanceBar();
+    };
+    skeleton && skeleton.appendChild(retryBtn);
+  }, TIMEOUT_MS);
+
+  // When the iframe loads, fade it in and remove the skeleton
+  frame.onload = () => {
+    clearTimeout(timeoutId);
+    if (bar) bar.style.width = '100%';
+    setTimeout(() => {
+      frame.style.opacity = '1';
+      if (skeleton) { skeleton.style.transition = 'opacity 0.25s'; skeleton.style.opacity = '0'; }
+      setTimeout(() => { if (skeleton) skeleton.style.display = 'none'; }, 260);
+    }, 120);
+  };
+
+  // Set src now — browser starts fetching while skeleton is visible
+  frame.src = url;
 }
 
 let fsAdTarget = null; 
@@ -2442,20 +2919,42 @@ function buildAdBanner(id) {
 function unlockWithCode() {
   const code = document.getElementById('gate-code-input')?.value.trim().toUpperCase();
   const err = document.getElementById('gate-error');
+  if (!code) { err.textContent='Please enter a code.'; err.style.display='block'; return; }
   const codes = getCodes();
-  const found = codes.find(c => c.code === code && c.active);
-  if(!found) { err.textContent='Invalid or deactivated code.'; err.style.display='block'; return; }
+  const codeObj = codes.find(c => c.code === code);
+  if (!codeObj) { err.textContent='Invalid code. Please check and try again.'; err.style.display='block'; return; }
+
+  const check = validateCodeForDevice(codeObj);
+  if (!check.ok) { err.textContent = check.reason; err.style.display='block'; return; }
+
+  redeemCodeFirstUse(codeObj);
+
+  const expiresAt = codeObj.expiresAt || new Date(Date.now() + 7*24*60*60*1000).toISOString();
+  const daysLeft = Math.ceil((new Date(expiresAt) - Date.now()) / (1000*60*60*24));
+  pStore('nhub_premium_code', code, 8);
+  pStore('nhub_premium_expires', expiresAt, 8);
+
   currentUser.premium = true;
   currentUser.code = code;
-  
-  document.getElementById('user-badge-btn').querySelector('span:last-child').outerHTML = '<span class="premium-badge">PREMIUM</span>';
+  currentUser.premiumExpires = expiresAt;
+
+  const badge = document.getElementById('user-badge-btn')?.querySelector('span:last-child');
+  if (badge) badge.outerHTML = '<span class="premium-badge">PREMIUM</span>';
   document.getElementById('points-bar').style.display = 'none';
-  toast('Premium unlocked! 👑 Please reopen the content to watch.', 'success');
+  toast(`👑 Premium unlocked! Valid for ${daysLeft} day${daysLeft!==1?'s':''}. Please reopen the content.`, 'success');
   closeMediaModal();
 }
 
+
 function closeMediaModal() {
   document.getElementById('media-modal').classList.remove('open');
+  // Hide gamepad toggle when modal closes
+  const btn = document.getElementById('vgp-toggle-btn');
+  if (btn) btn.style.display = 'none';
+  // Also hide the gamepad itself
+  const gp = document.getElementById('vgamepad');
+  if (gp) gp.classList.remove('visible');
+  vgpVisible = false;
 }
 function openSearch() { document.getElementById('search-panel').classList.add('open'); }
 function closeSearch() { document.getElementById('search-panel').classList.remove('open'); }
@@ -2693,37 +3192,96 @@ function renderAdminDashboard() {
 async function generateCode() {
   const label = document.getElementById('code-label').value.trim();
   let custom = document.getElementById('code-custom').value.trim().toUpperCase();
+  const codeType = document.getElementById('code-type').value; // 'single' or 'public'
   if(!custom) {
     custom = Math.random().toString(36).substr(2,8).toUpperCase();
   }
   const codes = getCodes();
   if(codes.find(c=>c.code===custom)) { toast('Code already exists!','error'); return; }
   if(!state.codes) state.codes = [];
-  state.codes.push({ code:custom, label:label||custom, active:true, uses:0, created:new Date().toISOString() });
+  state.codes.push({
+    code: custom,
+    label: label || custom,
+    active: true,
+    uses: 0,
+    type: codeType,       // 'single' or 'public'
+    deviceId: null,       // set on first redeem (single-use only)
+    firstUsed: null,      // set on first redeem
+    expiresAt: null,      // set 7 days after first redeem
+    created: new Date().toISOString()
+  });
   toast('Syncing to server...', 'info');
   const ok = await saveState();
-  toast(ok ? `Code ${custom} created globally! ✅` : `Code ${custom} created (offline — will sync soon)`, ok ? 'success' : 'warning');
+  const typeLabel = codeType === 'public' ? '🎄 Public/Promo' : '🔒 Single-Use';
+  toast(ok ? `${typeLabel} code ${custom} created! ✅` : `Code ${custom} created (offline — will sync soon)`, ok ? 'success' : 'warning');
   document.getElementById('code-label').value='';
   document.getElementById('code-custom').value='';
   renderCodesTable();
 }
 
+function updateCodeTypeHint() {
+  const type = document.getElementById('code-type').value;
+  const hint = document.getElementById('code-type-hint');
+  if(!hint) return;
+  if(type === 'public') {
+    hint.style.background = 'rgba(67,233,123,0.1)';
+    hint.style.borderColor = 'rgba(67,233,123,0.25)';
+    hint.innerHTML = '<strong style="color:var(--text);">🎄 Public / Promo:</strong> Anyone can use this code on any device — great for Christmas giveaways or free weekends. <strong>Expires 7 days after the first person uses it.</strong> Delete the code yourself when you want to end the promo.';
+  } else {
+    hint.style.background = 'rgba(108,99,255,0.1)';
+    hint.style.borderColor = 'rgba(108,99,255,0.25)';
+    hint.innerHTML = '<strong style="color:var(--text);">🔒 Single-Use:</strong> The first person to enter this code locks it to their device. <strong>Expires 7 days after first use.</strong> Nobody else can use it — perfect for individual subscriptions.';
+  }
+}
+
 function renderCodesTable() {
   const codes = getCodes();
   const tbody = document.getElementById('codes-table-body');
-  if(!codes.length) { tbody.innerHTML='<tr><td colspan="6" style="color:var(--text2);text-align:center;padding:24px;">No codes yet.</td></tr>'; return; }
-  tbody.innerHTML = codes.map(c => `
-    <tr>
+  if(!codes.length) { tbody.innerHTML='<tr><td colspan="8" style="color:var(--text2);text-align:center;padding:24px;">No codes yet.</td></tr>'; return; }
+  const now = Date.now();
+  tbody.innerHTML = codes.map(c => {
+    const isPublic = c.type === 'public';
+    const typeTag = isPublic
+      ? '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(67,233,123,0.15);color:var(--success);">🎄 Public</span>'
+      : '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(108,99,255,0.15);color:var(--accent);">🔒 Single</span>';
+
+    // Expiry display
+    let expiryCell = '<span style="color:var(--text3);">Not used yet</span>';
+    if(c.expiresAt) {
+      const msLeft = new Date(c.expiresAt) - now;
+      const daysLeft = Math.ceil(msLeft / (1000*60*60*24));
+      if(msLeft <= 0) {
+        expiryCell = '<span style="color:var(--danger);">Expired</span>';
+        if(c.active) { c.active = false; } // auto-expire
+      } else if(daysLeft <= 2) {
+        expiryCell = `<span style="color:var(--warning);">${daysLeft}d left</span>`;
+      } else {
+        expiryCell = `<span style="color:var(--success);">${daysLeft}d left</span>`;
+      }
+    }
+
+    // Device lock display
+    let deviceCell = isPublic
+      ? '<span style="color:var(--text3);">Any device</span>'
+      : (c.deviceId ? `<span style="color:var(--accent3);font-size:11px;font-family:var(--font-mono);">Locked ✓</span>` : '<span style="color:var(--text3);">Awaiting first use</span>');
+
+    const statusDot = c.active ? 'active' : 'inactive';
+    const statusLabel = c.active ? 'Active' : (c.expiresAt && new Date(c.expiresAt) < now ? 'Expired' : 'Deactivated');
+
+    return `<tr>
       <td><code style="font-family:var(--font-mono);font-size:13px;background:var(--surface2);padding:4px 8px;border-radius:4px;color:var(--accent)">${c.code}</code></td>
       <td>${c.label||'—'}</td>
-      <td><span class="status-dot ${c.active?'active':'inactive'}"></span>${c.active?'Active':'Deactivated'}</td>
+      <td>${typeTag}</td>
+      <td><span class="status-dot ${statusDot}"></span>${statusLabel}</td>
       <td style="font-family:var(--font-mono);">${c.uses||0}</td>
-      <td style="color:var(--text2);font-size:12px;">${new Date(c.created).toLocaleDateString()}</td>
+      <td>${expiryCell}</td>
+      <td>${deviceCell}</td>
       <td style="display:flex;gap:6px;">
         <button class="btn btn-ghost btn-sm" onclick="toggleCode('${c.code}')">${c.active?'Deactivate':'Activate'}</button>
         <button class="btn btn-danger btn-sm" onclick="deleteCode('${c.code}')">Delete</button>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function toggleCode(code) {
@@ -2750,6 +3308,7 @@ function deleteCode(code) {
     toast('Code deleted globally ✅','success');
   });
 }
+
 
 function renderUsersTable() {
   const users = getUsers();
@@ -3311,7 +3870,477 @@ async function showCommunity() {
 }
 </script>
 
-<div id="cookie-banner" style="display:none;">
+<div class="ls-modal-overlay" id="ls-go-live-modal">
+  <div class="ls-modal">
+    <h2>📡 GO LIVE</h2>
+    <div class="ls-preview-wrap"><video id="ls-preview-vid" autoplay muted playsinline></video></div>
+    <div class="form-group">
+      <label>STREAM TITLE</label>
+      <input type="text" id="ls-title-in" placeholder="What are you streaming?" maxlength="60">
+    </div>
+    <div id="ls-priority-note" class="ls-priority-note" style="display:none;">👑 As a Premium member, you skip to the front of the queue!</div>
+    <div style="display:flex;gap:10px;margin-top:6px;">
+      <button class="btn btn-primary" id="ls-start-btn" onclick="startStream()" style="flex:1;">🔴 Start Streaming</button>
+      <button class="btn btn-ghost" onclick="closeGoLiveModal()">Cancel</button>
+    </div>
+    <p style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.6;text-align:center;">Only one person can stream at a time. If someone is already live, you'll be added to the queue. Premium gets priority. 🎙 You can invite others to share their camera while you're live.</p>
+  </div>
+</div>
+
+<!-- Gift notification toast -->
+<div class="ls-notif" id="ls-notif"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   NEXUSHUB LIVESTREAM ENGINE
+   Uses PeerJS (WebRTC) + local state simulation
+   One streamer at a time, premium queue priority
+══════════════════════════════════════════════════ */
+
+// ── State
+const LS = {
+  isLive: false,            // is current user streaming
+  currentStreamer: null,    // {name,premium,title}
+  localStream: null,        // MediaStream (streamer)
+  previewStream: null,      // preview in modal
+  sharedCams: [],           // [{name,stream,premium}]
+  queue: [],                // [{name,premium,joined}]
+  chatMsgs: [],
+  viewers: 1,
+  viewerInterval: null,
+  chatInterval: null,
+  giftLog: [],
+};
+
+// ── Nav integration: add Livestream tab
+(function injectLiveTab(){
+  const orig = window.buildNavCats;
+  window.buildNavCats = function(){
+    orig && orig();
+    const el = document.getElementById('nav-cats');
+    if(!el) return;
+    // Remove any existing live tab first
+    el.querySelectorAll('[data-cat="livestream"]').forEach(b=>b.remove());
+    const btn = document.createElement('button');
+    btn.className = 'nav-cat';
+    btn.dataset.cat = 'livestream';
+    btn.innerHTML = '📡 Live';
+    btn.onclick = () => showLivestream();
+    // Insert after community
+    const comm = el.querySelector('[data-cat="community"]');
+    if(comm && comm.nextSibling) el.insertBefore(btn, comm.nextSibling);
+    else el.appendChild(btn);
+  };
+  // Also patch showSection to handle livestream
+  const origShow = window.showSection;
+  window.showSection = function(sec){
+    origShow && origShow(sec);
+    const lsEl = document.getElementById('section-livestream');
+    if(lsEl) lsEl.style.display = sec==='livestream' ? 'block' : 'none';
+  };
+})();
+
+function showLivestream() {
+  // Hide other sections
+  ['home','cat','community','secret'].forEach(s => {
+    const el = document.getElementById('section-'+s);
+    if(el) el.style.display = 'none';
+  });
+  document.getElementById('section-livestream').style.display = 'block';
+  document.querySelectorAll('.nav-cat').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === 'livestream');
+  });
+  lsRenderQueue();
+  lsRenderChat();
+  lsUpdateViewers();
+  // If a stream is active, render it
+  if(LS.currentStreamer) lsRenderLive();
+}
+
+// ── Go live modal
+async function openGoLiveModal() {
+  const modal = document.getElementById('ls-go-live-modal');
+  modal.classList.add('open');
+  // Show premium note
+  const note = document.getElementById('ls-priority-note');
+  if(currentUser?.premium) note.style.display = 'block';
+  else note.style.display = 'none';
+  // Request camera preview
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    LS.previewStream = stream;
+    document.getElementById('ls-preview-vid').srcObject = stream;
+  } catch(e) {
+    lsNotif('⚠️ Camera/mic access required to go live');
+  }
+}
+
+function closeGoLiveModal() {
+  document.getElementById('ls-go-live-modal').classList.remove('open');
+  if(LS.previewStream) {
+    LS.previewStream.getTracks().forEach(t=>t.stop());
+    LS.previewStream = null;
+  }
+}
+
+async function startStream() {
+  const title = document.getElementById('ls-title-in').value.trim() || currentUser?.name + "'s Stream";
+  if(!currentUser) return lsNotif('You need to be logged in!');
+  if(!LS.previewStream) {
+    try {
+      LS.previewStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      document.getElementById('ls-preview-vid').srcObject = LS.previewStream;
+    } catch(e) {
+      return lsNotif('⚠️ Camera access denied');
+    }
+  }
+
+  // If someone is already live, add to queue
+  if(LS.currentStreamer && LS.currentStreamer.name !== currentUser.name) {
+    joinStreamQueue(title);
+    closeGoLiveModal();
+    lsNotif('📋 Added to queue! You\'ll go live when it\'s your turn.');
+    toast('Added to stream queue!','info');
+    return;
+  }
+
+  // Start the stream
+  LS.localStream = LS.previewStream;
+  LS.previewStream = null;
+  LS.isLive = true;
+  LS.currentStreamer = { name: currentUser.name, premium: !!currentUser.premium, title };
+  // Show stream
+  const mainVid = document.getElementById('ls-main-video');
+  mainVid.srcObject = LS.localStream;
+  closeGoLiveModal();
+  lsRenderLive();
+  // Simulate viewer count growing
+  LS.viewers = 1;
+  clearInterval(LS.viewerInterval);
+  LS.viewerInterval = setInterval(lsTickViewers, 3000);
+  // Add system chat message
+  lsAddSystemMsg('🔴 ' + currentUser.name + ' is now live: ' + title);
+  lsNotif('🔴 You\'re LIVE!');
+  toast('You\'re live! 🔴','success');
+}
+
+function endStream() {
+  if(!LS.isLive) return;
+  LS.isLive = false;
+  if(LS.localStream) { LS.localStream.getTracks().forEach(t=>t.stop()); LS.localStream = null; }
+  // Stop all shared cams
+  LS.sharedCams.forEach(c => { if(c.stream) c.stream.getTracks().forEach(t=>t.stop()); });
+  LS.sharedCams = [];
+  clearInterval(LS.viewerInterval);
+  lsAddSystemMsg('⏹ ' + LS.currentStreamer?.name + ' ended the stream.');
+  LS.currentStreamer = null;
+  // Promote next in queue
+  lsPromoteQueue();
+  lsRenderOffline();
+  toast('Stream ended.','info');
+}
+
+function lsRenderLive() {
+  const s = LS.currentStreamer;
+  if(!s) return;
+  document.getElementById('ls-offline-screen').style.display = 'none';
+  document.getElementById('ls-main-video').classList.add('active');
+  document.getElementById('ls-live-badge').style.display = 'flex';
+  document.getElementById('ls-viewer-count').style.display = 'flex';
+  document.getElementById('ls-stage-title').textContent = s.title || s.name + "'s Stream";
+  document.getElementById('ls-stage-title').style.color = 'var(--text)';
+  const hostEl = document.getElementById('ls-stage-host');
+  hostEl.style.display = 'flex';
+  const av = document.getElementById('ls-host-av');
+  av.textContent = s.name[0].toUpperCase();
+  av.className = 'ls-host-avatar' + (s.premium ? ' premium-av' : '');
+  document.getElementById('ls-host-name').textContent = s.name;
+  const badge = document.getElementById('ls-host-badge');
+  if(s.premium) {
+    badge.style.display = 'inline';
+    badge.style.background = 'rgba(245,166,35,0.15)';
+    badge.style.color = 'var(--premium)';
+    badge.textContent = '👑 PREMIUM';
+  } else badge.style.display = 'none';
+  // Show actions for the streamer only
+  const acts = document.getElementById('ls-stage-actions');
+  const endBtn = document.getElementById('ls-end-stream-btn');
+  const shareBtn = document.getElementById('ls-share-cam-btn');
+  if(LS.isLive && currentUser?.name === s.name) {
+    acts.style.display = 'flex';
+    endBtn.style.display = 'inline-flex';
+    shareBtn.style.display = 'inline-flex';
+  } else {
+    acts.style.display = 'none';
+  }
+  // Gift bar for viewers
+  const giftBar = document.getElementById('ls-gift-bar');
+  giftBar.style.display = (!LS.isLive || currentUser?.name !== s.name) ? 'flex' : 'none';
+  lsUpdateViewers();
+  lsRenderSharedCams();
+}
+
+function lsRenderOffline() {
+  document.getElementById('ls-offline-screen').style.display = 'flex';
+  document.getElementById('ls-main-video').classList.remove('active');
+  document.getElementById('ls-main-video').srcObject = null;
+  document.getElementById('ls-live-badge').style.display = 'none';
+  document.getElementById('ls-viewer-count').style.display = 'none';
+  document.getElementById('ls-stage-title').textContent = 'Waiting for someone to go live…';
+  document.getElementById('ls-stage-title').style.color = 'var(--text3)';
+  document.getElementById('ls-stage-host').style.display = 'none';
+  document.getElementById('ls-stage-actions').style.display = 'none';
+  document.getElementById('ls-gift-bar').style.display = 'none';
+  document.getElementById('ls-cam-strip').style.display = 'none';
+  LS.sharedCams = [];
+}
+
+// ── Queue system
+function joinStreamQueue(titleOverride) {
+  if(!currentUser) return;
+  if(LS.queue.find(q=>q.name===currentUser.name)) {
+    lsNotif('⚠️ You\'re already in the queue');
+    return;
+  }
+  const entry = {
+    name: currentUser.name,
+    premium: !!currentUser.premium,
+    title: titleOverride || 'Stream by ' + currentUser.name,
+    joined: Date.now()
+  };
+  LS.queue.push(entry);
+  // Premium jumps to front (before free users, but after other premium)
+  LS.queue.sort((a,b) => {
+    if(a.premium && !b.premium) return -1;
+    if(!a.premium && b.premium) return 1;
+    return a.joined - b.joined;
+  });
+  // If nobody live, go live immediately
+  if(!LS.currentStreamer) {
+    LS.queue = LS.queue.filter(q=>q.name!==currentUser.name);
+    lsRenderQueue();
+    return;
+  }
+  lsRenderQueue();
+  lsNotif('📋 You\'re #' + (LS.queue.findIndex(q=>q.name===currentUser.name)+1) + ' in queue');
+}
+
+function lsPromoteQueue() {
+  if(!LS.queue.length) return;
+  const next = LS.queue.shift();
+  // If it's the current user, auto-start (in real app would use WebRTC signaling)
+  if(currentUser && next.name === currentUser.name) {
+    lsAddSystemMsg('🎙 It\'s your turn to stream! Hit GO LIVE to start.');
+    lsNotif('🎙 It\'s your turn! Press GO LIVE');
+  } else {
+    lsAddSystemMsg('🎙 ' + next.name + ' is next in queue.');
+  }
+  lsRenderQueue();
+}
+
+function lsRenderQueue() {
+  const el = document.getElementById('ls-queue-list');
+  if(!el) return;
+  const myInQueue = LS.queue.findIndex(q=>q.name===currentUser?.name);
+  // Update join button
+  const joinBtn = document.getElementById('ls-join-queue-btn');
+  if(joinBtn) {
+    if(myInQueue >= 0) { joinBtn.textContent = '✓ In Queue'; joinBtn.disabled = true; }
+    else { joinBtn.textContent = '+ Join Queue'; joinBtn.disabled = false; }
+  }
+  if(!LS.queue.length) {
+    el.innerHTML = '<div style="padding:10px;color:var(--text3);font-size:13px;text-align:center;">Queue is empty</div>';
+    return;
+  }
+  el.innerHTML = LS.queue.map((q,i) => `
+    <div class="ls-queue-item">
+      <div class="ls-queue-pos">${i+1}</div>
+      <div class="ls-queue-av" style="background:${q.premium?'linear-gradient(135deg,var(--premium),#ff8c00)':'var(--accent)'};">${q.name[0].toUpperCase()}</div>
+      <div class="ls-queue-name">${q.name}</div>
+      <span class="ls-queue-badge ${q.premium?'prem':'free'}">${q.premium?'👑 PREM':'FREE'}</span>
+    </div>
+  `).join('');
+}
+
+// ── Chat
+function lsAddSystemMsg(text) {
+  LS.chatMsgs.push({type:'system',text,time:Date.now()});
+  lsRenderChat();
+}
+
+function lsAddChatMsg(name, text, premium, isGift) {
+  LS.chatMsgs.push({type:'msg',name,text,premium,isGift,time:Date.now()});
+  if(LS.chatMsgs.length > 120) LS.chatMsgs = LS.chatMsgs.slice(-120);
+  lsRenderChat();
+}
+
+const LS_COLORS = ['#6c63ff','#ff6584','#43e97b','#f5a623','#4ecdc4','#a55eea','#fd9644'];
+function lsAvatarColor(name){
+  let h=0; for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))%LS_COLORS.length;
+  return LS_COLORS[h];
+}
+
+function lsRenderChat() {
+  const el = document.getElementById('ls-chat-msgs');
+  if(!el) return;
+  if(!LS.chatMsgs.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">No messages yet. Say hello! 👋</div>';
+    return;
+  }
+  el.innerHTML = LS.chatMsgs.map(m => {
+    if(m.type==='system') return `<div style="text-align:center;font-size:11px;color:var(--text3);font-family:var(--font-mono);padding:4px 0;">${m.text}</div>`;
+    return `<div class="ls-chat-msg">
+      <div class="ls-msg-av" style="background:${lsAvatarColor(m.name)};">${m.name[0].toUpperCase()}</div>
+      <div class="ls-msg-body">
+        <div class="ls-msg-name ${m.premium?'premium-name':''}">${m.name}${m.premium?' 👑':''}</div>
+        <div class="ls-msg-text ${m.isGift?'ls-msg-gift':''}">${m.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function lsSendChat() {
+  const input = document.getElementById('ls-chat-in');
+  const text = input?.value.trim();
+  if(!text || !currentUser) return;
+  lsAddChatMsg(currentUser.name, text, !!currentUser.premium, false);
+  if(input) input.value = '';
+}
+
+// ── Gifts
+const GIFTS = {
+  rose:{label:'Rose',icon:'🌹',cost:5},
+  star:{label:'Star',icon:'⭐',cost:15},
+  fire:{label:'Fire',icon:'🔥',cost:30},
+  crown:{label:'Crown',icon:'👑',cost:75},
+  diamond:{label:'Diamond',icon:'💎',cost:150},
+};
+function sendGift(type, cost, icon) {
+  if(!currentUser) return;
+  if(!LS.currentStreamer) return lsNotif('No one is live right now!');
+  if(!spendPoints(cost)) { lsNotif('⚠️ Not enough points!'); return; }
+  const g = GIFTS[type];
+  const msg = `${g.icon} sent a ${g.label} (${cost} pts)`;
+  lsAddChatMsg(currentUser.name, msg, !!currentUser.premium, true);
+  LS.giftLog.push({from:currentUser.name,type,icon,cost,time:Date.now()});
+  lsGiftFloat(icon);
+  lsNotif(`${icon} Gift sent to ${LS.currentStreamer.name}!`);
+  // Earn points for streamer (local simulation)
+  if(LS.isLive) {
+    addPoints(Math.floor(cost * 0.5));
+  }
+}
+
+function lsGiftFloat(icon) {
+  const el = document.createElement('div');
+  el.className = 'ls-gift-float';
+  el.textContent = icon;
+  const x = Math.random() * (window.innerWidth - 80);
+  const y = window.innerHeight - 120;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 2400);
+}
+
+// ── Shared cameras (the "invite" model)
+async function shareCameraPrompt() {
+  if(!LS.isLive) return;
+  if(LS.sharedCams.length >= 3) return lsNotif('Max 3 shared cameras reached');
+  // In a real app this would send a WebRTC invite. Here we just add the streamer's second cam.
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    const name = 'Guest ' + (LS.sharedCams.length+1);
+    LS.sharedCams.push({name, stream, premium:false});
+    lsRenderSharedCams();
+    lsAddSystemMsg('📷 ' + name + ' joined with a shared camera');
+    lsNotif('📷 Camera shared!');
+  } catch(e) {
+    lsNotif('⚠️ Camera access denied');
+  }
+}
+
+function lsRenderSharedCams() {
+  const strip = document.getElementById('ls-cam-strip');
+  if(!LS.sharedCams.length) { strip.style.display = 'none'; return; }
+  strip.style.display = 'flex';
+  strip.innerHTML = LS.sharedCams.map((c,i) => `
+    <div class="ls-cam-thumb ${i===0?'active-cam':''}" onclick="lsSwitchMainCam(${i})">
+      <video id="ls-cam-vid-${i}" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+      <div class="cam-label">${c.name}</div>
+      ${c.premium?'<div class="cam-premium-dot">👑</div>':''}
+    </div>
+  `).join('') +
+  (LS.isLive && currentUser?.name === LS.currentStreamer?.name ? `<div class="ls-cam-thumb ls-cam-add" onclick="shareCameraPrompt()"><span style="font-size:20px;">+</span><span>Invite Cam</span></div>` : '');
+  // Attach streams
+  LS.sharedCams.forEach((c,i)=>{
+    const v = document.getElementById('ls-cam-vid-'+i);
+    if(v && c.stream) v.srcObject = c.stream;
+  });
+}
+
+function lsSwitchMainCam(idx) {
+  document.querySelectorAll('.ls-cam-thumb').forEach((t,i)=>t.classList.toggle('active-cam',i===idx));
+  const mainVid = document.getElementById('ls-main-video');
+  const cam = LS.sharedCams[idx];
+  if(cam && cam.stream) mainVid.srcObject = cam.stream;
+  else if(LS.localStream) mainVid.srcObject = LS.localStream;
+}
+
+// ── Viewers simulation
+function lsTickViewers() {
+  if(!LS.currentStreamer) { LS.viewers = 0; lsUpdateViewers(); return; }
+  const delta = Math.random() > 0.4 ? 1 : -1;
+  LS.viewers = Math.max(1, LS.viewers + delta + (Math.random() > 0.7 ? 1 : 0));
+  lsUpdateViewers();
+}
+function lsUpdateViewers() {
+  const n = LS.currentStreamer ? LS.viewers : 0;
+  const el1 = document.getElementById('ls-vc-num');
+  const el2 = document.getElementById('ls-viewer-num');
+  const el3 = document.querySelector('.ls-vc-num2');
+  if(el1) el1.textContent = n;
+  if(el2) el2.textContent = n;
+  if(el3) el3.textContent = n;
+}
+
+// ── Notification toast
+let lsNotifTimer;
+function lsNotif(msg) {
+  const el = document.getElementById('ls-notif');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(lsNotifTimer);
+  lsNotifTimer = setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+// ── Nav: show Livestream on mobile bottom nav (patch mnav-community)
+document.addEventListener('DOMContentLoaded', function() {
+  // Patch mobile bottom nav to include live
+  const mnav = document.querySelector('#mobile-bottom-nav .mnav-inner');
+  if(mnav && !mnav.querySelector('#mnav-live')) {
+    const btn = document.createElement('button');
+    btn.className = 'mnav-btn';
+    btn.id = 'mnav-live';
+    btn.innerHTML = '<span class="micon">📡</span><span>Live</span>';
+    btn.onclick = () => { showLivestream(); };
+    const chatBtn = mnav.querySelector('#mnav-community');
+    if(chatBtn) mnav.insertBefore(btn, chatBtn);
+    else mnav.appendChild(btn);
+  }
+});
+
+// Rebuild nav when app loads to inject the Live tab
+document.addEventListener('DOMContentLoaded', function(){
+  const orig = window.initApp;
+  window.initApp = function(){
+    orig && orig.apply(this, arguments);
+    setTimeout(()=>{ if(window.buildNavCats) window.buildNavCats(); }, 300);
+  };
+});
+</script>
   <div id="cookie-inner">
     <div id="cookie-icon">🍪</div>
     <div id="cookie-text">
