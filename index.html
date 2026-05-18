@@ -465,103 +465,6 @@ button,a,[onclick]{touch-action:manipulation;}
 .sort-btn:hover{border-color:var(--accent);color:var(--accent);}
 .sort-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 .sort-label{font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-right:2px;flex-shrink:0;}
-
-/* ══ LIVESTREAM STYLES ══════════════════════════════════════════════ */
-#section-livestream{display:none;}
-.ls-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
-@media(max-width:900px){.ls-layout{grid-template-columns:1fr;}}
-.ls-stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.ls-video-area{position:relative;background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;}
-.ls-video-area video{width:100%;height:100%;object-fit:cover;display:none;}
-.ls-video-area video.active{display:block;}
-.ls-offline-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 60%,rgba(108,99,255,0.12) 0%,#000 70%);}
-.ls-offline-screen .ls-off-icon{font-size:56px;opacity:0.5;}
-.ls-offline-screen .ls-off-title{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:var(--text2);}
-.ls-offline-screen .ls-off-sub{font-size:13px;color:var(--text3);text-align:center;max-width:300px;line-height:1.6;}
-.ls-live-badge{position:absolute;top:14px;left:14px;background:#ff4757;color:#fff;font-family:var(--font-display);font-size:13px;letter-spacing:2px;padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:7px;box-shadow:0 0 20px rgba(255,71,87,0.5);}
-.ls-live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:livePulse 1s infinite;}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
-.ls-viewer-count{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.7);color:#fff;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;}
-.ls-cam-strip{display:flex;gap:8px;padding:12px;overflow-x:auto;scrollbar-width:none;background:var(--surface2);border-top:1px solid var(--border);}
-.ls-cam-strip::-webkit-scrollbar{display:none;}
-.ls-cam-thumb{position:relative;flex-shrink:0;width:120px;height:68px;background:#000;border-radius:8px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:var(--transition);}
-.ls-cam-thumb.active-cam{border-color:var(--accent3);}
-.ls-cam-thumb video{width:100%;height:100%;object-fit:cover;}
-.ls-cam-thumb .cam-label{position:absolute;bottom:4px;left:6px;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.9);font-family:var(--font-mono);}
-.ls-cam-thumb .cam-premium-dot{position:absolute;top:5px;right:6px;font-size:10px;}
-.ls-cam-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text3);font-size:11px;font-weight:600;border-style:dashed!important;cursor:pointer;}
-.ls-cam-add:hover{border-color:var(--accent)!important;color:var(--accent);}
-.ls-stage-info{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.ls-stage-title{font-family:var(--font-display);font-size:20px;letter-spacing:1px;}
-.ls-stage-host{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2);}
-.ls-host-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-.ls-host-avatar.premium-av{background:linear-gradient(135deg,var(--premium),#ff8c00);}
-.ls-stage-actions{display:flex;gap:8px;flex-wrap:wrap;}
-/* Gift animation */
-.ls-gift-float{position:fixed;pointer-events:none;z-index:9999;font-size:28px;animation:giftRise 2.2s ease-out forwards;}
-@keyframes giftRise{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-80px) scale(1.3);}100%{opacity:0;transform:translateY(-130px) scale(0.8);}}
-/* Right sidebar */
-.ls-sidebar{display:flex;flex-direction:column;gap:14px;}
-.ls-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.ls-panel-hdr{padding:12px 16px;font-family:var(--font-display);font-size:14px;letter-spacing:1px;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.ls-chat-msgs{height:320px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;}
-.ls-chat-msgs::-webkit-scrollbar{width:3px;}
-.ls-chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.ls-chat-msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn 0.2s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.ls-msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px;}
-.ls-msg-body{flex:1;min-width:0;}
-.ls-msg-name{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:2px;}
-.ls-msg-name.premium-name{color:var(--premium);}
-.ls-msg-text{font-size:13px;color:var(--text);line-height:1.5;word-break:break-word;}
-.ls-msg-gift{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--premium);font-weight:600;}
-.ls-chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);}
-.ls-chat-input-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:var(--transition);}
-.ls-chat-input-row input:focus{border-color:var(--accent);}
-.ls-chat-input-row button{background:var(--accent);border:none;color:#fff;border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);}
-.ls-chat-input-row button:hover{opacity:0.85;}
-/* Queue */
-.ls-queue-list{padding:10px 12px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
-.ls-queue-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;}
-.ls-queue-pos{font-family:var(--font-mono);font-size:11px;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
-.ls-queue-av{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
-.ls-queue-name{flex:1;font-weight:600;}
-.ls-queue-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.ls-queue-badge.prem{background:rgba(245,166,35,0.15);color:var(--premium);}
-.ls-queue-badge.free{background:rgba(144,144,176,0.12);color:var(--text3);}
-.ls-queue-join-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:var(--transition);font-family:var(--font-body);}
-.ls-queue-join-btn:hover{opacity:0.85;}
-.ls-queue-join-btn:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
-/* Gift bar */
-.ls-gift-bar{padding:12px 14px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border);}
-.ls-gift-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;transition:var(--transition);font-size:11px;color:var(--text2);}
-.ls-gift-btn:hover{border-color:var(--premium);color:var(--premium);transform:translateY(-2px);}
-.ls-gift-btn .gicon{font-size:22px;}
-.ls-gift-btn .gcost{font-family:var(--font-mono);font-size:10px;color:var(--accent3);font-weight:700;}
-/* Go Live button */
-.btn-golive{background:linear-gradient(135deg,#ff4757,#c0392b);color:#fff;font-family:var(--font-display);letter-spacing:2px;font-size:15px;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:8px;}
-.btn-golive:hover{box-shadow:0 0 20px rgba(255,71,87,0.5);transform:translateY(-1px);}
-.btn-golive.live-active{background:linear-gradient(135deg,#2ed573,#1e9e52);}
-/* Go-live modal */
-.ls-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
-.ls-modal-overlay.open{display:flex;}
-.ls-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:480px;box-shadow:0 30px 80px rgba(0,0,0,0.6);}
-.ls-modal h2{font-family:var(--font-display);font-size:26px;letter-spacing:2px;margin-bottom:20px;}
-.ls-modal .form-group{margin-bottom:16px;}
-.ls-modal .form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:0.5px;}
-.ls-modal .form-group input,.ls-modal .form-group select{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:var(--transition);}
-.ls-modal .form-group input:focus,.ls-modal .form-group select:focus{border-color:var(--accent);}
-/* Stream preview */
-.ls-preview-wrap{background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9;position:relative;margin-bottom:16px;}
-.ls-preview-wrap video{width:100%;height:100%;object-fit:cover;}
-/* Top streamer banner for queue skip */
-.ls-priority-note{font-size:11px;padding:8px 12px;border-radius:8px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);color:var(--premium);margin-top:8px;line-height:1.5;}
-/* Notification toasts for gifts */
-.ls-notif{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,rgba(245,166,35,0.15),rgba(255,101,132,0.1));border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:10px 20px;font-size:14px;font-weight:600;color:#fff;z-index:9998;opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(12px);}
-.ls-notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
-/* Viewers dot */
-.ls-viewers-label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
-.ls-viewers-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:livePulse 1s infinite;}
 </style>
 </head>
 <body>
@@ -689,89 +592,6 @@ button,a,[onclick]{touch-action:manipulation;}
       </div>
       <div id="secret-blocks-area"></div>
     </div>
-
-    <!-- ════ LIVESTREAM SECTION ════ -->
-    <div id="section-livestream">
-      <div class="section-header" style="margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-        <div class="section-title">📡 <span>Live</span></div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <div class="ls-viewers-label" id="ls-total-viewers"><span class="ls-viewers-dot"></span><span id="ls-viewer-num">0</span> watching</div>
-          <button class="btn-golive" id="ls-go-live-btn" onclick="openGoLiveModal()">📡 GO LIVE</button>
-        </div>
-      </div>
-      <div class="ls-layout">
-        <!-- Main stage -->
-        <div>
-          <div class="ls-stage">
-            <div class="ls-video-area" id="ls-video-area">
-              <div class="ls-offline-screen" id="ls-offline-screen">
-                <div class="ls-off-icon">📡</div>
-                <div class="ls-off-title">NO ONE IS LIVE</div>
-                <div class="ls-off-sub">Be the first to go live! Hit the <strong style="color:var(--accent);">GO LIVE</strong> button above to start streaming.<br>Premium members get priority in the queue.</div>
-              </div>
-              <!-- Main stream video -->
-              <video id="ls-main-video" autoplay muted playsinline></video>
-              <div class="ls-live-badge" id="ls-live-badge" style="display:none;"><span class="ls-live-dot"></span>LIVE</div>
-              <div class="ls-viewer-count" id="ls-viewer-count" style="display:none;">👁 <span id="ls-vc-num">1</span></div>
-            </div>
-            <!-- Shared cameras strip -->
-            <div class="ls-cam-strip" id="ls-cam-strip" style="display:none;">
-              <!-- cameras added dynamically -->
-            </div>
-            <!-- Stage info bar -->
-            <div class="ls-stage-info" id="ls-stage-info">
-              <div>
-                <div class="ls-stage-title" id="ls-stage-title" style="color:var(--text3);">Waiting for someone to go live…</div>
-                <div class="ls-stage-host" id="ls-stage-host" style="display:none;">
-                  <div class="ls-host-avatar" id="ls-host-av"></div>
-                  <span id="ls-host-name"></span>
-                  <span id="ls-host-badge" style="font-size:11px;padding:2px 8px;border-radius:20px;display:none;"></span>
-                </div>
-              </div>
-              <div class="ls-stage-actions" id="ls-stage-actions" style="display:none;">
-                <button class="btn btn-ghost btn-sm" id="ls-share-cam-btn" onclick="shareCameraPrompt()" style="display:none;">📷 Share Camera</button>
-                <button class="btn btn-danger btn-sm" id="ls-end-stream-btn" onclick="endStream()" style="display:none;">⏹ End Stream</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right sidebar -->
-        <div class="ls-sidebar">
-          <!-- Live chat -->
-          <div class="ls-panel">
-            <div class="ls-panel-hdr">
-              💬 Stream Chat
-              <div class="ls-viewers-label"><span class="ls-viewers-dot"></span><span class="ls-vc-num2">1</span></div>
-            </div>
-            <div class="ls-chat-msgs" id="ls-chat-msgs"></div>
-            <!-- Gift bar -->
-            <div class="ls-gift-bar" id="ls-gift-bar" style="display:none;">
-              <button class="ls-gift-btn" onclick="sendGift('rose',5,'🌹')"><span class="gicon">🌹</span><span>Rose</span><span class="gcost">5 pts</span></button>
-              <button class="ls-gift-btn" onclick="sendGift('star',15,'⭐')"><span class="gicon">⭐</span><span>Star</span><span class="gcost">15 pts</span></button>
-              <button class="ls-gift-btn" onclick="sendGift('fire',30,'🔥')"><span class="gicon">🔥</span><span>Fire</span><span class="gcost">30 pts</span></button>
-              <button class="ls-gift-btn" onclick="sendGift('crown',75,'👑')"><span class="gicon">👑</span><span>Crown</span><span class="gcost">75 pts</span></button>
-              <button class="ls-gift-btn" onclick="sendGift('diamond',150,'💎')"><span class="gicon">💎</span><span>Diamond</span><span class="gcost">150 pts</span></button>
-            </div>
-            <div class="ls-chat-input-row">
-              <input id="ls-chat-in" type="text" placeholder="Say something…" maxlength="180" onkeydown="if(event.key==='Enter')lsSendChat()">
-              <button onclick="lsSendChat()">Send</button>
-            </div>
-          </div>
-          <!-- Queue / waiting list -->
-          <div class="ls-panel">
-            <div class="ls-panel-hdr">
-              🎙 Stream Queue
-              <button class="btn btn-ghost btn-sm" id="ls-join-queue-btn" onclick="joinStreamQueue()" style="font-size:11px;padding:5px 10px;">+ Join Queue</button>
-            </div>
-            <div class="ls-queue-list" id="ls-queue-list">
-              <div style="padding:8px;color:var(--text3);font-size:13px;text-align:center;">Queue is empty</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- ════ END LIVESTREAM ════ -->
 
     <div id="section-community" style="display:none;">
       <div class="community-layout">
@@ -3583,7 +3403,7 @@ async function getCommBinId() {
     const res = await fetch('https://api.jsonbin.io/v3/b', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name': 'nexushub-community', 'X-Bin-Private': 'false' },
-      body: JSON.stringify({ chat: [], leaderboard: [], ratings: [] })
+      body: JSON.stringify({ chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() })
     });
     const d = await res.json();
     _commBinId = d.metadata?.id || '';
@@ -3594,16 +3414,16 @@ async function getCommBinId() {
 
 async function fetchCommData() {
   const id = await getCommBinId();
-  if (!id) return _commCache || { chat: [], leaderboard: [], ratings: [] };
+  if (!id) return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() };
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
     if (!res.ok) return _commCache || { chat: [], leaderboard: [], ratings: [] };
     const d = await res.json();
-    _commCache = { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [] };
+    _commCache = { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [], livestream: d.livestream || lsEmptyState() };
     return _commCache;
-  } catch(e) { return _commCache || { chat: [], leaderboard: [], ratings: [] }; }
+  } catch(e) { return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() }; }
 }
 
 async function pushCommData() {
@@ -3870,477 +3690,7 @@ async function showCommunity() {
 }
 </script>
 
-<div class="ls-modal-overlay" id="ls-go-live-modal">
-  <div class="ls-modal">
-    <h2>📡 GO LIVE</h2>
-    <div class="ls-preview-wrap"><video id="ls-preview-vid" autoplay muted playsinline></video></div>
-    <div class="form-group">
-      <label>STREAM TITLE</label>
-      <input type="text" id="ls-title-in" placeholder="What are you streaming?" maxlength="60">
-    </div>
-    <div id="ls-priority-note" class="ls-priority-note" style="display:none;">👑 As a Premium member, you skip to the front of the queue!</div>
-    <div style="display:flex;gap:10px;margin-top:6px;">
-      <button class="btn btn-primary" id="ls-start-btn" onclick="startStream()" style="flex:1;">🔴 Start Streaming</button>
-      <button class="btn btn-ghost" onclick="closeGoLiveModal()">Cancel</button>
-    </div>
-    <p style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.6;text-align:center;">Only one person can stream at a time. If someone is already live, you'll be added to the queue. Premium gets priority. 🎙 You can invite others to share their camera while you're live.</p>
-  </div>
-</div>
-
-<!-- Gift notification toast -->
-<div class="ls-notif" id="ls-notif"></div>
-
-<script>
-/* ══════════════════════════════════════════════════
-   NEXUSHUB LIVESTREAM ENGINE
-   Uses PeerJS (WebRTC) + local state simulation
-   One streamer at a time, premium queue priority
-══════════════════════════════════════════════════ */
-
-// ── State
-const LS = {
-  isLive: false,            // is current user streaming
-  currentStreamer: null,    // {name,premium,title}
-  localStream: null,        // MediaStream (streamer)
-  previewStream: null,      // preview in modal
-  sharedCams: [],           // [{name,stream,premium}]
-  queue: [],                // [{name,premium,joined}]
-  chatMsgs: [],
-  viewers: 1,
-  viewerInterval: null,
-  chatInterval: null,
-  giftLog: [],
-};
-
-// ── Nav integration: add Livestream tab
-(function injectLiveTab(){
-  const orig = window.buildNavCats;
-  window.buildNavCats = function(){
-    orig && orig();
-    const el = document.getElementById('nav-cats');
-    if(!el) return;
-    // Remove any existing live tab first
-    el.querySelectorAll('[data-cat="livestream"]').forEach(b=>b.remove());
-    const btn = document.createElement('button');
-    btn.className = 'nav-cat';
-    btn.dataset.cat = 'livestream';
-    btn.innerHTML = '📡 Live';
-    btn.onclick = () => showLivestream();
-    // Insert after community
-    const comm = el.querySelector('[data-cat="community"]');
-    if(comm && comm.nextSibling) el.insertBefore(btn, comm.nextSibling);
-    else el.appendChild(btn);
-  };
-  // Also patch showSection to handle livestream
-  const origShow = window.showSection;
-  window.showSection = function(sec){
-    origShow && origShow(sec);
-    const lsEl = document.getElementById('section-livestream');
-    if(lsEl) lsEl.style.display = sec==='livestream' ? 'block' : 'none';
-  };
-})();
-
-function showLivestream() {
-  // Hide other sections
-  ['home','cat','community','secret'].forEach(s => {
-    const el = document.getElementById('section-'+s);
-    if(el) el.style.display = 'none';
-  });
-  document.getElementById('section-livestream').style.display = 'block';
-  document.querySelectorAll('.nav-cat').forEach(b => {
-    b.classList.toggle('active', b.dataset.cat === 'livestream');
-  });
-  lsRenderQueue();
-  lsRenderChat();
-  lsUpdateViewers();
-  // If a stream is active, render it
-  if(LS.currentStreamer) lsRenderLive();
-}
-
-// ── Go live modal
-async function openGoLiveModal() {
-  const modal = document.getElementById('ls-go-live-modal');
-  modal.classList.add('open');
-  // Show premium note
-  const note = document.getElementById('ls-priority-note');
-  if(currentUser?.premium) note.style.display = 'block';
-  else note.style.display = 'none';
-  // Request camera preview
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-    LS.previewStream = stream;
-    document.getElementById('ls-preview-vid').srcObject = stream;
-  } catch(e) {
-    lsNotif('⚠️ Camera/mic access required to go live');
-  }
-}
-
-function closeGoLiveModal() {
-  document.getElementById('ls-go-live-modal').classList.remove('open');
-  if(LS.previewStream) {
-    LS.previewStream.getTracks().forEach(t=>t.stop());
-    LS.previewStream = null;
-  }
-}
-
-async function startStream() {
-  const title = document.getElementById('ls-title-in').value.trim() || currentUser?.name + "'s Stream";
-  if(!currentUser) return lsNotif('You need to be logged in!');
-  if(!LS.previewStream) {
-    try {
-      LS.previewStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-      document.getElementById('ls-preview-vid').srcObject = LS.previewStream;
-    } catch(e) {
-      return lsNotif('⚠️ Camera access denied');
-    }
-  }
-
-  // If someone is already live, add to queue
-  if(LS.currentStreamer && LS.currentStreamer.name !== currentUser.name) {
-    joinStreamQueue(title);
-    closeGoLiveModal();
-    lsNotif('📋 Added to queue! You\'ll go live when it\'s your turn.');
-    toast('Added to stream queue!','info');
-    return;
-  }
-
-  // Start the stream
-  LS.localStream = LS.previewStream;
-  LS.previewStream = null;
-  LS.isLive = true;
-  LS.currentStreamer = { name: currentUser.name, premium: !!currentUser.premium, title };
-  // Show stream
-  const mainVid = document.getElementById('ls-main-video');
-  mainVid.srcObject = LS.localStream;
-  closeGoLiveModal();
-  lsRenderLive();
-  // Simulate viewer count growing
-  LS.viewers = 1;
-  clearInterval(LS.viewerInterval);
-  LS.viewerInterval = setInterval(lsTickViewers, 3000);
-  // Add system chat message
-  lsAddSystemMsg('🔴 ' + currentUser.name + ' is now live: ' + title);
-  lsNotif('🔴 You\'re LIVE!');
-  toast('You\'re live! 🔴','success');
-}
-
-function endStream() {
-  if(!LS.isLive) return;
-  LS.isLive = false;
-  if(LS.localStream) { LS.localStream.getTracks().forEach(t=>t.stop()); LS.localStream = null; }
-  // Stop all shared cams
-  LS.sharedCams.forEach(c => { if(c.stream) c.stream.getTracks().forEach(t=>t.stop()); });
-  LS.sharedCams = [];
-  clearInterval(LS.viewerInterval);
-  lsAddSystemMsg('⏹ ' + LS.currentStreamer?.name + ' ended the stream.');
-  LS.currentStreamer = null;
-  // Promote next in queue
-  lsPromoteQueue();
-  lsRenderOffline();
-  toast('Stream ended.','info');
-}
-
-function lsRenderLive() {
-  const s = LS.currentStreamer;
-  if(!s) return;
-  document.getElementById('ls-offline-screen').style.display = 'none';
-  document.getElementById('ls-main-video').classList.add('active');
-  document.getElementById('ls-live-badge').style.display = 'flex';
-  document.getElementById('ls-viewer-count').style.display = 'flex';
-  document.getElementById('ls-stage-title').textContent = s.title || s.name + "'s Stream";
-  document.getElementById('ls-stage-title').style.color = 'var(--text)';
-  const hostEl = document.getElementById('ls-stage-host');
-  hostEl.style.display = 'flex';
-  const av = document.getElementById('ls-host-av');
-  av.textContent = s.name[0].toUpperCase();
-  av.className = 'ls-host-avatar' + (s.premium ? ' premium-av' : '');
-  document.getElementById('ls-host-name').textContent = s.name;
-  const badge = document.getElementById('ls-host-badge');
-  if(s.premium) {
-    badge.style.display = 'inline';
-    badge.style.background = 'rgba(245,166,35,0.15)';
-    badge.style.color = 'var(--premium)';
-    badge.textContent = '👑 PREMIUM';
-  } else badge.style.display = 'none';
-  // Show actions for the streamer only
-  const acts = document.getElementById('ls-stage-actions');
-  const endBtn = document.getElementById('ls-end-stream-btn');
-  const shareBtn = document.getElementById('ls-share-cam-btn');
-  if(LS.isLive && currentUser?.name === s.name) {
-    acts.style.display = 'flex';
-    endBtn.style.display = 'inline-flex';
-    shareBtn.style.display = 'inline-flex';
-  } else {
-    acts.style.display = 'none';
-  }
-  // Gift bar for viewers
-  const giftBar = document.getElementById('ls-gift-bar');
-  giftBar.style.display = (!LS.isLive || currentUser?.name !== s.name) ? 'flex' : 'none';
-  lsUpdateViewers();
-  lsRenderSharedCams();
-}
-
-function lsRenderOffline() {
-  document.getElementById('ls-offline-screen').style.display = 'flex';
-  document.getElementById('ls-main-video').classList.remove('active');
-  document.getElementById('ls-main-video').srcObject = null;
-  document.getElementById('ls-live-badge').style.display = 'none';
-  document.getElementById('ls-viewer-count').style.display = 'none';
-  document.getElementById('ls-stage-title').textContent = 'Waiting for someone to go live…';
-  document.getElementById('ls-stage-title').style.color = 'var(--text3)';
-  document.getElementById('ls-stage-host').style.display = 'none';
-  document.getElementById('ls-stage-actions').style.display = 'none';
-  document.getElementById('ls-gift-bar').style.display = 'none';
-  document.getElementById('ls-cam-strip').style.display = 'none';
-  LS.sharedCams = [];
-}
-
-// ── Queue system
-function joinStreamQueue(titleOverride) {
-  if(!currentUser) return;
-  if(LS.queue.find(q=>q.name===currentUser.name)) {
-    lsNotif('⚠️ You\'re already in the queue');
-    return;
-  }
-  const entry = {
-    name: currentUser.name,
-    premium: !!currentUser.premium,
-    title: titleOverride || 'Stream by ' + currentUser.name,
-    joined: Date.now()
-  };
-  LS.queue.push(entry);
-  // Premium jumps to front (before free users, but after other premium)
-  LS.queue.sort((a,b) => {
-    if(a.premium && !b.premium) return -1;
-    if(!a.premium && b.premium) return 1;
-    return a.joined - b.joined;
-  });
-  // If nobody live, go live immediately
-  if(!LS.currentStreamer) {
-    LS.queue = LS.queue.filter(q=>q.name!==currentUser.name);
-    lsRenderQueue();
-    return;
-  }
-  lsRenderQueue();
-  lsNotif('📋 You\'re #' + (LS.queue.findIndex(q=>q.name===currentUser.name)+1) + ' in queue');
-}
-
-function lsPromoteQueue() {
-  if(!LS.queue.length) return;
-  const next = LS.queue.shift();
-  // If it's the current user, auto-start (in real app would use WebRTC signaling)
-  if(currentUser && next.name === currentUser.name) {
-    lsAddSystemMsg('🎙 It\'s your turn to stream! Hit GO LIVE to start.');
-    lsNotif('🎙 It\'s your turn! Press GO LIVE');
-  } else {
-    lsAddSystemMsg('🎙 ' + next.name + ' is next in queue.');
-  }
-  lsRenderQueue();
-}
-
-function lsRenderQueue() {
-  const el = document.getElementById('ls-queue-list');
-  if(!el) return;
-  const myInQueue = LS.queue.findIndex(q=>q.name===currentUser?.name);
-  // Update join button
-  const joinBtn = document.getElementById('ls-join-queue-btn');
-  if(joinBtn) {
-    if(myInQueue >= 0) { joinBtn.textContent = '✓ In Queue'; joinBtn.disabled = true; }
-    else { joinBtn.textContent = '+ Join Queue'; joinBtn.disabled = false; }
-  }
-  if(!LS.queue.length) {
-    el.innerHTML = '<div style="padding:10px;color:var(--text3);font-size:13px;text-align:center;">Queue is empty</div>';
-    return;
-  }
-  el.innerHTML = LS.queue.map((q,i) => `
-    <div class="ls-queue-item">
-      <div class="ls-queue-pos">${i+1}</div>
-      <div class="ls-queue-av" style="background:${q.premium?'linear-gradient(135deg,var(--premium),#ff8c00)':'var(--accent)'};">${q.name[0].toUpperCase()}</div>
-      <div class="ls-queue-name">${q.name}</div>
-      <span class="ls-queue-badge ${q.premium?'prem':'free'}">${q.premium?'👑 PREM':'FREE'}</span>
-    </div>
-  `).join('');
-}
-
-// ── Chat
-function lsAddSystemMsg(text) {
-  LS.chatMsgs.push({type:'system',text,time:Date.now()});
-  lsRenderChat();
-}
-
-function lsAddChatMsg(name, text, premium, isGift) {
-  LS.chatMsgs.push({type:'msg',name,text,premium,isGift,time:Date.now()});
-  if(LS.chatMsgs.length > 120) LS.chatMsgs = LS.chatMsgs.slice(-120);
-  lsRenderChat();
-}
-
-const LS_COLORS = ['#6c63ff','#ff6584','#43e97b','#f5a623','#4ecdc4','#a55eea','#fd9644'];
-function lsAvatarColor(name){
-  let h=0; for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))%LS_COLORS.length;
-  return LS_COLORS[h];
-}
-
-function lsRenderChat() {
-  const el = document.getElementById('ls-chat-msgs');
-  if(!el) return;
-  if(!LS.chatMsgs.length) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">No messages yet. Say hello! 👋</div>';
-    return;
-  }
-  el.innerHTML = LS.chatMsgs.map(m => {
-    if(m.type==='system') return `<div style="text-align:center;font-size:11px;color:var(--text3);font-family:var(--font-mono);padding:4px 0;">${m.text}</div>`;
-    return `<div class="ls-chat-msg">
-      <div class="ls-msg-av" style="background:${lsAvatarColor(m.name)};">${m.name[0].toUpperCase()}</div>
-      <div class="ls-msg-body">
-        <div class="ls-msg-name ${m.premium?'premium-name':''}">${m.name}${m.premium?' 👑':''}</div>
-        <div class="ls-msg-text ${m.isGift?'ls-msg-gift':''}">${m.text}</div>
-      </div>
-    </div>`;
-  }).join('');
-  el.scrollTop = el.scrollHeight;
-}
-
-function lsSendChat() {
-  const input = document.getElementById('ls-chat-in');
-  const text = input?.value.trim();
-  if(!text || !currentUser) return;
-  lsAddChatMsg(currentUser.name, text, !!currentUser.premium, false);
-  if(input) input.value = '';
-}
-
-// ── Gifts
-const GIFTS = {
-  rose:{label:'Rose',icon:'🌹',cost:5},
-  star:{label:'Star',icon:'⭐',cost:15},
-  fire:{label:'Fire',icon:'🔥',cost:30},
-  crown:{label:'Crown',icon:'👑',cost:75},
-  diamond:{label:'Diamond',icon:'💎',cost:150},
-};
-function sendGift(type, cost, icon) {
-  if(!currentUser) return;
-  if(!LS.currentStreamer) return lsNotif('No one is live right now!');
-  if(!spendPoints(cost)) { lsNotif('⚠️ Not enough points!'); return; }
-  const g = GIFTS[type];
-  const msg = `${g.icon} sent a ${g.label} (${cost} pts)`;
-  lsAddChatMsg(currentUser.name, msg, !!currentUser.premium, true);
-  LS.giftLog.push({from:currentUser.name,type,icon,cost,time:Date.now()});
-  lsGiftFloat(icon);
-  lsNotif(`${icon} Gift sent to ${LS.currentStreamer.name}!`);
-  // Earn points for streamer (local simulation)
-  if(LS.isLive) {
-    addPoints(Math.floor(cost * 0.5));
-  }
-}
-
-function lsGiftFloat(icon) {
-  const el = document.createElement('div');
-  el.className = 'ls-gift-float';
-  el.textContent = icon;
-  const x = Math.random() * (window.innerWidth - 80);
-  const y = window.innerHeight - 120;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 2400);
-}
-
-// ── Shared cameras (the "invite" model)
-async function shareCameraPrompt() {
-  if(!LS.isLive) return;
-  if(LS.sharedCams.length >= 3) return lsNotif('Max 3 shared cameras reached');
-  // In a real app this would send a WebRTC invite. Here we just add the streamer's second cam.
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
-    const name = 'Guest ' + (LS.sharedCams.length+1);
-    LS.sharedCams.push({name, stream, premium:false});
-    lsRenderSharedCams();
-    lsAddSystemMsg('📷 ' + name + ' joined with a shared camera');
-    lsNotif('📷 Camera shared!');
-  } catch(e) {
-    lsNotif('⚠️ Camera access denied');
-  }
-}
-
-function lsRenderSharedCams() {
-  const strip = document.getElementById('ls-cam-strip');
-  if(!LS.sharedCams.length) { strip.style.display = 'none'; return; }
-  strip.style.display = 'flex';
-  strip.innerHTML = LS.sharedCams.map((c,i) => `
-    <div class="ls-cam-thumb ${i===0?'active-cam':''}" onclick="lsSwitchMainCam(${i})">
-      <video id="ls-cam-vid-${i}" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
-      <div class="cam-label">${c.name}</div>
-      ${c.premium?'<div class="cam-premium-dot">👑</div>':''}
-    </div>
-  `).join('') +
-  (LS.isLive && currentUser?.name === LS.currentStreamer?.name ? `<div class="ls-cam-thumb ls-cam-add" onclick="shareCameraPrompt()"><span style="font-size:20px;">+</span><span>Invite Cam</span></div>` : '');
-  // Attach streams
-  LS.sharedCams.forEach((c,i)=>{
-    const v = document.getElementById('ls-cam-vid-'+i);
-    if(v && c.stream) v.srcObject = c.stream;
-  });
-}
-
-function lsSwitchMainCam(idx) {
-  document.querySelectorAll('.ls-cam-thumb').forEach((t,i)=>t.classList.toggle('active-cam',i===idx));
-  const mainVid = document.getElementById('ls-main-video');
-  const cam = LS.sharedCams[idx];
-  if(cam && cam.stream) mainVid.srcObject = cam.stream;
-  else if(LS.localStream) mainVid.srcObject = LS.localStream;
-}
-
-// ── Viewers simulation
-function lsTickViewers() {
-  if(!LS.currentStreamer) { LS.viewers = 0; lsUpdateViewers(); return; }
-  const delta = Math.random() > 0.4 ? 1 : -1;
-  LS.viewers = Math.max(1, LS.viewers + delta + (Math.random() > 0.7 ? 1 : 0));
-  lsUpdateViewers();
-}
-function lsUpdateViewers() {
-  const n = LS.currentStreamer ? LS.viewers : 0;
-  const el1 = document.getElementById('ls-vc-num');
-  const el2 = document.getElementById('ls-viewer-num');
-  const el3 = document.querySelector('.ls-vc-num2');
-  if(el1) el1.textContent = n;
-  if(el2) el2.textContent = n;
-  if(el3) el3.textContent = n;
-}
-
-// ── Notification toast
-let lsNotifTimer;
-function lsNotif(msg) {
-  const el = document.getElementById('ls-notif');
-  if(!el) return;
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(lsNotifTimer);
-  lsNotifTimer = setTimeout(()=>el.classList.remove('show'), 2800);
-}
-
-// ── Nav: show Livestream on mobile bottom nav (patch mnav-community)
-document.addEventListener('DOMContentLoaded', function() {
-  // Patch mobile bottom nav to include live
-  const mnav = document.querySelector('#mobile-bottom-nav .mnav-inner');
-  if(mnav && !mnav.querySelector('#mnav-live')) {
-    const btn = document.createElement('button');
-    btn.className = 'mnav-btn';
-    btn.id = 'mnav-live';
-    btn.innerHTML = '<span class="micon">📡</span><span>Live</span>';
-    btn.onclick = () => { showLivestream(); };
-    const chatBtn = mnav.querySelector('#mnav-community');
-    if(chatBtn) mnav.insertBefore(btn, chatBtn);
-    else mnav.appendChild(btn);
-  }
-});
-
-// Rebuild nav when app loads to inject the Live tab
-document.addEventListener('DOMContentLoaded', function(){
-  const orig = window.initApp;
-  window.initApp = function(){
-    orig && orig.apply(this, arguments);
-    setTimeout(()=>{ if(window.buildNavCats) window.buildNavCats(); }, 300);
-  };
-});
-</script>
+<div id="cookie-banner" style="display:none;">
   <div id="cookie-inner">
     <div id="cookie-icon">🍪</div>
     <div id="cookie-text">
@@ -5386,6 +4736,735 @@ async function saveEditContent() {
   buildNavCats();
   buildHomeGrid();
 }
+</script>
+
+<!-- ══════════════════════════════════════════════════
+     NEXUSHUB GLOBAL LIVESTREAM
+     Real WebRTC via PeerJS + JSONBin signaling
+     One streamer at a time · Premium queue priority
+     Poll-based state sync every 3 s (same as chat)
+══════════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
+
+<!-- ─── LIVESTREAM CSS ─────────────────────────────────────── -->
+<style>
+#section-livestream{display:none;}
+.ls-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+@media(max-width:900px){.ls-layout{grid-template-columns:1fr;}}
+.ls-stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.ls-video-area{position:relative;background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#ls-main-video{width:100%;height:100%;object-fit:cover;display:none;}
+#ls-main-video.active{display:block;}
+.ls-offline-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 60%,rgba(108,99,255,0.13) 0%,#000 70%);text-align:center;padding:24px;}
+.ls-offline-screen .ls-off-icon{font-size:56px;opacity:0.45;}
+.ls-offline-screen .ls-off-title{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:var(--text2);}
+.ls-offline-screen .ls-off-sub{font-size:13px;color:var(--text3);max-width:300px;line-height:1.65;}
+.ls-live-badge{position:absolute;top:14px;left:14px;background:#ff4757;color:#fff;font-family:var(--font-display);font-size:13px;letter-spacing:2px;padding:4px 13px;border-radius:20px;display:none;align-items:center;gap:7px;box-shadow:0 0 20px rgba(255,71,87,0.55);}
+.ls-live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:lsPulse 1s infinite;}
+@keyframes lsPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.65);}}
+.ls-vc-badge{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.72);color:#fff;font-size:13px;font-weight:600;padding:4px 13px;border-radius:20px;backdrop-filter:blur(8px);display:none;align-items:center;gap:6px;}
+.ls-cam-strip{display:none;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none;background:var(--surface2);border-top:1px solid var(--border);}
+.ls-cam-strip::-webkit-scrollbar{display:none;}
+.ls-cam-thumb{position:relative;flex-shrink:0;width:120px;height:68px;background:#111;border-radius:8px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:var(--transition);}
+.ls-cam-thumb:hover,.ls-cam-thumb.active-cam{border-color:var(--accent3);}
+.ls-cam-thumb video{width:100%;height:100%;object-fit:cover;}
+.ls-cam-thumb .cam-label{position:absolute;bottom:4px;left:6px;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.9);}
+.ls-cam-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text3);font-size:11px;font-weight:600;border-style:dashed!important;cursor:pointer;}
+.ls-cam-add:hover{border-color:var(--accent)!important;color:var(--accent)!important;}
+.ls-stage-info{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.ls-stage-title{font-family:var(--font-display);font-size:20px;letter-spacing:1px;}
+.ls-stage-host{display:none;align-items:center;gap:8px;font-size:14px;color:var(--text2);margin-top:4px;}
+.ls-host-av{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.ls-host-av.prem{background:linear-gradient(135deg,var(--premium),#e67e22);}
+.ls-sidebar{display:flex;flex-direction:column;gap:14px;}
+.ls-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.ls-phdr{padding:11px 15px;font-family:var(--font-display);font-size:13px;letter-spacing:1px;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ls-chat-msgs{height:300px;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:5px;}
+.ls-chat-msgs::-webkit-scrollbar{width:3px;}
+.ls-chat-msgs::-webkit-scrollbar-thumb{background:var(--border);}
+.ls-chat-msg{display:flex;gap:7px;align-items:flex-start;animation:lsMsgIn 0.18s ease;}
+@keyframes lsMsgIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.ls-msg-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px;}
+.ls-msg-body{flex:1;min-width:0;}
+.ls-msg-name{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:1px;}
+.ls-msg-name.pn{color:var(--premium);}
+.ls-msg-text{font-size:13px;color:var(--text);line-height:1.5;word-break:break-word;}
+.ls-msg-gift{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:8px;padding:5px 9px;color:var(--premium);font-weight:600;}
+.ls-sys-msg{text-align:center;font-size:11px;color:var(--text3);font-family:var(--font-mono);padding:3px 0;}
+.ls-chat-row{display:flex;gap:7px;padding:9px 11px;border-top:1px solid var(--border);}
+.ls-chat-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:var(--transition);}
+.ls-chat-row input:focus{border-color:var(--accent);}
+.ls-chat-row button{background:var(--accent);border:none;color:#fff;border-radius:var(--radius-sm);padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;}
+.ls-gift-bar{display:none;gap:6px;padding:9px 12px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.ls-gbtn{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:7px 10px;cursor:pointer;transition:var(--transition);font-size:11px;color:var(--text2);}
+.ls-gbtn:hover{border-color:var(--premium);color:var(--premium);transform:translateY(-2px);}
+.ls-gbtn .gi{font-size:20px;}
+.ls-gbtn .gc{font-family:var(--font-mono);font-size:10px;color:var(--accent3);}
+.ls-queue-list{padding:8px 10px;display:flex;flex-direction:column;gap:5px;max-height:210px;overflow-y:auto;}
+.ls-qi{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;}
+.ls-qi-pos{font-family:var(--font-mono);font-size:11px;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
+.ls-qi-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.ls-qi-name{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ls-qi-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;}
+.ls-qi-badge.p{background:rgba(245,166,35,0.15);color:var(--premium);}
+.ls-qi-badge.f{background:rgba(144,144,176,0.1);color:var(--text3);}
+.btn-golive{background:linear-gradient(135deg,#ff4757,#c0392b);color:#fff;font-family:var(--font-display);letter-spacing:2px;font-size:14px;padding:9px 22px;border-radius:10px;border:none;cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:7px;}
+.btn-golive:hover{box-shadow:0 0 20px rgba(255,71,87,0.45);transform:translateY(-1px);}
+.btn-golive.ending{background:linear-gradient(135deg,var(--danger),#900);}
+.ls-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:6000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);}
+.ls-modal-ov.open{display:flex;}
+.ls-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:30px;width:100%;max-width:460px;box-shadow:0 30px 80px rgba(0,0,0,0.7);}
+.ls-modal h2{font-family:var(--font-display);font-size:24px;letter-spacing:2px;margin-bottom:18px;}
+.ls-prev-wrap{background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9;position:relative;margin-bottom:14px;}
+.ls-prev-wrap video{width:100%;height:100%;object-fit:cover;}
+.ls-no-cam{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);}
+.ls-prem-note{font-size:12px;padding:8px 12px;border-radius:8px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);color:var(--premium);margin-top:8px;line-height:1.5;}
+.ls-gift-float{position:fixed;pointer-events:none;z-index:9999;font-size:30px;animation:lsGiftUp 2.2s ease-out forwards;}
+@keyframes lsGiftUp{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-90px) scale(1.35);}100%{opacity:0;transform:translateY(-150px) scale(0.7);}}
+.ls-notif{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(18px);background:linear-gradient(135deg,rgba(245,166,35,0.15),rgba(255,101,132,0.1));border:1px solid rgba(245,166,35,0.38);border-radius:12px;padding:10px 22px;font-size:14px;font-weight:600;color:#fff;z-index:9998;opacity:0;transition:all 0.32s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(14px);}
+.ls-notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.ls-online{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+.ls-odot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:lsPulse 1.2s infinite;}
+.ls-connecting{position:absolute;inset:0;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--text2);font-size:14px;backdrop-filter:blur(4px);}
+</style>
+
+<!-- ─── LIVESTREAM HTML ─────────────────────────────────────── -->
+<div id="section-livestream">
+  <div class="section-header" style="margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+    <div class="section-title">📡 <span>Live</span></div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div class="ls-online"><span class="ls-odot"></span><span id="ls-viewer-num">0</span> watching</div>
+      <button class="btn-golive" id="ls-go-live-btn" onclick="lsOpenGoLive()">📡 GO LIVE</button>
+    </div>
+  </div>
+  <div class="ls-layout">
+    <!-- Stage -->
+    <div>
+      <div class="ls-stage">
+        <div class="ls-video-area" id="ls-video-area">
+          <div class="ls-offline-screen" id="ls-offline-screen">
+            <div class="ls-off-icon">📡</div>
+            <div class="ls-off-title">NOBODY IS LIVE</div>
+            <div class="ls-off-sub">Hit <strong style="color:var(--accent);">GO LIVE</strong> to start streaming.<br>Premium members get priority in the queue.</div>
+          </div>
+          <video id="ls-main-video" autoplay playsinline></video>
+          <div class="ls-connecting" id="ls-connecting" style="display:none;">
+            <div style="font-size:32px;animation:pulse 1.2s infinite;">📡</div>
+            <div>Connecting to stream…</div>
+          </div>
+          <div class="ls-live-badge" id="ls-live-badge"><span class="ls-live-dot"></span>LIVE</div>
+          <div class="ls-vc-badge" id="ls-vc-badge">👁 <span id="ls-vc-num">0</span></div>
+        </div>
+        <div class="ls-cam-strip" id="ls-cam-strip"></div>
+        <div class="ls-stage-info">
+          <div>
+            <div class="ls-stage-title" id="ls-stage-title" style="color:var(--text3);">No stream active</div>
+            <div class="ls-stage-host" id="ls-stage-host">
+              <div class="ls-host-av" id="ls-host-av"></div>
+              <span id="ls-host-name"></span>
+              <span id="ls-host-prem" style="font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(245,166,35,0.15);color:var(--premium);display:none;">👑 PREMIUM</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="ls-stage-btns">
+            <button class="btn btn-ghost btn-sm" id="ls-share-cam-btn" onclick="lsShareCam()" style="display:none;">📷 Share Camera</button>
+            <button class="btn btn-danger btn-sm" id="ls-end-btn" onclick="lsEndStream()" style="display:none;">⏹ End Stream</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="ls-sidebar">
+      <!-- Chat -->
+      <div class="ls-panel">
+        <div class="ls-phdr">💬 Stream Chat <div class="ls-online"><span class="ls-odot"></span><span id="ls-vc-num2">0</span></div></div>
+        <div class="ls-chat-msgs" id="ls-chat-msgs"><div style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">Say something! 👋</div></div>
+        <div class="ls-gift-bar" id="ls-gift-bar">
+          <div class="ls-gbtn" onclick="lsGift('rose',5,'🌹')"><span class="gi">🌹</span><span>Rose</span><span class="gc">5 pts</span></div>
+          <div class="ls-gbtn" onclick="lsGift('star',15,'⭐')"><span class="gi">⭐</span><span>Star</span><span class="gc">15 pts</span></div>
+          <div class="ls-gbtn" onclick="lsGift('fire',30,'🔥')"><span class="gi">🔥</span><span>Fire</span><span class="gc">30 pts</span></div>
+          <div class="ls-gbtn" onclick="lsGift('crown',75,'👑')"><span class="gi">👑</span><span>Crown</span><span class="gc">75 pts</span></div>
+          <div class="ls-gbtn" onclick="lsGift('diamond',150,'💎')"><span class="gi">💎</span><span>Diamond</span><span class="gc">150 pts</span></div>
+        </div>
+        <div class="ls-chat-row">
+          <input id="ls-chat-in" type="text" placeholder="Say something…" maxlength="180" onkeydown="if(event.key==='Enter')lsSend()">
+          <button onclick="lsSend()">Send</button>
+        </div>
+      </div>
+      <!-- Queue -->
+      <div class="ls-panel">
+        <div class="ls-phdr">🎙 Stream Queue
+          <button class="btn btn-ghost btn-sm" id="ls-queue-btn" onclick="lsJoinQueue()" style="font-size:11px;padding:4px 10px;">+ Join</button>
+        </div>
+        <div class="ls-queue-list" id="ls-queue-list"><div style="color:var(--text3);font-size:13px;text-align:center;padding:10px;">Queue empty</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Go Live Modal -->
+<div class="ls-modal-ov" id="ls-modal">
+  <div class="ls-modal">
+    <h2>📡 GO LIVE</h2>
+    <div class="ls-prev-wrap">
+      <video id="ls-prev-vid" autoplay muted playsinline></video>
+      <div class="ls-no-cam" id="ls-no-cam"><span style="font-size:32px;">📷</span><span>Camera preview</span></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px;font-weight:600;letter-spacing:0.5px;">STREAM TITLE</label>
+      <input type="text" id="ls-title-in" placeholder="What are you streaming today?" maxlength="60"
+        style="width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;">
+    </div>
+    <div class="ls-prem-note" id="ls-prem-note" style="display:none;">👑 Premium: you skip to the front of the queue!</div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn btn-primary" onclick="lsStartStream()" style="flex:1;">🔴 Start Streaming</button>
+      <button class="btn btn-ghost" onclick="lsCloseModal()">Cancel</button>
+    </div>
+    <p style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center;line-height:1.6;">
+      One stream at a time. If someone is live, you join the queue. Premium gets priority. 👑
+    </p>
+  </div>
+</div>
+
+<div class="ls-notif" id="ls-notif"></div>
+
+<!-- ─── LIVESTREAM JS ───────────────────────────────────────── -->
+<script>
+/* ══════════════════════════════════════════════════════════
+   NEXUSHUB GLOBAL LIVESTREAM ENGINE
+   
+   Architecture:
+   • JSONBin community bin stores: livestream.{streamer,peerId,title,queue,chat,gifts,viewers}
+   • PeerJS (WebRTC) handles the actual video/audio stream
+   • Streamer creates a Peer, stores their peerId globally
+   • Viewers read the peerId and call() the streamer via PeerJS
+   • Poll every 3s for state sync (stream chat, queue, gifts)
+   • Premium users sort to front of queue
+══════════════════════════════════════════════════════════ */
+
+const LS = {
+  peer: null,           // our PeerJS Peer instance
+  conn: null,           // active call (streamer: incoming, viewer: outgoing)
+  localStream: null,    // our camera/mic stream
+  previewStream: null,  // modal preview stream
+  isStreamer: false,    // are we the one broadcasting?
+  pollTimer: null,      // setInterval handle
+  lastChatLen: 0,       // to detect new messages
+  sharedConns: [],      // shared camera calls from guests
+  viewerCalls: [],      // (streamer side) incoming viewer calls to accept
+};
+
+// ── Helpers ──────────────────────────────────────────────
+function lsEmptyState() {
+  return { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null };
+}
+
+function lsGetState() {
+  return (_commCache && _commCache.livestream) ? _commCache.livestream : lsEmptyState();
+}
+
+async function lsPushState(patch) {
+  if (!_commCache) await fetchCommData();
+  _commCache.livestream = { ...lsGetState(), ...patch };
+  await pushCommData();
+}
+
+function lsAvatarColor(name) {
+  const cols = ['#6c63ff','#ff6584','#43e97b','#f5a623','#4ecdc4','#a55eea','#fd9644'];
+  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % cols.length;
+  return cols[h];
+}
+
+function lsEsc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Notification toast ────────────────────────────────────
+let _lsNotifTimer;
+function lsNotif(msg) {
+  const el = document.getElementById('ls-notif');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_lsNotifTimer);
+  _lsNotifTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── Nav injection ─────────────────────────────────────────
+(function patchNav() {
+  const _orig = window.buildNavCats;
+  window.buildNavCats = function() {
+    _orig && _orig();
+    const el = document.getElementById('nav-cats');
+    if (!el || el.querySelector('[data-cat="livestream"]')) return;
+    const btn = document.createElement('button');
+    btn.className = 'nav-cat';
+    btn.dataset.cat = 'livestream';
+    btn.innerHTML = '📡 Live';
+    btn.onclick = () => lsShowSection();
+    const comm = el.querySelector('[data-cat="community"]');
+    if (comm && comm.nextSibling) el.insertBefore(btn, comm.nextSibling);
+    else el.appendChild(btn);
+  };
+
+  const _origShow = window.showSection;
+  window.showSection = function(sec) {
+    _origShow && _origShow(sec);
+    const lsEl = document.getElementById('section-livestream');
+    if (lsEl) lsEl.style.display = sec === 'livestream' ? 'block' : 'none';
+  };
+})();
+
+function lsShowSection() {
+  ['home','cat','community','secret'].forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('section-livestream').style.display = 'block';
+  document.querySelectorAll('.nav-cat').forEach(b => b.classList.toggle('active', b.dataset.cat === 'livestream'));
+  lsStartPoll();
+}
+
+// ── Go Live Modal ─────────────────────────────────────────
+async function lsOpenGoLive() {
+  if (!currentUser) return toast('Log in first!', 'error');
+  document.getElementById('ls-modal').classList.add('open');
+  document.getElementById('ls-prem-note').style.display = currentUser.premium ? 'block' : 'none';
+  // Request camera preview
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    LS.previewStream = s;
+    const v = document.getElementById('ls-prev-vid');
+    v.srcObject = s;
+    document.getElementById('ls-no-cam').style.display = 'none';
+  } catch(e) {
+    document.getElementById('ls-no-cam').style.display = 'flex';
+    document.getElementById('ls-no-cam').innerHTML = '<span style="font-size:28px;">🚫</span><span>Camera/mic blocked</span>';
+  }
+}
+
+function lsCloseModal() {
+  document.getElementById('ls-modal').classList.remove('open');
+  if (LS.previewStream) { LS.previewStream.getTracks().forEach(t => t.stop()); LS.previewStream = null; }
+}
+
+// ── Start Stream ──────────────────────────────────────────
+async function lsStartStream() {
+  if (!currentUser) return;
+  const title = document.getElementById('ls-title-in').value.trim() || currentUser.name + "'s Stream";
+  const ls = lsGetState();
+
+  // Someone else is live → join queue
+  if (ls.streamer && ls.streamer !== currentUser.name) {
+    lsCloseModal();
+    await lsJoinQueue();
+    lsNotif('📋 Added to queue! You\'ll go live next.');
+    toast('Added to stream queue!', 'info');
+    return;
+  }
+
+  if (!LS.previewStream) {
+    try { LS.previewStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); }
+    catch(e) { return lsNotif('⚠️ Camera/mic access required'); }
+  }
+
+  LS.localStream = LS.previewStream;
+  LS.previewStream = null;
+  LS.isStreamer = true;
+
+  // Create PeerJS peer
+  LS.peer = new Peer({ debug: 0 });
+  LS.peer.on('open', async (pid) => {
+    // Publish our peer ID globally so viewers can connect
+    await lsPushState({
+      streamer: currentUser.name,
+      peerId: pid,
+      title,
+      isPremium: !!currentUser.premium,
+      queue: ls.queue.filter(q => q.name !== currentUser.name),
+      startedAt: new Date().toISOString(),
+      viewers: 1,
+      chat: ls.chat,
+      gifts: ls.gifts,
+    });
+    lsAddSysMsg('🔴 ' + currentUser.name + ' is now live: ' + title);
+    lsNotif('🔴 You\'re LIVE!');
+    toast('You\'re live! 🔴', 'success');
+    lsRenderLive();
+  });
+
+  // Accept incoming viewer calls
+  LS.peer.on('call', (call) => {
+    call.answer(LS.localStream);
+    LS.viewerCalls.push(call);
+  });
+
+  // Accept shared camera calls (data channel with special metadata)
+  LS.peer.on('connection', (dc) => {
+    dc.on('data', (d) => {
+      if (d && d.type === 'share-cam') lsAcceptSharedCam(d.peerId, d.name, d.isPremium);
+    });
+  });
+
+  lsCloseModal();
+
+  // Show streamer's own video locally
+  const mainVid = document.getElementById('ls-main-video');
+  mainVid.srcObject = LS.localStream;
+  mainVid.muted = true;
+}
+
+// ── End Stream ────────────────────────────────────────────
+async function lsEndStream() {
+  if (!LS.isStreamer) return;
+  LS.isStreamer = false;
+  if (LS.localStream) { LS.localStream.getTracks().forEach(t => t.stop()); LS.localStream = null; }
+  if (LS.peer) { LS.peer.destroy(); LS.peer = null; }
+  LS.sharedConns.forEach(c => { try { c.close(); } catch(e) {} });
+  LS.sharedConns = [];
+  LS.viewerCalls.forEach(c => { try { c.close(); } catch(e) {} });
+  LS.viewerCalls = [];
+  const ls = lsGetState();
+  await lsAddSysMsg('⏹ ' + currentUser.name + ' ended the stream.');
+  // Promote next in queue
+  const newQueue = [...(ls.queue || [])];
+  const next = newQueue.shift();
+  if (next) {
+    await lsAddSysMsg('🎙 ' + next.name + ' is next — go live when ready!');
+  }
+  await lsPushState({ streamer: null, peerId: null, title: '', queue: newQueue, startedAt: null, viewers: 0 });
+  lsRenderOffline();
+  toast('Stream ended.', 'info');
+}
+
+// ── Connect as viewer ─────────────────────────────────────
+async function lsConnectViewer(peerId) {
+  if (!peerId || LS.isStreamer || LS.conn) return;
+  document.getElementById('ls-connecting').style.display = 'flex';
+  LS.peer = new Peer({ debug: 0 });
+  LS.peer.on('open', () => {
+    const call = LS.peer.call(peerId, new MediaStream()); // empty stream to initiate
+    LS.conn = call;
+    call.on('stream', (remoteStream) => {
+      document.getElementById('ls-connecting').style.display = 'none';
+      const mainVid = document.getElementById('ls-main-video');
+      mainVid.srcObject = remoteStream;
+      mainVid.muted = false;
+    });
+    call.on('close', () => lsRenderOffline());
+    call.on('error', () => { document.getElementById('ls-connecting').style.display = 'none'; });
+  });
+  LS.peer.on('error', () => { document.getElementById('ls-connecting').style.display = 'none'; });
+}
+
+// ── Share Camera (guest) ──────────────────────────────────
+async function lsShareCam() {
+  if (!LS.isStreamer) return lsNotif('Only the streamer can invite cameras');
+  const ls = lsGetState();
+  if (!ls.peerId) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    // Attach as a second camera locally
+    const camData = { name: 'Cam ' + (LS.sharedConns.length + 1), stream };
+    LS.sharedConns.push(camData);
+    lsRenderCamStrip();
+    lsNotif('📷 Camera added!');
+    lsAddSysMsg('📷 Camera shared by ' + currentUser.name);
+    await lsPushState({ sharedCams: (lsGetState().sharedCams || 0) + 1 });
+  } catch(e) { lsNotif('⚠️ Camera access denied'); }
+}
+
+function lsAcceptSharedCam(peerId, name, isPremium) {
+  // (Extended WebRTC: accept a second stream from a peer)
+  if (!LS.peer) return;
+  // For simplicity the streamer re-broadcasts all their tracks
+  // In a production setup this would be a mesh; here we note the addition
+  lsAddSysMsg('📷 ' + name + ' joined with a shared camera');
+}
+
+function lsRenderCamStrip() {
+  const strip = document.getElementById('ls-cam-strip');
+  if (!LS.sharedConns.length) { strip.style.display = 'none'; return; }
+  strip.style.display = 'flex';
+  strip.innerHTML = LS.sharedConns.map((c, i) => `
+    <div class="ls-cam-thumb ${i===0?'active-cam':''}" onclick="lsSwitchCam(${i})">
+      <video id="ls-cam-v-${i}" autoplay muted playsinline></video>
+      <div class="cam-label">${lsEsc(c.name)}</div>
+    </div>
+  `).join('') + (LS.isStreamer ? `<div class="ls-cam-thumb ls-cam-add" onclick="lsShareCam()"><span style="font-size:20px;">+</span><span>Add Cam</span></div>` : '');
+  LS.sharedConns.forEach((c, i) => {
+    const v = document.getElementById('ls-cam-v-' + i);
+    if (v && c.stream) v.srcObject = c.stream;
+  });
+}
+
+function lsSwitchCam(idx) {
+  document.querySelectorAll('.ls-cam-thumb').forEach((t, i) => t.classList.toggle('active-cam', i === idx));
+  const c = LS.sharedConns[idx];
+  const mv = document.getElementById('ls-main-video');
+  if (c && c.stream) mv.srcObject = c.stream;
+  else if (LS.localStream) mv.srcObject = LS.localStream;
+}
+
+// ── Queue ─────────────────────────────────────────────────
+async function lsJoinQueue() {
+  if (!currentUser) return toast('Log in first!', 'error');
+  const ls = lsGetState();
+  if ((ls.queue || []).find(q => q.name === currentUser.name)) {
+    return lsNotif('⚠️ Already in queue');
+  }
+  const entry = { name: currentUser.name, isPremium: !!currentUser.premium, joinedAt: Date.now() };
+  let queue = [...(ls.queue || []), entry];
+  // Premium to front (before free, but after other premium in order)
+  queue.sort((a, b) => {
+    if (a.isPremium && !b.isPremium) return -1;
+    if (!a.isPremium && b.isPremium) return 1;
+    return a.joinedAt - b.joinedAt;
+  });
+  await lsPushState({ queue });
+  const pos = queue.findIndex(q => q.name === currentUser.name) + 1;
+  lsNotif('📋 You\'re #' + pos + ' in the queue');
+  lsRenderQueue(queue);
+  const qBtn = document.getElementById('ls-queue-btn');
+  if (qBtn) { qBtn.textContent = '✓ In Queue'; qBtn.disabled = true; }
+}
+
+// ── Chat ──────────────────────────────────────────────────
+async function lsSend() {
+  if (!currentUser) return;
+  const inp = document.getElementById('ls-chat-in');
+  const text = inp?.value.trim();
+  if (!text) return;
+  inp.value = '';
+  await lsAddChatMsg(currentUser.name, text, !!currentUser.premium, false);
+}
+
+async function lsAddChatMsg(name, text, isPremium, isGift) {
+  const ls = lsGetState();
+  const msgs = [...(ls.chat || [])];
+  msgs.push({ name, text, isPremium, isGift, ts: Date.now() });
+  if (msgs.length > 200) msgs.splice(0, msgs.length - 200);
+  await lsPushState({ chat: msgs });
+  lsRenderChat(msgs);
+}
+
+async function lsAddSysMsg(text) {
+  const ls = lsGetState();
+  const msgs = [...(ls.chat || [])];
+  msgs.push({ sys: true, text, ts: Date.now() });
+  if (msgs.length > 200) msgs.splice(0, msgs.length - 200);
+  await lsPushState({ chat: msgs });
+  lsRenderChat(msgs);
+}
+
+function lsRenderChat(msgs) {
+  const el = document.getElementById('ls-chat-msgs');
+  if (!el) return;
+  if (!msgs || !msgs.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">No messages yet. Say hello! 👋</div>';
+    return;
+  }
+  const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 24;
+  el.innerHTML = msgs.map(m => {
+    if (m.sys) return `<div class="ls-sys-msg">${lsEsc(m.text)}</div>`;
+    return `<div class="ls-chat-msg">
+      <div class="ls-msg-av" style="background:${lsAvatarColor(m.name)}">${lsEsc(m.name[0].toUpperCase())}</div>
+      <div class="ls-msg-body">
+        <div class="ls-msg-name ${m.isPremium ? 'pn' : ''}">${lsEsc(m.name)}${m.isPremium ? ' 👑' : ''}</div>
+        <div class="ls-msg-text ${m.isGift ? 'ls-msg-gift' : ''}">${lsEsc(m.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  if (atBottom) el.scrollTop = el.scrollHeight;
+}
+
+// ── Gifts ─────────────────────────────────────────────────
+async function lsGift(type, cost, icon) {
+  if (!currentUser) return;
+  if (!lsGetState().streamer) return lsNotif('No one is live!');
+  if (!spendPoints(cost)) return lsNotif('⚠️ Not enough points!');
+  const msg = `${icon} gifted a ${type} (${cost} pts)`;
+  await lsAddChatMsg(currentUser.name, msg, !!currentUser.premium, true);
+  lsGiftFloat(icon);
+  lsNotif(`${icon} Gift sent!`);
+}
+
+function lsGiftFloat(icon) {
+  const el = document.createElement('div');
+  el.className = 'ls-gift-float';
+  el.textContent = icon;
+  el.style.left = (20 + Math.random() * (window.innerWidth - 100)) + 'px';
+  el.style.top = (window.innerHeight - 130) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2400);
+}
+
+// ── Render helpers ────────────────────────────────────────
+function lsRenderLive() {
+  const ls = lsGetState();
+  if (!ls.streamer) return lsRenderOffline();
+  document.getElementById('ls-offline-screen').style.display = 'none';
+  document.getElementById('ls-main-video').classList.add('active');
+  const liveBadge = document.getElementById('ls-live-badge');
+  const vcBadge = document.getElementById('ls-vc-badge');
+  liveBadge.style.display = 'flex';
+  vcBadge.style.display = 'flex';
+  document.getElementById('ls-vc-num').textContent = ls.viewers || 1;
+  document.getElementById('ls-vc-num2').textContent = ls.viewers || 1;
+  document.getElementById('ls-viewer-num').textContent = ls.viewers || 1;
+  const title = document.getElementById('ls-stage-title');
+  title.textContent = ls.title || ls.streamer + "'s Stream";
+  title.style.color = 'var(--text)';
+  const hostEl = document.getElementById('ls-stage-host');
+  hostEl.style.display = 'flex';
+  const av = document.getElementById('ls-host-av');
+  av.textContent = ls.streamer[0].toUpperCase();
+  av.className = 'ls-host-av' + (ls.isPremium ? ' prem' : '');
+  document.getElementById('ls-host-name').textContent = ls.streamer;
+  document.getElementById('ls-host-prem').style.display = ls.isPremium ? 'inline' : 'none';
+  // Streamer controls
+  const isMe = currentUser?.name === ls.streamer;
+  document.getElementById('ls-end-btn').style.display = isMe ? 'inline-flex' : 'none';
+  document.getElementById('ls-share-cam-btn').style.display = isMe ? 'inline-flex' : 'none';
+  // Gift bar for viewers
+  document.getElementById('ls-gift-bar').style.display = !isMe ? 'flex' : 'none';
+  // Go live btn
+  const glBtn = document.getElementById('ls-go-live-btn');
+  if (isMe) { glBtn.innerHTML = '⏹ END STREAM'; glBtn.className = 'btn-golive ending'; glBtn.onclick = lsEndStream; }
+  else { glBtn.innerHTML = '📡 GO LIVE'; glBtn.className = 'btn-golive'; glBtn.onclick = lsOpenGoLive; }
+}
+
+function lsRenderOffline() {
+  document.getElementById('ls-offline-screen').style.display = 'flex';
+  document.getElementById('ls-main-video').classList.remove('active');
+  document.getElementById('ls-main-video').srcObject = null;
+  document.getElementById('ls-live-badge').style.display = 'none';
+  document.getElementById('ls-vc-badge').style.display = 'none';
+  document.getElementById('ls-stage-title').textContent = 'No stream active';
+  document.getElementById('ls-stage-title').style.color = 'var(--text3)';
+  document.getElementById('ls-stage-host').style.display = 'none';
+  document.getElementById('ls-end-btn').style.display = 'none';
+  document.getElementById('ls-share-cam-btn').style.display = 'none';
+  document.getElementById('ls-gift-bar').style.display = 'none';
+  document.getElementById('ls-cam-strip').style.display = 'none';
+  document.getElementById('ls-viewer-num').textContent = '0';
+  const glBtn = document.getElementById('ls-go-live-btn');
+  glBtn.innerHTML = '📡 GO LIVE'; glBtn.className = 'btn-golive'; glBtn.onclick = lsOpenGoLive;
+  if (LS.conn) { try { LS.conn.close(); } catch(e) {} LS.conn = null; }
+  if (LS.peer && !LS.isStreamer) { try { LS.peer.destroy(); } catch(e) {} LS.peer = null; }
+  LS.isStreamer = false;
+}
+
+function lsRenderQueue(queue) {
+  const el = document.getElementById('ls-queue-list');
+  if (!el) return;
+  const qBtn = document.getElementById('ls-queue-btn');
+  const myInQueue = (queue || []).findIndex(q => q.name === currentUser?.name);
+  if (qBtn) { qBtn.textContent = myInQueue >= 0 ? '✓ In Queue' : '+ Join'; qBtn.disabled = myInQueue >= 0; }
+  if (!queue || !queue.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:10px;">Queue empty</div>';
+    return;
+  }
+  el.innerHTML = queue.map((q, i) => `
+    <div class="ls-qi">
+      <div class="ls-qi-pos">${i + 1}</div>
+      <div class="ls-qi-av" style="background:${q.isPremium ? 'linear-gradient(135deg,var(--premium),#e67e22)' : lsAvatarColor(q.name)}">${q.name[0].toUpperCase()}</div>
+      <div class="ls-qi-name">${lsEsc(q.name)}</div>
+      <span class="ls-qi-badge ${q.isPremium ? 'p' : 'f'}">${q.isPremium ? '👑' : 'FREE'}</span>
+    </div>
+  `).join('');
+}
+
+// ── Poll loop ─────────────────────────────────────────────
+let _lsPrevStreamer = null;
+let _lsPrevPeerId = null;
+let _lsPrevChatLen = 0;
+let _lsPrevViewers = 0;
+
+async function lsPoll() {
+  if (document.getElementById('section-livestream')?.style.display === 'none') return;
+  const data = await fetchCommData();
+  if (!data) return;
+  const ls = data.livestream || lsEmptyState();
+
+  // Stream started / changed / ended
+  const streamerChanged = ls.streamer !== _lsPrevStreamer || ls.peerId !== _lsPrevPeerId;
+  if (streamerChanged) {
+    _lsPrevStreamer = ls.streamer;
+    _lsPrevPeerId = ls.peerId;
+    if (ls.streamer && ls.peerId) {
+      // Someone went live
+      if (!LS.isStreamer && currentUser?.name !== ls.streamer) {
+        // We're a viewer — connect via WebRTC
+        if (LS.conn) { try { LS.conn.close(); } catch(e) {} LS.conn = null; }
+        if (LS.peer) { try { LS.peer.destroy(); } catch(e) {} LS.peer = null; }
+        await lsConnectViewer(ls.peerId);
+        lsNotif('📡 ' + ls.streamer + ' is live!');
+      }
+      lsRenderLive();
+    } else if (!ls.streamer) {
+      lsRenderOffline();
+    }
+  }
+
+  // Update viewer count display even if nothing else changed
+  if (ls.viewers !== _lsPrevViewers) {
+    _lsPrevViewers = ls.viewers;
+    const n = ls.viewers || 0;
+    const els = ['ls-vc-num','ls-vc-num2','ls-viewer-num'];
+    els.forEach(id => { const e = document.getElementById(id); if (e) e.textContent = n; });
+  }
+
+  // Bump viewer count (streamer does it, we just track it)
+  if (LS.isStreamer) {
+    // Rough viewer count: update every 15 s
+    if (Date.now() % 15000 < 4000) {
+      const vc = (LS.viewerCalls.filter(c => !c.open === false).length + 1);
+      if (vc !== ls.viewers) await lsPushState({ viewers: vc });
+    }
+  }
+
+  // Chat new messages
+  const msgs = ls.chat || [];
+  if (msgs.length !== _lsPrevChatLen) {
+    _lsPrevChatLen = msgs.length;
+    lsRenderChat(msgs);
+  }
+
+  // Queue
+  lsRenderQueue(ls.queue || []);
+
+  // Update title / host even if no reconnect needed
+  if (ls.streamer && !streamerChanged) {
+    document.getElementById('ls-stage-title').textContent = ls.title || ls.streamer + "'s Stream";
+  }
+}
+
+function lsStartPoll() {
+  if (LS.pollTimer) return; // already polling
+  lsPoll(); // immediate first fetch
+  LS.pollTimer = setInterval(lsPoll, 3000);
+}
+
+// Kick off poll as soon as user logs in (nav inject + poll)
+(function patchInitApp() {
+  const _orig = window.initApp;
+  window.initApp = function() {
+    _orig && _orig.apply(this, arguments);
+    setTimeout(() => {
+      if (window.buildNavCats) window.buildNavCats();
+      // Add Live tab to mobile bottom nav
+      const mnav = document.querySelector('#mobile-bottom-nav .mnav-inner');
+      if (mnav && !mnav.querySelector('#mnav-live')) {
+        const btn = document.createElement('button');
+        btn.className = 'mnav-btn';
+        btn.id = 'mnav-live';
+        btn.innerHTML = '<span class="micon">📡</span><span>Live</span>';
+        btn.onclick = lsShowSection;
+        const chatBtn = mnav.querySelector('#mnav-community');
+        if (chatBtn) mnav.insertBefore(btn, chatBtn);
+        else mnav.appendChild(btn);
+      }
+    }, 350);
+  };
+})();
 </script>
 </body>
 </html>
