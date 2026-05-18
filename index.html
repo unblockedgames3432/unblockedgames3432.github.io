@@ -3403,7 +3403,7 @@ async function getCommBinId() {
     const res = await fetch('https://api.jsonbin.io/v3/b', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name': 'nexushub-community', 'X-Bin-Private': 'false' },
-      body: JSON.stringify({ chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() })
+      body: JSON.stringify({ chat: [], leaderboard: [], ratings: [], livestream: { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null } })
     });
     const d = await res.json();
     _commBinId = d.metadata?.id || '';
@@ -3414,16 +3414,16 @@ async function getCommBinId() {
 
 async function fetchCommData() {
   const id = await getCommBinId();
-  if (!id) return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() };
+  if (!id) return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null } };
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
       headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
     });
-    if (!res.ok) return _commCache || { chat: [], leaderboard: [], ratings: [] };
+    if (!res.ok) return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null } };
     const d = await res.json();
-    _commCache = { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [], livestream: d.livestream || lsEmptyState() };
+    _commCache = { chat: d.chat || [], leaderboard: d.leaderboard || [], ratings: d.ratings || [], livestream: d.livestream || { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null } };
     return _commCache;
-  } catch(e) { return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: lsEmptyState() }; }
+  } catch(e) { return _commCache || { chat: [], leaderboard: [], ratings: [], livestream: { streamer:null, peerId:null, title:'', queue:[], chat:[], gifts:[], viewers:0, startedAt:null } }; }
 }
 
 async function pushCommData() {
