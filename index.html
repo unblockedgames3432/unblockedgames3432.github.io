@@ -1348,17 +1348,24 @@ async function fetchCloudContent() {
 async function pushContentToCloud(item) {
   try {
     const res = await fetch(JSONBIN_CONTENT_URL + '/latest', {
-      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' }
+      headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta': 'false' },
+      cache: 'no-store'
     });
-    const data = await res.json();
-    const current = Array.isArray(data) ? data : (data.content || []);
-    await fetch(JSONBIN_CONTENT_URL, {
+    const data = res.ok ? await res.json() : null;
+    const current = Array.isArray(data) ? data : (data?.content || []);
+    const next = current.some(r => r.id === item.id) ? current : [...current, item];
+    const save = await fetch(JSONBIN_CONTENT_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
-      body: JSON.stringify({ content: [...current, item] })
+      body: JSON.stringify({ content: next })
     });
+    if(!save.ok) throw new Error('Content cloud save failed: ' + save.status);
+    state.content = next;
+    try { localStorage.setItem('nexushub_state_cache', JSON.stringify(state)); } catch(e) {}
+    return true;
   } catch(e) {
     console.warn('Could not push to JSONBin:', e);
+    return false;
   }
 }
 
@@ -2537,33 +2544,36 @@ async function publishContent() {
   const type = document.getElementById('pub-type').value;
   const cover = document.getElementById('pub-cover').value.trim();
   const rawUrl = document.getElementById('pub-url').value.trim();
-  const url = extractEmbedUrl(rawUrl); 
+  const url = extractEmbedUrl(rawUrl);
   const desc = document.getElementById('pub-desc').value.trim();
   const extra = document.getElementById('pub-extra').value.trim();
   const access = document.getElementById('pub-access').value;
   const embedType = document.getElementById('pub-embed-type').value;
   if(!title) { toast('Please enter a title','error'); return; }
+  if(!url && embedType !== 'none') { toast('Please enter a media URL or set Embed Type to No media','error'); return; }
 
   const id = 'c_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
   const item = { id, title, type, cover, url, desc, extra, access, embedType, published: new Date().toISOString() };
 
-  
-  if(!state.content) state.content = [];
+  if(!Array.isArray(state.content)) state.content = [];
   state.content.push(item);
-  await saveState();
-
+  renderContentTable();
+  buildNavCats();
+  buildHomeGrid();
   toast(`Publishing "${title}"...`, 'info');
 
-  
-  await pushContentToCloud(item);
+  const cloudOk = await pushContentToCloud(item);
+  if(!cloudOk) {
+    toast('Could not upload to global cloud. Check internet and try again.', 'error');
+    return;
+  }
 
-  toast(`"${title}" published globally! ✅`, 'success');
-
-  
+  saveState().catch(e => console.warn('Settings sync after publish failed:', e));
   ['pub-title','pub-cover','pub-url','pub-desc','pub-extra'].forEach(i => document.getElementById(i).value='');
   renderContentTable();
   buildNavCats();
   buildHomeGrid();
+  toast(`"${title}" published globally! OK`, 'success');
 }
 
 function renderContentTable() {
