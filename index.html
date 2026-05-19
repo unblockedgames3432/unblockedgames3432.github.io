@@ -3173,6 +3173,31 @@ function cookieChoice(accepted) {
 <style>
 .media-card { transform-style: preserve-3d; }
 
+/* ── Native fullscreen: make embed and iframe fill the whole screen ── */
+.media-embed:-webkit-full-screen,
+.media-embed:-moz-full-screen,
+.media-embed:-ms-fullscreen,
+.media-embed:fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+}
+.media-embed:-webkit-full-screen iframe,
+.media-embed:-moz-full-screen iframe,
+.media-embed:-ms-fullscreen iframe,
+.media-embed:fullscreen iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+iframe:-webkit-full-screen,
+iframe:-moz-full-screen,
+iframe:-ms-fullscreen,
+iframe:fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
 /* ── KONAMI PROGRESS DOTS ── */
 .konami-dot {
   width: 8px; height: 8px;
