@@ -2002,15 +2002,24 @@ function cssFullscreen(frame) {
   closeBtn.style.cssText = 'position:absolute;top:10px;right:12px;z-index:10;background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;backdrop-filter:blur(6px);font-family:var(--font-body);';
   closeBtn.onclick = () => {
     if (frame._fsOrigParent) {
-      frame._fsOrigParent.insertBefore(frame, frame._fsOrigPlaceholder || frame._fsOrigParent.firstChild);
+      // Restore iframe to its original position in the DOM
+      if (frame._fsOrigPlaceholder && frame._fsOrigPlaceholder.parentNode) {
+        frame._fsOrigPlaceholder.parentNode.replaceChild(frame, frame._fsOrigPlaceholder);
+      } else {
+        frame._fsOrigParent.appendChild(frame);
+      }
       frame.style.cssText = frame._fsOrigStyle || '';
-      delete frame._fsOrigParent; delete frame._fsOrigStyle;
+      delete frame._fsOrigParent; delete frame._fsOrigStyle; delete frame._fsOrigPlaceholder;
     }
-
     overlay.remove();
   };
   overlay.appendChild(closeBtn);
-  frame._fsOrigParent = frame.parentElement;
+  // Save original position with a placeholder so we can restore it
+  const placeholder = document.createElement('div');
+  placeholder.style.display = 'none';
+  frame.parentNode.insertBefore(placeholder, frame);
+  frame._fsOrigPlaceholder = placeholder;
+  frame._fsOrigParent = frame.parentElement || placeholder.parentElement;
   frame._fsOrigStyle = frame.style.cssText;
   frame.style.cssText = 'width:100%;height:100%;border:none;display:block;flex:1;';
   overlay.appendChild(frame);
@@ -2023,11 +2032,20 @@ function triggerFullscreen(frameId) {
   if(!frame) return;
   if (isIpadSafari()) { cssFullscreen(frame); return; }
   const container = frame.closest('.media-embed') || frame;
+  // Try native fullscreen on container first, then iframe itself, then CSS fallback
   const nativeReq = container.requestFullscreen || container.webkitRequestFullscreen
-                  || container.mozRequestFullScreen || container.msRequestFullscreen
-                  || frame.requestFullscreen || frame.webkitRequestFullscreen;
+                  || container.mozRequestFullScreen || container.msRequestFullscreen;
+  const iframeReq = frame.requestFullscreen || frame.webkitRequestFullscreen;
   if (nativeReq) {
-    nativeReq.call(container).catch(() => cssFullscreen(frame));
+    nativeReq.call(container).catch(() => {
+      if (iframeReq) {
+        iframeReq.call(frame).catch(() => cssFullscreen(frame));
+      } else {
+        cssFullscreen(frame);
+      }
+    });
+  } else if (iframeReq) {
+    iframeReq.call(frame).catch(() => cssFullscreen(frame));
   } else {
     cssFullscreen(frame);
   }
@@ -2072,10 +2090,18 @@ function completeFsAd() {
     if(frame) {
       if (isIpadSafari()) { cssFullscreen(frame); return; }
       const container = frame.closest('.media-embed') || frame;
-      const req = container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen
-                || frame.requestFullscreen || frame.webkitRequestFullscreen;
+      const req = container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen;
+      const iframeReq = frame.requestFullscreen || frame.webkitRequestFullscreen;
       if(req) {
-        req.call(container).catch(() => cssFullscreen(frame));
+        req.call(container).catch(() => {
+          if (iframeReq) {
+            iframeReq.call(frame).catch(() => cssFullscreen(frame));
+          } else {
+            cssFullscreen(frame);
+          }
+        });
+      } else if (iframeReq) {
+        iframeReq.call(frame).catch(() => cssFullscreen(frame));
       } else {
         cssFullscreen(frame);
       }
@@ -2270,7 +2296,12 @@ async function awardPrize(prize) {
   if(prize.value === 'premium_1day') {
     currentUser.premium = true;
     const exp = new Date(); exp.setDate(exp.getDate()+1);
-    currentUser.premiumUntil = exp.toISOString();
+    currentUser.premiumExpires = exp.toISOString();
+    currentUser.daysLeft = 1;
+    // Persist to account so it survives page reload
+    saveCurrentUserPremium(null, currentUser.premiumExpires).catch(()=>{});
+    buildNavCats();
+    buildHomeGrid();
     toast('🎉 1 Day Premium activated!','success');
   }
   if(prize.value === 'free_movie')    toast('🎬 Free movie token! You can now watch any free movie.','info');
@@ -2550,7 +2581,7 @@ async function publishContent() {
   const access = document.getElementById('pub-access').value;
   const embedType = document.getElementById('pub-embed-type').value;
   if(!title) { toast('Please enter a title','error'); return; }
-  if(!url && embedType !== 'none') { toast('Please enter a media URL or set Embed Type to No media','error'); return; }
+  if(!rawUrl && embedType !== 'none') { toast('Please enter a media URL or set Embed Type to No media','error'); return; }
 
   const id = 'c_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
   const item = { id, title, type, cover, url, desc, extra, access, embedType, published: new Date().toISOString() };
@@ -3030,27 +3061,6 @@ async function sendChat() {
   // Write to cache + push to server (non-blocking)
   await sheetsPost('sendChat', { username: currentUser.name, message: msg, is_premium: currentUser.premium || false, created_at: ts });
   // Poll continues normally — no need to pause/restart it
-  if (false) { // dead code kept for structure
-    const fresh = [];
-    const valid = fresh.filter(m => m && m.username && m.message);
-    if (valid.length) {
-      const el = document.getElementById('chat-messages');
-      el.innerHTML = '';
-      valid.forEach(m => appendChatMsg(m, false));
-      el.scrollTop = el.scrollHeight;
-    }
-    chatPollInterval = setInterval(async () => {
-      if (document.getElementById('section-community').style.display === 'none') return;
-      const fresh = await fetchCommData();
-      if (!fresh) return;
-      const valid = fresh.chat.filter(m => m && m.username && m.message);
-      const el = document.getElementById('chat-messages');
-      const wasAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
-      el.innerHTML = '';
-      valid.forEach(m => appendChatMsg(m, false));
-      if (wasAtBottom) el.scrollTop = el.scrollHeight;
-    }, COMM_POLL_MS);
-  }
 }
 
 function escHtml(str) {
@@ -4012,11 +4022,14 @@ function spawnConfetti(count) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 7. FLOATING SCORE POPUP
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const _origAddPoints = window.addPoints;
-window.addPoints = function(n) {
-  _origAddPoints && _origAddPoints(n);
-  showFloatScore('+'+n+' pts ⭐');
-};
+// Wrap addPoints after all scripts have loaded to avoid capturing undefined
+window.addEventListener('load', function() {
+  const _origAddPoints = window.addPoints;
+  window.addPoints = function(n) {
+    _origAddPoints && _origAddPoints(n);
+    showFloatScore('+'+n+' pts ⭐');
+  };
+});
 
 function showFloatScore(text) {
   const wrap = document.getElementById('float-score-wrap');
@@ -4146,7 +4159,6 @@ function confirmMode() {
   // If first time, now show the login screen
   if(isFirst) {
     document.getElementById('login-screen').style.display = 'flex';
-    if(!localStorage.getItem('nexus_mode')) return;
     toast(_pendingModePick === 'school' ? '🏫 School mode active — games load unblocked!' : '🏠 Home mode active — games load directly.', 'info');
   }
 }
