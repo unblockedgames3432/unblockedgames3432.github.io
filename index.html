@@ -1975,11 +1975,11 @@ let fsAdTarget = null;
 let fsAdTimer = null;
 
 function goFullscreen(frameId) {
+  const frame = document.getElementById(frameId);
+  if (!frame) return;
   if(currentUser?.premium) {
-    
-    triggerFullscreen(frameId);
+    cssFullscreen(frame);
   } else {
-    
     fsAdTarget = frameId;
     openFsAdGate();
   }
@@ -2095,25 +2095,7 @@ function completeFsAd() {
   if(fsAdTarget) {
     const frame = document.getElementById(fsAdTarget);
     fsAdTarget = null;
-    if(frame) {
-      if (isIpadSafari()) { cssFullscreen(frame); return; }
-      const container = frame.closest('.media-embed') || frame;
-      const req = container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen;
-      const iframeReq = frame.requestFullscreen || frame.webkitRequestFullscreen;
-      if(req) {
-        req.call(container).catch(() => {
-          if (iframeReq) {
-            iframeReq.call(frame).catch(() => cssFullscreen(frame));
-          } else {
-            cssFullscreen(frame);
-          }
-        });
-      } else if (iframeReq) {
-        iframeReq.call(frame).catch(() => cssFullscreen(frame));
-      } else {
-        cssFullscreen(frame);
-      }
-    }
+    if(frame) cssFullscreen(frame);
   }
 }
 
