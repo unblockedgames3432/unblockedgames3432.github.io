@@ -1149,7 +1149,7 @@ function weightedRandom(prizes) {
 // A background poll keeps every connected client in sync automatically.
 
 let _statePollInterval = null;
-const STATE_POLL_MS = 5000; // re-fetch global state every 5 seconds (near real-time)
+const STATE_POLL_MS = 30000; // re-fetch global state every 30 seconds
 
 function loadState() {
   // Only used as a temporary fallback while the server loads.
@@ -1994,37 +1994,45 @@ function isIpadSafari() {
 
 function cssFullscreen(frame) {
   if (document.getElementById('css-fs-overlay')) return;
+
   const overlay = document.createElement('div');
   overlay.id = 'css-fs-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;';
+
+  // Top bar that holds the close button — always above the iframe
+  const topBar = document.createElement('div');
+  topBar.style.cssText = 'width:100%;display:flex;align-items:center;justify-content:flex-end;padding:8px 12px;background:rgba(0,0,0,0.85);flex-shrink:0;z-index:100001;';
+
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '✕ Exit Fullscreen';
-  closeBtn.style.cssText = 'position:absolute;top:10px;right:12px;z-index:10;background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;backdrop-filter:blur(6px);font-family:var(--font-body);';
+  closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;font-family:sans-serif;pointer-events:all;';
+
   closeBtn.onclick = () => {
-    if (frame._fsOrigParent) {
-      // Restore iframe to its original position in the DOM
-      if (frame._fsOrigPlaceholder && frame._fsOrigPlaceholder.parentNode) {
-        frame._fsOrigPlaceholder.parentNode.replaceChild(frame, frame._fsOrigPlaceholder);
-      } else {
-        frame._fsOrigParent.appendChild(frame);
-      }
-      frame.style.cssText = frame._fsOrigStyle || '';
-      delete frame._fsOrigParent; delete frame._fsOrigStyle; delete frame._fsOrigPlaceholder;
+    if (frame._fsOrigPlaceholder && frame._fsOrigPlaceholder.parentNode) {
+      frame._fsOrigPlaceholder.parentNode.replaceChild(frame, frame._fsOrigPlaceholder);
+    } else if (frame._fsOrigParent) {
+      frame._fsOrigParent.appendChild(frame);
     }
+    frame.style.cssText = frame._fsOrigStyle || '';
+    delete frame._fsOrigParent; delete frame._fsOrigStyle; delete frame._fsOrigPlaceholder;
     overlay.remove();
   };
-  overlay.appendChild(closeBtn);
-  // Save original position with a placeholder so we can restore it
+
+  topBar.appendChild(closeBtn);
+  overlay.appendChild(topBar);
+
+  // Save original position with a placeholder
   const placeholder = document.createElement('div');
   placeholder.style.display = 'none';
-  frame.parentNode.insertBefore(placeholder, frame);
+  if (frame.parentNode) frame.parentNode.insertBefore(placeholder, frame);
   frame._fsOrigPlaceholder = placeholder;
-  frame._fsOrigParent = frame.parentElement || placeholder.parentElement;
+  frame._fsOrigParent = placeholder.parentNode || frame.parentElement;
   frame._fsOrigStyle = frame.style.cssText;
-  frame.style.cssText = 'width:100%;height:100%;border:none;display:block;flex:1;';
+
+  // Make iframe fill the rest of the overlay below the bar
+  frame.style.cssText = 'width:100%;flex:1;border:none;display:block;min-height:0;';
   overlay.appendChild(frame);
   document.body.appendChild(overlay);
-
 }
 
 function triggerFullscreen(frameId) {
