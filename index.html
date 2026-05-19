@@ -16,34 +16,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"></noscript>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2319808028748744" crossorigin="anonymous"></script>
-<script>
-// Connection-aware performance tweaks
-(function(){
-  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const slowConn = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.saveData);
-  if(slowConn || (conn && conn.downlink < 1)) {
-    window._nexusSlowMode = true;
-    // Defer non-critical scripts on slow connections
-    document.documentElement.classList.add('slow-connection');
-  }
-  // Preload the game container DOM as fast as possible
-  window._nexusFastLoad = true;
-})();
-</script>
-<style>
-/* Slow-connection: disable heavy animations to save bandwidth & CPU */
-.slow-connection * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-.slow-connection .hero::before { display: none !important; }
-/* Lazy-load placeholder for game cards */
-.cover-img[data-src] { opacity: 0; transition: opacity 0.3s; }
-.cover-img.loaded { opacity: 1; }
-/* Slow connection banner */
-#slow-conn-banner { display:none; position:fixed; top:64px; left:50%; transform:translateX(-50%);
-  background:rgba(255,165,0,0.15); border:1px solid rgba(255,165,0,0.4); border-radius:8px;
-  padding:8px 18px; font-size:13px; color:#ffa502; z-index:300; backdrop-filter:blur(8px);
-  white-space:nowrap; }
-.slow-connection #slow-conn-banner { display:block; }
-</style>
 <style>:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a3a;--accent:#6c63ff;--accent2:#ff6584;--accent3:#43e97b;--text:#f0f0ff;--text2:#9090b0;--text3:#505070;--premium:#f5a623;--danger:#ff4757;--warning:#ffa502;--success:#2ed573;--radius:14px;--radius-sm:8px;--font-display:'Bebas Neue',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'JetBrains Mono',monospace;--transition:0.25s cubic-bezier(0.4,0,0.2,1);--glow:0 0 30px rgba(108,99,255,0.3);--glow2:0 0 30px rgba(255,101,132,0.3);}*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;overflow-x:hidden;}body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.6;}::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}#loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s;}#loading-screen .logo-big{font-family:var(--font-display);font-size:80px;letter-spacing:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 1.5s infinite;}@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}.loading-bar{width:220px;height:3px;background:var(--border);border-radius:2px;margin-top:24px;overflow:hidden;}.loading-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;animation:fill 1.8s ease forwards;}@keyframes fill{from{width:0;}to{width:100%;}}#login-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:1000;background-image:radial-gradient(ellipse at 30% 30%,rgba(108,99,255,0.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(255,101,132,0.08) 0%,transparent 60%);}.login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 30px 80px rgba(0,0,0,0.6),var(--glow);animation:slideUp 0.4s ease;}@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}.login-logo{font-family:var(--font-display);font-size:48px;letter-spacing:4px;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}.login-sub{text-align:center;color:var(--text2);font-size:14px;margin-bottom:32px;}.login-options{display:flex;gap:8px;margin-bottom:28px;}.login-tab{flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:500;transition:var(--transition);}.login-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}.form-group{margin-bottom:18px;}.form-group label{display:block;font-size:13px;color:var(--text2);margin-bottom:7px;font-weight:500;letter-spacing:0.5px;}.form-group input{width:100%;padding:13px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:15px;transition:var(--transition);outline:none;}.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,0.15);}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none;white-space:nowrap;}.btn-primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;width:100%;}.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--glow);}.btn-danger{background:var(--danger);color:#fff;}.btn-danger:hover{opacity:0.85;}.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}.btn-success{background:var(--success);color:#0a0a0f;}.btn-warning{background:var(--warning);color:#0a0a0f;}.btn-sm{padding:8px 14px;font-size:13px;}.login-error{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--danger);margin-bottom:16px;display:none;}.free-hint{text-align:center;margin-top:16px;font-size:13px;color:var(--text2);}.free-hint span{color:var(--accent);cursor:pointer;}#app{display:none;flex-direction:column;min-height:100vh;}.nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0 24px;height:64px;}.nav-logo{font-family:var(--font-display);font-size:28px;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:32px;cursor:pointer;flex-shrink:0;}.nav-cats{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none;}.nav-cats::-webkit-scrollbar{display:none;}.nav-cat{padding:8px 16px;border-radius:var(--radius-sm);background:transparent;border:none;color:var(--text2);font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;transition:var(--transition);white-space:nowrap;display:flex;align-items:center;gap:6px;}.nav-cat:hover{color:var(--text);background:var(--surface2);}.nav-cat.active{color:var(--accent);background:rgba(108,99,255,0.12);}
 .nav-cat-secret{background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(255,101,132,0.08));border:1px solid rgba(245,166,35,0.3);color:var(--premium) !important;font-family:var(--font-display);letter-spacing:2px;font-size:13px;position:relative;overflow:hidden;}
 .nav-cat-secret::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(245,166,35,0.15),transparent);transform:translateX(-100%);animation:secretShimmer 2.5s ease-in-out infinite;}
@@ -313,15 +285,9 @@ button,a,[onclick]{touch-action:manipulation;}
       </div>
     </div>
     <button class="btn btn-primary" id="mode-confirm-btn" onclick="confirmMode()" style="display:none;max-width:220px;margin:0 auto;">CONTINUE →</button>
-    <div style="margin-top:14px;display:flex;justify-content:center;">
-      <button class="btn btn-ghost btn-sm" onclick="checkProxyStatus()" id="proxy-check-btn" style="font-size:12px;gap:6px;">🔍 Check if proxy works</button>
-    </div>
-    <div id="proxy-check-result" style="display:none;margin-top:10px;text-align:center;font-size:13px;border-radius:8px;padding:10px 16px;"></div>
     <p class="mode-hint">You can change this anytime from the nav bar.</p>
   </div>
 </div>
-
-<div id="slow-conn-banner">⚡ Slow connection detected — game loading may take longer than usual.</div>
 
 <div id="loading-screen">
   <div class="logo-big" id="loading-logo">NEXUSHUB</div>
@@ -1176,13 +1142,27 @@ function loadState() {
 }
 
 async function loadGlobalState() {
+  // Immediately apply cached state so the UI is ready before the network comes back
+  const cached = localStorage.getItem('nexushub_state_cache');
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const savedContent = state.content || parsed.content || [];
+        state = { ...parsed, content: savedContent };
+        if (state.commBinId && !_commBinId) _commBinId = state.commBinId;
+      }
+    } catch(e) {}
+  }
   try {
-    const timeout = new Promise(r => setTimeout(r, 6000));
+    // Reduced from 6 s → 3.5 s; on bad connections the cache is already applied above
+    const timeout = new Promise(r => setTimeout(r, 3500));
     const fetchPromise = fetch(JSONBIN_URL + '/latest', {
       headers: {
         'X-Master-Key': JSONBIN_KEY,
         'X-Bin-Meta':   'false',
-      }
+      },
+      cache: 'no-store',
     })
     .then(r => r.ok ? r.json() : null)
     .catch(() => null);
@@ -1198,7 +1178,8 @@ async function loadGlobalState() {
   } catch(e) {
     console.warn('Could not load global state, using cache:', e);
   }
-  return false;
+  // Return true if we at least have cached state so the app can boot
+  return !!cached;
 }
 
 async function saveState() {
@@ -1380,9 +1361,9 @@ async function deleteContentFromCloud(item) {
 window.addEventListener('load', async () => {
   applyStoredTheme();
   updateSiteNames();
-  const timeout = new Promise(r => setTimeout(r, 2000)); // max 2s wait (fast even on bad internet)
+  const timeout = new Promise(r => setTimeout(r, 2000)); // reduced from 3s → 2s
   const statePromise = loadGlobalState();
-  const minDelay = new Promise(r => setTimeout(r, 300)); // reduced min delay
+  const minDelay = new Promise(r => setTimeout(r, 400)); // reduced from 800ms → 400ms
   await Promise.all([Promise.race([statePromise, timeout]), minDelay]);
   applyStoredTheme();
   updateSiteNames();
@@ -1728,7 +1709,7 @@ function renderCard(item) {
   const isFree = item.access === 'free';
   const locked = !isFree && !currentUser?.premium;
   const coverContent = item.cover
-    ? `<img class="cover-img loaded" src="${item.cover}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="cover-placeholder" style="display:none;">${m.icon}</div>`
+    ? `<img class="cover-img" src="${item.cover}" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="cover-placeholder" style="display:none;">${m.icon}</div>`
     : `<div class="cover-placeholder">${m.icon}</div>`;
   return `<div class="media-card" onclick="openMedia('${item.id}')">
     <div class="cover" style="aspect-ratio:2/3;overflow:hidden;">${coverContent}${locked?'<div class="lock-overlay">🔒</div>':''}</div>
@@ -1829,58 +1810,9 @@ function buildMediaPlayer(item, body, isFree) {
           onmouseout="this.style.background='rgba(0,0,0,0.7)'">${isPremium ? '⛶ Fullscreen' : '📺 Fullscreen (Ad)'}</button>`;
 const mobileGameHint = '';
     const isSchoolMode = (localStorage.getItem('nexus_mode') || 'home') === 'school';
-
-    // Ad-blocker CSS/JS injected into every embed (blocks 3rd-party ad iframes/scripts, not the game itself)
-    const adBlockStyle = `
-      *{margin:0;padding:0;}
-      body{background:#000;overflow:hidden;}
-      iframe{width:100%;height:100vh;border:none;display:block;}
-      /* Block common ad containers */
-      [id*="google_ads"],[id*="ad-container"],[id*="advert"],[id*="dfp-"],[class*="ad-slot"],
-      [class*="advertisement"],[class*="adsbygoogle"],[id*="aswift"],[id*="ins_"],[id*="bannerad"],
-      iframe[src*="googlesyndication"],iframe[src*="doubleclick"],iframe[src*="adnxs"],
-      iframe[src*="adsystem"],iframe[src*="prebid"],iframe[src*="openx"],iframe[src*="rubiconproject"],
-      iframe[src*="pubmatic"],iframe[src*="criteo"],iframe[src*="moatads"],iframe[src*="amazon-adsystem"],
-      div[style*="z-index: 2147483647"]:not([id="css-fs-overlay"]),
-      div[style*="z-index:2147483647"]:not([id="css-fs-overlay"]) { display:none !important; }`;
-
-    const adBlockScript = `
-      (function(){
-        // Block ad-network requests at the network level inside the embed
-        const BLOCKED = [
-          'googlesyndication','doubleclick','adnxs','adsystem','pubmatic',
-          'rubiconproject','openx','criteo','moatads','prebid','amazon-adsystem',
-          'pagead','adservice','ad.plus','popads','popcash','propellerads',
-          'adsterra','hilltopads','trafficjunky','exoclick','juicyads',
-          'trafficstars','plugrush','tsyndicate','yllix','revcontent'
-        ];
-        const _open = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(m, url) {
-          if(BLOCKED.some(d => url && url.includes(d))) return;
-          return _open.apply(this, arguments);
-        };
-        const _fetch = window.fetch;
-        if(_fetch) window.fetch = function(url, opts) {
-          if(typeof url === 'string' && BLOCKED.some(d => url.includes(d))) return Promise.resolve(new Response('', {status: 200}));
-          return _fetch.apply(this, arguments);
-        };
-        // Remove ad elements as they appear
-        const obs = new MutationObserver(function(muts) {
-          muts.forEach(function(m) {
-            m.addedNodes.forEach(function(n) {
-              if(n.nodeType !== 1) return;
-              const src = n.src || n.href || '';
-              if(BLOCKED.some(d => src.includes(d))) { n.remove(); return; }
-              const id = (n.id||'') + (n.className||'');
-              if(/ad[-_]?(slot|container|banner|unit|frame|wrapper)|adsbygoogle|dfp-|aswift|bannerad/i.test(id)) n.remove();
-            });
-          });
-        });
-        obs.observe(document, {childList:true, subtree:true});
-      })();`;
-
     if(isSchoolMode) {
-      // School mode: use about:blank + document.write to bypass URL-based filters, with ad-blocker injected
+      // School mode: inject the game via document.write into about:blank — hides the real URL
+      // from network-level filters. Retry loop guarantees it works even on slow connections.
       const frameId = 'embed-frame-' + item.id;
       html += `
         <div class="media-embed" style="position:relative;">
@@ -1895,30 +1827,39 @@ const mobileGameHint = '';
             scrolling="no"
           ></iframe>
         </div>`;
-      setTimeout(() => {
-        const f = document.getElementById(frameId);
-        if(f) {
-          const doc = f.contentDocument || f.contentWindow.document;
-          doc.open();
-          doc.write(`<!DOCTYPE html><html><head><style>${adBlockStyle}</style></head><body><script>${adBlockScript}<\/script><iframe src="${cleanUrl.replace(/"/g,'&quot;')}" allowfullscreen allow="autoplay;fullscreen;gamepad;pointer-lock;keyboard-map" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation-by-user-activation allow-modals"></iframe></body></html>`);
-          doc.close();
+      // Inject immediately (0 ms) — removed lazy delay for faster start on bad internet
+      const _injectGame = (fid, gUrl, attempt) => {
+        const f = document.getElementById(fid);
+        if (!f) {
+          if (attempt < 12) setTimeout(() => _injectGame(fid, gUrl, attempt + 1), 80);
+          return;
         }
-      }, 50);
+        try {
+          const doc = f.contentDocument || f.contentWindow.document;
+          if (!doc) throw new Error('no doc');
+          doc.open();
+          doc.write('<!DOCTYPE html><html><head><meta charset="utf-8"><style>*{margin:0;padding:0;box-sizing:border-box;}html,body{width:100%;height:100%;background:#000;overflow:hidden;}iframe{width:100%;height:100%;border:none;display:block;position:absolute;top:0;left:0;}</style></head><body><iframe src="' + gUrl.replace(/"/g,'&quot;') + '" allowfullscreen allow="autoplay;fullscreen;gamepad;pointer-lock;keyboard-map" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation-by-user-activation allow-modals"></iframe></body></html>');
+          doc.close();
+        } catch(err) {
+          // Retry with exponential back-off (up to 8 attempts) for slow/bad connections
+          if (attempt < 8) setTimeout(() => _injectGame(fid, gUrl, attempt + 1), Math.min(150 * attempt, 1000));
+          else console.warn('[NexusHub] Proxy inject failed after retries:', err);
+        }
+      };
+      setTimeout(() => _injectGame(frameId, cleanUrl, 1), 0);
     } else {
-      // Home mode: use srcdoc wrapper with ad-blocker that loads the game URL inside
-      const encodedUrl = cleanUrl.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-      const srcdocContent = `<!DOCTYPE html><html><head><style>${adBlockStyle}</style></head><body><script>${adBlockScript}<\/script><iframe src="${encodedUrl}" allowfullscreen allow="autoplay;fullscreen;gamepad;pointer-lock;keyboard-map" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation-by-user-activation allow-modals" style="width:100%;height:100vh;border:none;display:block;"></iframe></body></html>`;
       html += `
         <div class="media-embed" style="position:relative;">
           ${fsBtn}
           <iframe
             id="embed-frame-${item.id}"
-            srcdoc="${srcdocContent.replace(/"/g,'&quot;')}"
+            src="${cleanUrl}"
             style="width:100%;height:550px;border:none;display:block;"
             allowfullscreen
             allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map"
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation-by-user-activation allow-modals"
             scrolling="no"
+            loading="eager"
             referrerpolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>`;
@@ -4106,107 +4047,7 @@ function applyMode(mode, showToast) {
   }
 }
 
-
-// ── PROXY STATUS CHECK ──────────────────────────────────────────────────────
-async function checkProxyStatus() {
-  const btn = document.getElementById('proxy-check-btn');
-  const result = document.getElementById('proxy-check-result');
-  btn.textContent = '⏳ Testing…';
-  btn.disabled = true;
-  result.style.display = 'block';
-  result.style.background = 'rgba(108,99,255,0.1)';
-  result.style.border = '1px solid rgba(108,99,255,0.3)';
-  result.style.color = 'var(--text2)';
-  result.textContent = 'Checking proxy connectivity…';
-
-  // Test 1: can we reach the internet at all?
-  let hasInternet = false;
-  try {
-    const r = await Promise.race([
-      fetch('https://www.google.com/favicon.ico', {mode:'no-cors', cache:'no-store'}),
-      new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 4000))
-    ]);
-    hasInternet = true;
-  } catch(e) { hasInternet = false; }
-
-  // Test 2: school mode proxy — does the about:blank + document.write trick work?
-  // We test by creating a hidden iframe with about:blank and writing to it
-  let proxyWorks = false;
-  try {
-    proxyWorks = await new Promise((resolve) => {
-      const f = document.createElement('iframe');
-      f.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
-      f.src = 'about:blank';
-      document.body.appendChild(f);
-      setTimeout(() => {
-        try {
-          const doc = f.contentDocument || f.contentWindow.document;
-          doc.open();
-          doc.write('<!DOCTYPE html><html><body><script>parent.postMessage("proxy_ok","*");<\/script></body></html>');
-          doc.close();
-        } catch(e) { resolve(false); }
-        const timer = setTimeout(() => { document.body.removeChild(f); resolve(false); }, 3000);
-        window.addEventListener('message', function handler(ev) {
-          if(ev.data === 'proxy_ok') {
-            clearTimeout(timer);
-            window.removeEventListener('message', handler);
-            try { document.body.removeChild(f); } catch(e) {}
-            resolve(true);
-          }
-        });
-      }, 200);
-    });
-  } catch(e) { proxyWorks = false; }
-
-  btn.textContent = '🔍 Check if proxy works';
-  btn.disabled = false;
-
-  if(!hasInternet) {
-    result.style.background = 'rgba(255,71,87,0.1)';
-    result.style.border = '1px solid rgba(255,71,87,0.3)';
-    result.style.color = 'var(--danger)';
-    result.innerHTML = '❌ <strong>No internet connection.</strong> Check your network first.';
-  } else if(proxyWorks) {
-    result.style.background = 'rgba(46,213,115,0.1)';
-    result.style.border = '1px solid rgba(46,213,115,0.3)';
-    result.style.color = 'var(--success)';
-    result.innerHTML = '✅ <strong>Proxy is working!</strong> School mode should unblock games on your network.';
-  } else {
-    result.style.background = 'rgba(255,165,0,0.1)';
-    result.style.border = '1px solid rgba(255,165,0,0.3)';
-    result.style.color = 'var(--warning)';
-    result.innerHTML = '⚠️ <strong>Proxy blocked.</strong> Your browser or network is blocking the relay. Try a different browser (Chrome works best).';
-  }
-}
-
-// ── LAZY IMAGE LOADING for game cards ───────────────────────────────────────
-(function(){
-  if(!('IntersectionObserver' in window)) return;
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if(e.isIntersecting) {
-        const img = e.target;
-        const src = img.getAttribute('data-src');
-        if(src) { img.src = src; img.removeAttribute('data-src'); img.classList.add('loaded'); }
-        obs.unobserve(img);
-      }
-    });
-  }, { rootMargin: '200px' });
-  // Observe all cover images when they're added to the DOM
-  const domObs = new MutationObserver(muts => {
-    muts.forEach(m => {
-      m.addedNodes.forEach(n => {
-        if(n.nodeType !== 1) return;
-        const imgs = n.querySelectorAll ? n.querySelectorAll('img.cover-img[data-src]') : [];
-        imgs.forEach(img => obs.observe(img));
-        if(n.classList && n.classList.contains('cover-img') && n.getAttribute('data-src')) obs.observe(n);
-      });
-    });
-  });
-  domObs.observe(document.body, {childList:true, subtree:true});
-})();
-
-
+function openModePicker() {
   const current = localStorage.getItem('nexus_mode') || 'home';
   _pendingModePick = current;
   document.getElementById('mode-card-home').classList.toggle('selected', current === 'home');
